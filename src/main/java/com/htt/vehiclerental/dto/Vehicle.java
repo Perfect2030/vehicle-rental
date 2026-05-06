@@ -12,6 +12,7 @@ public class Vehicle {
     private String model;
     private String brand;
     private VehicleType vehicleType;
+    private int displacement; // phân khối (cc)
     private int pricePerDay;
     private VehicleStatus status;
     private LocalDateTime createdAt;
@@ -20,12 +21,13 @@ public class Vehicle {
     public Vehicle() {
     }
 
-    public Vehicle(int id, String licensePlate, String model, String brand, VehicleType vehicleType, int pricePerDay, VehicleStatus status, LocalDateTime createdAt, boolean isDeleted) {
+    public Vehicle(int id, String licensePlate, String model, String brand, VehicleType vehicleType, int displacement, int pricePerDay, VehicleStatus status, LocalDateTime createdAt, boolean isDeleted) {
         this.id = id;
         this.licensePlate = licensePlate;
         this.model = model;
         this.brand = brand;
         this.vehicleType = vehicleType;
+        this.displacement = displacement;
         this.pricePerDay = pricePerDay;
         this.status = status;
         this.createdAt = createdAt;
@@ -39,6 +41,7 @@ public class Vehicle {
                 (String) map.get("model"),
                 (String) map.get("brand"),
                 VehicleType.fromString((String) map.get("vehicleType")),
+                (int) map.get("displacement"),
                 (int) map.get("pricePerDay"),
                 VehicleStatus.fromString((String) map.get("status")),
                 (LocalDateTime) map.get("createdAt"),
@@ -76,6 +79,14 @@ public class Vehicle {
 
     public void setBrand(String brand) {
         this.brand = brand;
+    }
+
+    public int getDisplacement() {
+        return displacement;
+    }
+
+    public void setDisplacement(int displacement) {
+        this.displacement = displacement;
     }
 
     public int getPricePerDay() {
@@ -138,6 +149,7 @@ public class Vehicle {
                 ", model='" + model + '\'' +
                 ", brand='" + brand + '\'' +
                 ", vehicleType=" + vehicleType +
+                ", displacement=" + displacement +
                 ", pricePerDay=" + pricePerDay +
                 ", status=" + status +
                 ", createdAt=" + createdAt +
