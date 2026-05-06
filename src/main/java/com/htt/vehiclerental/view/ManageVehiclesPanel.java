@@ -9,8 +9,7 @@ public class ManageVehiclesPanel extends JPanel {
     }
 
     private void initComponents() {
-        JLabel titleLabel = new JLabel("Manage Vehicles");
-        titleLabel.setFont(titleLabel.getFont().deriveFont(18f));
+        JLabel titleLabel = UiKit.createSectionTitleLabel("ManageVehiclesPanel");
         add(titleLabel);
     }
     
