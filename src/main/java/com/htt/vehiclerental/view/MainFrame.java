@@ -2,20 +2,27 @@ package com.htt.vehiclerental.view;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.*;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.*;
 
 public class MainFrame extends JFrame {
 
     private JPanel sidebar;
     private JPanel mainContent;
+    private JButton selectedButton = null;
+
 
     public MainFrame() {
         setTitle("Vehicle Rental System");
-        setSize(800, 600);
+        setSize(1200, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
@@ -30,21 +37,40 @@ public class MainFrame extends JFrame {
     }
 
     public JPanel createSidebar() {
-        JPanel sidebar = new JPanel(new GridLayout(7, 1));
+        JPanel sidebar = new JPanel(new GridLayout(6, 1));
+       
         //add buttons
-        JButton btnDashboard = new JButton("Dashboard");
-        JButton btnManageVehicles = new JButton("Quản lý xe");
-        JButton btnManageCustomers = new JButton("Quản lý khách hàng");
-        JButton btnManageRentals = new JButton("Quản lý thuê xe");
-        JButton btnManageFees = new JButton("Quản lý phí phát sinh");
-        JButton btnGenerateReports = new JButton("Báo cáo doanh thu");
+        JButton btnDashboard = UiKit.createSidebarButton("Dashboard");
+        JButton btnManageVehicles = UiKit.createSidebarButton("Quản lý xe");
+        JButton btnManageCustomers = UiKit.createSidebarButton("Quản lý khách hàng");
+        JButton btnManageRentals = UiKit.createSidebarButton("Quản lý thuê xe");
+        JButton btnManageFees = UiKit.createSidebarButton("Quản lý phí phát sinh");
+        JButton btnGenerateReports = UiKit.createSidebarButton("Báo cáo doanh thu");
 
-        btnDashboard.addActionListener(e -> showPanel("Dashboard"));
-        btnManageVehicles.addActionListener(e -> showPanel("ManageVehicles"));
-        btnManageCustomers.addActionListener(e -> showPanel("ManageCustomers"));
-        btnManageRentals.addActionListener(e -> showPanel("ManageRentals"));
-        btnManageFees.addActionListener(e -> showPanel("ManageFees"));
-        btnGenerateReports.addActionListener(e -> showPanel("GenerateReports"));
+        btnDashboard.addActionListener(e -> {
+            showPanel("Dashboard");
+            handleClick.actionPerformed(e);
+        });
+        btnManageVehicles.addActionListener(e -> {
+            showPanel("ManageVehicles");
+            handleClick.actionPerformed(e);
+        });
+        btnManageCustomers.addActionListener(e -> {
+            showPanel("ManageCustomers");
+            handleClick.actionPerformed(e);
+        });
+        btnManageRentals.addActionListener(e -> {
+            showPanel("ManageRentals");
+            handleClick.actionPerformed(e);
+        });
+        btnManageFees.addActionListener(e -> {
+            showPanel("ManageFees");
+            handleClick.actionPerformed(e);
+        });
+        btnGenerateReports.addActionListener(e -> {
+            showPanel("GenerateReports");
+            handleClick.actionPerformed(e);
+        });
 
         sidebar.add(btnDashboard);
         sidebar.add(btnManageVehicles);
@@ -55,6 +81,20 @@ public class MainFrame extends JFrame {
 
         return sidebar;
     }
+
+    ActionListener handleClick = e -> {
+    JButton clicked = (JButton) e.getSource();
+
+    // reset button cũ
+    if (selectedButton != null) {
+        UiKit.setSidebarButtonState(selectedButton, false);
+    }
+
+    // set button mới
+    UiKit.setSidebarButtonState(clicked, true);
+
+    selectedButton = clicked;
+};
 
     public JPanel createMainContent() {
         JPanel mainContent = new JPanel(new CardLayout());
