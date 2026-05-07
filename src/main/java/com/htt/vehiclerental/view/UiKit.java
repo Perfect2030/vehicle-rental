@@ -203,6 +203,10 @@ public final class UiKit {
         return createButton(text, SURFACE, PRIMARY);
     }
 
+    public static JButton createDangerButton(String text) {
+        return createButton(text, DANGER, Color.WHITE);
+    }
+
     public static JButton createSidebarButton(String text) {
         JButton button = new JButton(text);
         button.setFont(BUTTON_FONT);
