@@ -2,16 +2,12 @@ package com.htt.vehiclerental.view;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.Color;
 import java.awt.GridLayout;
-import java.awt.*;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.*;
 
 public class MainFrame extends JFrame {
 
@@ -37,20 +33,16 @@ public class MainFrame extends JFrame {
     }
 
     public JPanel createSidebar() {
-        JPanel sidebar = new JPanel(new GridLayout(6, 1));
+        JPanel sidebar = new JPanel(new GridLayout(6, 1, 0 ,16));
+        sidebar.setBackground(UiKit.SIDEBAR);
        
         //add buttons
-        JButton btnDashboard = UiKit.createSidebarButton("Dashboard");
         JButton btnManageVehicles = UiKit.createSidebarButton("Quản lý xe");
         JButton btnManageCustomers = UiKit.createSidebarButton("Quản lý khách hàng");
         JButton btnManageRentals = UiKit.createSidebarButton("Quản lý thuê xe");
         JButton btnManageFees = UiKit.createSidebarButton("Quản lý phí phát sinh");
         JButton btnGenerateReports = UiKit.createSidebarButton("Báo cáo doanh thu");
 
-        btnDashboard.addActionListener(e -> {
-            showPanel("Dashboard");
-            handleClick.actionPerformed(e);
-        });
         btnManageVehicles.addActionListener(e -> {
             showPanel("ManageVehicles");
             handleClick.actionPerformed(e);
@@ -72,7 +64,6 @@ public class MainFrame extends JFrame {
             handleClick.actionPerformed(e);
         });
 
-        sidebar.add(btnDashboard);
         sidebar.add(btnManageVehicles);
         sidebar.add(btnManageCustomers);
         sidebar.add(btnManageRentals);
@@ -83,24 +74,23 @@ public class MainFrame extends JFrame {
     }
 
     ActionListener handleClick = e -> {
-    JButton clicked = (JButton) e.getSource();
+        JButton clicked = (JButton) e.getSource();
 
-    // reset button cũ
-    if (selectedButton != null) {
-        UiKit.setSidebarButtonState(selectedButton, false);
-    }
+        // reset button cũ
+        if (selectedButton != null) {
+            UiKit.setSidebarButtonState(selectedButton, false);
+        }
 
-    // set button mới
-    UiKit.setSidebarButtonState(clicked, true);
+        // set button mới
+        UiKit.setSidebarButtonState(clicked, true);
 
-    selectedButton = clicked;
-};
+        selectedButton = clicked;
+    };
 
     public JPanel createMainContent() {
         JPanel mainContent = new JPanel(new CardLayout());
         //add các màn hình
 
-        mainContent.add(new DashboardPanel(), "Dashboard");
         mainContent.add(new ManageVehiclesPanel(), "ManageVehicles");
         mainContent.add(new ManageCustomersPanel(), "ManageCustomers");
         mainContent.add(new ManageRentalsPanel(), "ManageRentals");

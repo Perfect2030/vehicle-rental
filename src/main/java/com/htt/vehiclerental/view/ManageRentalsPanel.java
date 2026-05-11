@@ -1,7 +1,13 @@
 package com.htt.vehiclerental.view;
 
-import javax.swing.*;
-import java.awt.*;  
+import java.awt.BorderLayout;
+import java.awt.Dimension;  
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JTable;
 public class ManageRentalsPanel extends JPanel {
     public ManageRentalsPanel() {
         initComponents();
@@ -42,23 +48,13 @@ public class ManageRentalsPanel extends JPanel {
         center.setBorder(UiKit.createCardBorder());
 
         //center north
-        JPanel centerNorth = new JPanel(new BorderLayout(16, 0));
-        centerNorth.setOpaque(false);
-
-        JPanel centerHeader = UiKit.createSectionHeader("Danh sách các lượt thuê xe", 
-        "Xem và tìm kiếm các lượt thuê xe trong hệ thống.");
-               
         JPanel searchBar = new JPanel(new GridLayout(2, 2, 16, 0));
+        searchBar.setOpaque(false);
 
-        searchBar.add(UiKit.createSubtitleLabel("Tiềm kiếm"));
+        searchBar.add(UiKit.createSubtitleLabel("Tìm kiếm"));
         searchBar.add(UiKit.createSubtitleLabel("Trạng thái"));
         searchBar.add(UiKit.createTextField(20));
         searchBar.add(UiKit.createComboBox(new String[] { "Tất cả", "Đang cho thuê", "Đã hoàn thành", "Quá hạn" }));
-
-        centerNorth.add(centerHeader, BorderLayout.NORTH);
-        centerNorth.add(searchBar, BorderLayout.CENTER);
-
-        searchBar.setOpaque(false);
 
         JTable table = UiKit.createTable(
                 new String[] { "Mã số thuê", "Tên khách hàng", "Biển số xe", "Hãng xe", "Mẫu xe", "Ngày thuê", "Ngày trả dự kiến", "Trạng thái" },
@@ -72,10 +68,10 @@ public class ManageRentalsPanel extends JPanel {
                        {7, "Vũ Văn G", "30G-44556", "Honda", "CB500X", "07/01/2024", "11/01/2024", "RENTING" },
                        {8, "Ngô Thị H", "30H-77889", "Yamaha", "R3", "08/01/2024", "12/01/2024", "COMPLETED" },       
                        {9, "Trịnh Văn I", "30I-99000", "Suzuki", "V-Strom 650", "09/01/2024", "13/01/2024", "OVERDUE" },
-                       {10, "Phan Thị J", "30J-22334", "Honda", "CB650R", "10/01/2024", "14/01/2024", "RENTING" },
+                       {10, "Phan Thị J", "30J-22334", "Honda", "CB650R", "10/01/2024", "14/01/2024", "RENTING" }
                 });
 
-        center.add(centerNorth, BorderLayout.NORTH);
+        center.add(searchBar, BorderLayout.NORTH);
         center.add(UiKit.createTableScrollPane(table), BorderLayout.CENTER);
 
 
