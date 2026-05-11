@@ -6,11 +6,23 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
-import javax.swing.JSplitPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableModel;
 
 public class ManageCustomersPanel extends JPanel {
+
+    private static final String[] CUSTOMER_COLUMNS = {
+        "Số định danh", "Họ và tên", "Số điện thoại", "Địa chỉ"
+    };
+
+    private JTextField searchField;
+    private JTable table;
+    private JComboBox<String> sortComboBox;
+
     public ManageCustomersPanel() {
         initComponents();
     }
@@ -39,84 +51,81 @@ public class ManageCustomersPanel extends JPanel {
         northPanel.add(banner, BorderLayout.NORTH);
         northPanel.add(info, BorderLayout.CENTER);
 
-
         //center 
-        JSplitPane centerPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-        centerPanel.setOpaque(false);
-        
-            //left 
-            JPanel leftCenter = UiKit.createSurfacePanel();
-            leftCenter.setLayout(new BorderLayout(16, 16));
-            leftCenter.setBorder(UiKit.createCardBorder());
-
-                //left header
-                JPanel leftHeader = UiKit.createSectionHeader("Thông tin khách hàng", "Thêm mới hoặc cập nhật thông tin khách hàng.");
-
-                //left form
-                JPanel leftForm = new JPanel(new GridLayout(4, 1, 16, 16));
-                leftForm.setOpaque(false);
-
-                leftForm.add(UiKit.createFieldBlock("Số định danh", UiKit.createTextField(12)));
-                leftForm.add(UiKit.createFieldBlock("Họ và tên", UiKit.createTextField(12)));
-                leftForm.add(UiKit.createFieldBlock("Số điện thoại", UiKit.createTextField(12)));
-                leftForm.add(UiKit.createFieldBlock("Địa chỉ", UiKit.createTextField(12)));
+        JPanel center = UiKit.createSurfacePanel();
+        center.setLayout(new BorderLayout(16, 16));
+        center.setBorder(UiKit.createCardBorder());
 
 
+            JPanel searchBar = new JPanel(new GridLayout(1, 2, 16, 0));
 
-                JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 16, 16));
+                searchField = UiKit.createTextField(20);
+                sortComboBox = UiKit.createComboBox(new String[] {"Mặc định", "Tên A-Z", "Tên Z-A"});
+
+                searchBar.add(UiKit.createFieldBlock("Tìm kiếm", searchField));
+                searchBar.add(UiKit.createFieldBlock("Sắp xếp", sortComboBox));
+
+            searchBar.setOpaque(false);
+
+            table = UiKit.createTable(CUSTOMER_COLUMNS, getSampleCustomers());
+            
+            table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+            JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 16, 16));
                 buttonPanel.setOpaque(false);
 
                 JButton addButton = UiKit.createPrimaryButton("Thêm khách mới");
+                    addButton.addActionListener(e -> addCustomer());
+
                 JButton updateButton = UiKit.createPrimaryButton("Cập nhật thông tin");
+                    updateButton.addActionListener(e -> updateCustomer());
 
-                buttonPanel.add(addButton);
-                buttonPanel.add(updateButton);
+            buttonPanel.add(addButton);
+            buttonPanel.add(updateButton);
 
-            leftCenter.add(leftHeader, BorderLayout.NORTH);
-            leftCenter.add(leftForm, BorderLayout.CENTER);
-            leftCenter.add(buttonPanel, BorderLayout.SOUTH);
-
-            //right 
-            JPanel rightCenter = UiKit.createSurfacePanel();
-            rightCenter.setLayout(new BorderLayout(16, 16));
-            rightCenter.setBorder(UiKit.createCardBorder());
-
-                //right north
-                JPanel rightNorth = new JPanel(new BorderLayout(16, 0));
-                rightNorth.setOpaque(false);
-
-                    JPanel rightHeader = UiKit.createSectionHeader("Danh sách khách hàng", "Xem và tìm kiếm khách hàng đã đăng ký trong hệ thống.");
-                    JPanel searchBar = new JPanel(new GridLayout(1, 2, 16, 0));
-
-                        searchBar.add(UiKit.createFieldBlock("Tìm kiếm", UiKit.createTextField(20)));
-                        searchBar.add(UiKit.createFieldBlock("Sắp xếp", UiKit.createComboBox(
-                            new String[] {"Mặc định", "Tên A-Z", "Tên Z-A", "Số định danh tăng dần", "Số định danh giảm dần"}
-                        )));
-                
-                rightNorth.add(rightHeader, BorderLayout.NORTH);
-                rightNorth.add(searchBar, BorderLayout.CENTER);
-                
-                searchBar.setOpaque(false);
-
-                JTable table = UiKit.createTable(
-                    new String[]{"Số định danh", "Họ và tên", "Số điện thoại", "Địa chỉ"}, 
-                    new Object[][] {
-                        {"123456789012", "Nguyễn Văn A", "0123456789", "123 Đường ABC, Quận 1"},
-                        {"987654321098", "Trần Thị B", "0987654321", "456 Đường XYZ, Quận 2"},
-                        {"555555555555", "Lê Văn C", "0555555555", "789 Đường DEF, Quận 3"},
-                    }
-                );
-            
-            rightCenter.add(rightNorth, BorderLayout.NORTH);
-            rightCenter.add(UiKit.createTableScrollPane(table), BorderLayout.CENTER);
-
-        centerPanel.add(leftCenter, JSplitPane.LEFT);
-        centerPanel.add(rightCenter, JSplitPane.RIGHT);
-
-        //
+        center.add(searchBar, BorderLayout.NORTH);
+        center.add(UiKit.createTableScrollPane(table), BorderLayout.CENTER);
+        center.add(buttonPanel, BorderLayout.SOUTH);
 
         add(northPanel, BorderLayout.NORTH);
-        add(centerPanel, BorderLayout.CENTER);
+        add(center, BorderLayout.CENTER);
     }
-    
+
+    public void addCustomer() {
+        new CustomerInfoDialog("Thêm khách hàng mới").setVisible(true);
+        this.updateTable();
+    }
+
+    public void updateCustomer() {
+        new CustomerInfoDialog("Cập nhật thông tin khách hàng").setVisible(true);
+        this.updateTable();
+    }
+
+    public void updateTable() {
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0);
+
+        for (Object[] row : getUpdatedCustomers()) {
+            model.addRow(row);
+        }
+
+        table.revalidate();
+        table.repaint();
+    }
+
+    private Object[][] getSampleCustomers() {
+        return new Object[][] {
+            {"123456789012", "Nguyễn Văn A", "0123456789", "123 Đường ABC, Quận 1"},
+            {"987654321098", "Trần Thị B", "0987654321", "456 Đường XYZ, Quận 2"},
+            {"555555555555", "Lê Văn C", "0555555555", "789 Đường DEF, Quận 3"},
+        };
+    }
+
+    private Object[][] getUpdatedCustomers() {
+        return new Object[][] {
+            {"123456789012", "Nguyễn Văn AABC", "0123456789", "123 Đường ABC, Quận 1"},
+            {"987654321098", "Trần Thị B", "0987654321", "456 Đường XYZ, Quận 2"},
+            {"555555555555", "Lê Văn C", "0555555555", "789 Đường DEF, Quận 3"},
+        };
+    }
 }
