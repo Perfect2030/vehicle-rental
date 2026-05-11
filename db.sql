@@ -36,7 +36,7 @@ create table `rental` (
     
     `startTime` datetime not null,
     `expectedReturnTime` datetime not null,
-    `actualReturnTime` datetime,
+    `actualReturnTime` datetime null,
     
     `pricePerDay` int not null,
     
