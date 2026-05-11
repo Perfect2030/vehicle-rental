@@ -12,17 +12,17 @@ public class CustomerDAL {
     }
 
     public static boolean update(Customer customer) {
-        String sql = "UPDATE customer SET fullName = ?, phoneNumber = ?, address = ?, createdAt = ? WHERE id = ?";
+        String sql = "UPDATE customer SET fullName = ?, phoneNumber = ?, address = ?, createdAt = ? WHERE identityNumber = ?";
         return DBHelper.getInstance().executeUpdate(sql, customer.getFullName(), customer.getPhoneNumber(), customer.getAddress(), customer.getCreatedAt(), customer.getIdentityNumber()) > 0;
     }
 
-    // public static boolean delete(int customerId) {
-    //     String sql = "UPDATE customer SET isDeleted = 1 WHERE id = ?";
-    //     return DBHelper.getInstance().executeUpdate(sql, customerId) > 0;
-    // }
+    public static boolean delete(String customerId) {
+        String sql = "DELETE FROM customer WHERE identityNumber = ?";
+        return DBHelper.getInstance().executeUpdate(sql, customerId) > 0;
+    }
 
-    public static Customer getCustomer(int customerId) {
-        String sql = "SELECT * FROM customer WHERE id = ?";
+    public static Customer getCustomer(String customerId) {
+        String sql = "SELECT * FROM customer WHERE identityNumber = ?";
         var result = DBHelper.getInstance().executeQuery(sql, customerId);
 
         if (result.isEmpty()) return null;
@@ -41,9 +41,9 @@ public class CustomerDAL {
         return customers;
     }
 
-    public static List<Customer> searchCustomers(String fullName, String phoneNumber) {
-        String sql = "SELECT * FROM customer WHERE (fullName LIKE ? AND phoneNumber LIKE ?)";
-        var results = DBHelper.getInstance().executeQuery(sql, "%" + fullName + "%", "%" + phoneNumber + "%");
+    public static List<Customer> searchCustomers(String keyword) {
+        String sql = "SELECT * FROM customer WHERE fullName LIKE ? OR phoneNumber LIKE ? OR address LIKE ?";
+        var results = DBHelper.getInstance().executeQuery(sql, "%" + keyword + "%", "%" + keyword + "%", "%" + keyword + "%");
 
         List<Customer> customers = new ArrayList<>();
         for (var result : results) {

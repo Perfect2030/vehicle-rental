@@ -40,6 +40,17 @@ public class RentalDAL {
         return rentals;
     }
 
+    public static List<Rental> getRentalsByCustomer(String identityNumber) {
+        String sql = "SELECT r.* FROM rental r WHERE r.customerId = ?";
+        var results = DBHelper.getInstance().executeQuery(sql, identityNumber);
+
+        List<Rental> rentals = new java.util.ArrayList<>();
+        for (var result : results) {
+            rentals.add(Rental.fromMap(result));
+        }
+        return rentals;
+    }
+
     // -1 = ignore filter
     public static List<Rental> searchRentals(int customerId, int vehicleId, String status) {
         String sql = "SELECT * FROM rental WHERE (customerId = ? OR ? = -1) AND (vehicleId = ? OR ? = -1) AND (status LIKE ?)";

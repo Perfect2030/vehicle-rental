@@ -7,8 +7,19 @@ import java.awt.GridLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import com.htt.vehiclerental.bll.CustomerBLL;
+import com.htt.vehiclerental.dto.Customer;
 
 public class CustomerInfoDialog extends JDialog {
+    private JTextField identityField;
+    private JTextField nameField;
+    private JTextField phoneField;
+    private JTextField addressField;
+
+    private boolean isEditMode = false;
+
     public CustomerInfoDialog(String title) {
         this.setTitle("Thông tin khách hàng");
         this.setSize(450, 500);
@@ -16,6 +27,23 @@ public class CustomerInfoDialog extends JDialog {
         this.setModal(true);
         
         initComponents(title);
+    }
+
+    public CustomerInfoDialog(String title, Customer customer) {
+        this.setTitle("Thông tin khách hàng");
+        this.setSize(450, 500);
+        this.setLocationRelativeTo(null);
+        this.setModal(true);
+        this.isEditMode = true;
+        
+        initComponents(title);
+
+        identityField.setText(customer.getIdentityNumber());
+        nameField.setText(customer.getFullName());
+        phoneField.setText(customer.getPhoneNumber());
+        addressField.setText(customer.getAddress());
+
+        identityField.setEnabled(false);
     }
 
     public void initComponents(String title) {
@@ -32,10 +60,15 @@ public class CustomerInfoDialog extends JDialog {
             JPanel centerForm = new JPanel(new GridLayout(4, 1, 16, 16));
             centerForm.setOpaque(false);
 
-            centerForm.add(UiKit.createFieldBlock("Số định danh", UiKit.createTextField(12)));
-            centerForm.add(UiKit.createFieldBlock("Họ và tên", UiKit.createTextField(12)));
-            centerForm.add(UiKit.createFieldBlock("Số điện thoại", UiKit.createTextField(12)));
-            centerForm.add(UiKit.createFieldBlock("Địa chỉ", UiKit.createTextField(12)));
+            identityField = UiKit.createTextField(12);
+            nameField = UiKit.createTextField(12);
+            phoneField = UiKit.createTextField(12);
+            addressField = UiKit.createTextField(12);
+
+            centerForm.add(UiKit.createFieldBlock("Số định danh", identityField));
+            centerForm.add(UiKit.createFieldBlock("Họ và tên", nameField));
+            centerForm.add(UiKit.createFieldBlock("Số điện thoại", phoneField));
+            centerForm.add(UiKit.createFieldBlock("Địa chỉ", addressField));
 
             JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 16, 0));
             buttonPanel.setOpaque(false);
@@ -57,7 +90,54 @@ public class CustomerInfoDialog extends JDialog {
     }
 
     public void saveInfo() {
-        
+        if (identityField.getText().isEmpty() || nameField.getText().isEmpty() || phoneField.getText().isEmpty() || addressField.getText().isEmpty()) {
+            UiKit.showErrorDialog(this, "Vui lòng điền đầy đủ thông tin khách hàng.");
+            return;
+        }
+
+        Customer newCustomer = new Customer();
+        newCustomer.setIdentityNumber(identityField.getText());
+        newCustomer.setFullName(nameField.getText());
+        newCustomer.setPhoneNumber(phoneField.getText());
+        newCustomer.setAddress(addressField.getText());
+
+        if (isEditMode) {
+            switch (CustomerBLL.updateCustomer(newCustomer)) {
+                case CustomerBLL.SUCCESS:
+                    break;
+                case CustomerBLL.NOT_FOUND:
+                    UiKit.showErrorDialog(this, "Không tìm thấy khách hàng. Vui lòng thử lại.");
+                    return;
+                case CustomerBLL.INVALID_INPUT:
+                    UiKit.showErrorDialog(this, "Thông tin khách hàng không hợp lệ. Vui lòng kiểm tra lại.");
+                    return;
+                case CustomerBLL.DATABASE_ERROR:
+                    UiKit.showErrorDialog(this, "Lỗi cơ sở dữ liệu. Vui lòng thử lại sau.");
+                    return;
+                default:
+                    UiKit.showErrorDialog(this, "Không thể cập nhật thông tin khách hàng. Vui lòng thử lại.");
+                    return;
+            }
+        } else {
+            switch (CustomerBLL.addCustomer(newCustomer)) {
+                case CustomerBLL.SUCCESS:
+                    break;
+                case CustomerBLL.CUSTOMER_EXISTS:
+                    UiKit.showErrorDialog(this, "Khách hàng với số định danh này đã tồn tại.");
+                    return;
+                case CustomerBLL.INVALID_INPUT:
+                    UiKit.showErrorDialog(this, "Thông tin khách hàng không hợp lệ. Vui lòng kiểm tra lại.");
+                    return;
+                case CustomerBLL.DATABASE_ERROR:
+                    UiKit.showErrorDialog(this, "Lỗi cơ sở dữ liệu. Vui lòng thử lại sau.");
+                    return;
+                default:
+                    UiKit.showErrorDialog(this, "Không thể lưu thông tin khách hàng. Vui lòng thử lại.");
+                    return;
+            }
+        }
+
+        this.dispose();
     }
 
     public void cancel() {

@@ -4,14 +4,19 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
+
+import com.htt.vehiclerental.bll.CustomerBLL;
+import com.htt.vehiclerental.dto.Customer;
 
 public class ManageCustomersPanel extends JPanel {
 
@@ -25,6 +30,7 @@ public class ManageCustomersPanel extends JPanel {
 
     public ManageCustomersPanel() {
         initComponents();
+        updateTable();
     }
 
     private void initComponents() {
@@ -67,7 +73,7 @@ public class ManageCustomersPanel extends JPanel {
 
             searchBar.setOpaque(false);
 
-            table = UiKit.createTable(CUSTOMER_COLUMNS, getSampleCustomers());
+            table = UiKit.createTable(CUSTOMER_COLUMNS, new Object[][] {{""}});
             
             table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -80,8 +86,12 @@ public class ManageCustomersPanel extends JPanel {
                 JButton updateButton = UiKit.createPrimaryButton("Cập nhật thông tin");
                     updateButton.addActionListener(e -> updateCustomer());
 
+                JButton deleteButton = UiKit.createSecondaryButton("Xóa khách hàng");
+                    deleteButton.addActionListener(e -> deleteCustomer());
+
             buttonPanel.add(addButton);
             buttonPanel.add(updateButton);
+            buttonPanel.add(deleteButton);
 
         center.add(searchBar, BorderLayout.NORTH);
         center.add(UiKit.createTableScrollPane(table), BorderLayout.CENTER);
@@ -89,6 +99,28 @@ public class ManageCustomersPanel extends JPanel {
 
         add(northPanel, BorderLayout.NORTH);
         add(center, BorderLayout.CENTER);
+    }   
+    public void updateTable() {
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0);
+
+        //sort criteria
+        // if (sortComboBox.getSelectedIndex() == 1)
+        //
+
+        List<Customer> customers = CustomerBLL.searchCustomers(searchField.getText());
+
+        for (Customer customer : customers) {
+            model.addRow(new Object[] {
+                customer.getIdentityNumber(),
+                customer.getFullName(),
+                customer.getPhoneNumber(),
+                customer.getAddress()
+            });
+        }
+
+        table.revalidate();
+        table.repaint();
     }
 
     public void addCustomer() {
@@ -97,35 +129,55 @@ public class ManageCustomersPanel extends JPanel {
     }
 
     public void updateCustomer() {
-        new CustomerInfoDialog("Cập nhật thông tin khách hàng").setVisible(true);
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow == -1) {
+            UiKit.showErrorDialog(this, "Vui lòng chọn một khách hàng để cập nhật thông tin.");
+             return;
+        }
+
+        String identityNumber = (String) table.getValueAt(selectedRow, 0);
+        
+        Customer customer = CustomerBLL.getCustomer(identityNumber);
+        if (customer == null) {
+            UiKit.showErrorDialog(this, "Không thể lấy thông tin khách hàng.");
+            return;
+        }
+
+        new CustomerInfoDialog("Cập nhật thông tin khách hàng", customer).setVisible(true);
         this.updateTable();
     }
 
-    public void updateTable() {
-        DefaultTableModel model = (DefaultTableModel) table.getModel();
-        model.setRowCount(0);
-
-        for (Object[] row : getUpdatedCustomers()) {
-            model.addRow(row);
+    public void deleteCustomer() {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow == -1) {
+            UiKit.showErrorDialog(this, "Vui lòng chọn một khách hàng để xóa.");
+             return;
         }
 
-        table.revalidate();
-        table.repaint();
-    }
+        String identityNumber = (String) table.getValueAt(selectedRow, 0);
 
-    private Object[][] getSampleCustomers() {
-        return new Object[][] {
-            {"123456789012", "Nguyễn Văn A", "0123456789", "123 Đường ABC, Quận 1"},
-            {"987654321098", "Trần Thị B", "0987654321", "456 Đường XYZ, Quận 2"},
-            {"555555555555", "Lê Văn C", "0555555555", "789 Đường DEF, Quận 3"},
-        };
-    }
+        //confirm delete
+        int confirm = UiKit.showConfirmDialog(this, "Bạn có chắc muốn xóa khách hàng này?");
+        if (confirm != JOptionPane.YES_OPTION) {
+            return;
+        }
 
-    private Object[][] getUpdatedCustomers() {
-        return new Object[][] {
-            {"123456789012", "Nguyễn Văn AABC", "0123456789", "123 Đường ABC, Quận 1"},
-            {"987654321098", "Trần Thị B", "0987654321", "456 Đường XYZ, Quận 2"},
-            {"555555555555", "Lê Văn C", "0555555555", "789 Đường DEF, Quận 3"},
-        };
+        //delete customer
+        switch (CustomerBLL.deleteCustomer(identityNumber)) {
+            case CustomerBLL.INVALID_INPUT:
+                UiKit.showErrorDialog(this, "Số định danh không hợp lệ.");
+                return;
+            case CustomerBLL.NOT_FOUND:
+                UiKit.showErrorDialog(this, "Không tìm thấy khách hàng.");
+                return;
+            case CustomerBLL.RENTAL_EXISTS:
+                UiKit.showErrorDialog(this, "Không thể xóa khách hàng có hợp đồng thuê đang tồn tại.");
+                return;
+            case CustomerBLL.DATABASE_ERROR:
+                UiKit.showErrorDialog(this, "Đã xảy ra lỗi khi xóa khách hàng. Vui lòng thử lại sau.");
+                return;
+        }
+
+        this.updateTable();
     }
 }

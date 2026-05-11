@@ -327,4 +327,13 @@ public final class UiKit {
                 new LineBorder(BORDER, 1, true),
                 new EmptyBorder(8, 12, 8, 12)));
     }
+
+    public static void showErrorDialog(Component parent, String message) {
+        javax.swing.JOptionPane.showMessageDialog(parent, message, "Lỗi", javax.swing.JOptionPane.ERROR_MESSAGE);
+    } 
+
+    public static int showConfirmDialog(Component parent, String message) {
+        int result = javax.swing.JOptionPane.showConfirmDialog(parent, message, "Xác nhận", javax.swing.JOptionPane.OK_CANCEL_OPTION);
+        return result;  
+    }
 }

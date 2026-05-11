@@ -47,12 +47,12 @@ public class Rental {
                 (int) map.get("vehicleId"),
                 (LocalDateTime) map.get("startTime"),
                 (LocalDateTime) map.get("expectedReturnTime"),
-                (LocalDateTime) map.get("actualReturnTime"),
+                (LocalDateTime) map.get("actualReturnTime"), //nullable
                 (int) map.get("pricePerDay"),
                 (int) map.get("deposit"),
                 (int) map.get("estimatedTotal"),
-                (int) map.get("extraFee"),
-                (int) map.get("totalAmount"),
+                map.get("extraFee") != null ? (int) map.get("extraFee") : 0, //nullable
+                map.get("totalAmount") != null ? (int) map.get("totalAmount") : -1, //nullable
                 RentalStatus.fromString((String) map.get("status")),
                 (LocalDateTime) map.get("createdAt")
         );
