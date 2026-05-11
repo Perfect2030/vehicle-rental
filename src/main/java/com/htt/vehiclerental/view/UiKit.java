@@ -57,7 +57,7 @@ public final class UiKit {
     public static Border createCardBorder() {
         return BorderFactory.createCompoundBorder(
                 new LineBorder(BORDER, 1, true),
-                new EmptyBorder(18, 18, 18, 18));
+                new EmptyBorder(16, 16, 16, 16));
     }
 
     public static JLabel createTitleLabel(String text) {
@@ -100,10 +100,11 @@ public final class UiKit {
         card.setLayout(new javax.swing.BoxLayout(card, javax.swing.BoxLayout.Y_AXIS));
         card.setBackground(SURFACE);
         card.setBorder(createCardBorder());
+        card.setPreferredSize(new Dimension(0, 100));
 
         JPanel accentBar = new JPanel();
-        accentBar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 6));
-        accentBar.setPreferredSize(new Dimension(100, 6));
+        accentBar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 4));
+        accentBar.setPreferredSize(new Dimension(100, 4));
         accentBar.setBackground(accent);
         accentBar.setBorder(new EmptyBorder(0, 0, 0, 0));
 
@@ -112,9 +113,9 @@ public final class UiKit {
         JLabel metricNote = createSubtitleLabel(note);
 
         card.add(accentBar);
-        card.add(javax.swing.Box.createVerticalStrut(14));
+        card.add(javax.swing.Box.createVerticalStrut(5));
         card.add(metricLabel);
-        card.add(javax.swing.Box.createVerticalStrut(6));
+        card.add(javax.swing.Box.createVerticalStrut(0));
         card.add(metricValue);
         card.add(javax.swing.Box.createVerticalStrut(6));
         card.add(metricNote);
@@ -200,6 +201,10 @@ public final class UiKit {
 
     public static JButton createGhostButton(String text) {
         return createButton(text, SURFACE, PRIMARY);
+    }
+
+    public static JButton createDangerButton(String text) {
+        return createButton(text, DANGER, Color.WHITE);
     }
 
     public static JButton createSidebarButton(String text) {
