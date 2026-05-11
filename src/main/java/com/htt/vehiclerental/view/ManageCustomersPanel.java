@@ -53,20 +53,15 @@ public class ManageCustomersPanel extends JPanel {
                 JPanel leftHeader = UiKit.createSectionHeader("Thông tin khách hàng", "Thêm mới hoặc cập nhật thông tin khách hàng.");
 
                 //left form
-                JPanel leftForm = new JPanel(new GridLayout(4, 2, 16, 16));
+                JPanel leftForm = new JPanel(new GridLayout(4, 1, 16, 16));
                 leftForm.setOpaque(false);
 
-                leftForm.add(UiKit.createSubtitleLabel("Số định danh (CCCD):"));
-                leftForm.add(UiKit.createTextField(12));
+                leftForm.add(UiKit.createFieldBlock("Số định danh", UiKit.createTextField(12)));
+                leftForm.add(UiKit.createFieldBlock("Họ và tên", UiKit.createTextField(12)));
+                leftForm.add(UiKit.createFieldBlock("Số điện thoại", UiKit.createTextField(12)));
+                leftForm.add(UiKit.createFieldBlock("Địa chỉ", UiKit.createTextField(12)));
 
-                leftForm.add(UiKit.createSubtitleLabel("Họ và tên:"));
-                leftForm.add(UiKit.createTextField(20));
 
-                leftForm.add(UiKit.createSubtitleLabel("Số điện thoại:"));
-                leftForm.add(UiKit.createTextField(12));
-
-                leftForm.add(UiKit.createSubtitleLabel("Địa chỉ:"));
-                leftForm.add(UiKit.createTextField(20));
 
                 JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 16, 16));
                 buttonPanel.setOpaque(false);
@@ -91,15 +86,12 @@ public class ManageCustomersPanel extends JPanel {
                 rightNorth.setOpaque(false);
 
                     JPanel rightHeader = UiKit.createSectionHeader("Danh sách khách hàng", "Xem và tìm kiếm khách hàng đã đăng ký trong hệ thống.");
-                    JPanel searchBar = new JPanel(new GridLayout(2, 2, 16, 0));
+                    JPanel searchBar = new JPanel(new GridLayout(1, 2, 16, 0));
 
-                        searchBar.add(UiKit.createSubtitleLabel("Tìm kiếm"));
-                        searchBar.add(UiKit.createSubtitleLabel("Sắp xếp"));
-                        searchBar.add(UiKit.createTextField(20));
-                        searchBar.add(UiKit.createComboBox(
+                        searchBar.add(UiKit.createFieldBlock("Tìm kiếm", UiKit.createTextField(20)));
+                        searchBar.add(UiKit.createFieldBlock("Sắp xếp", UiKit.createComboBox(
                             new String[] {"Mặc định", "Tên A-Z", "Tên Z-A", "Số định danh tăng dần", "Số định danh giảm dần"}
-                        ));
-
+                        )));
                 
                 rightNorth.add(rightHeader, BorderLayout.NORTH);
                 rightNorth.add(searchBar, BorderLayout.CENTER);
