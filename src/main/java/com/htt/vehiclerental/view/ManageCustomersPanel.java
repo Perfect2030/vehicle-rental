@@ -22,6 +22,8 @@ public class ManageCustomersPanel extends JPanel {
     private JTextField searchField;
     private JTable table;
     private JComboBox<String> sortComboBox;
+    private JButton addButton;
+    private JButton updateButton;
 
     public ManageCustomersPanel() {
         initComponents();
