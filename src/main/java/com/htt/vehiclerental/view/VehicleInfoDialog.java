@@ -11,14 +11,8 @@ import com.htt.vehiclerental.enums.VehicleStatus;
 import com.htt.vehiclerental.enums.VehicleType;
 
 public class VehicleInfoDialog extends JDialog {
-    JTextField licensePlateField = UiKit.createTextField(12);
-    JTextField brandField = UiKit.createTextField(12);
-    JTextField modelField = UiKit.createTextField(12);
-    JComboBox<String> typeField = UiKit.createComboBox(new String[] { "Xe côn", "Xe số", "Xe ga" });
-    JTextField displacementField = UiKit.createTextField(12);
-    JTextField pricePerDayField = UiKit.createTextField(12);
-    JComboBox<String> statusComboBox = UiKit
-            .createComboBox(new String[] { "Sẵn sàng", "Đang cho thuê", "Bảo trì" });
+    JTextField licensePlateField, brandField, modelField, displacementField, pricePerDayField;
+    JComboBox<String> typeField, statusComboBox;
 
     public VehicleInfoDialog(String title, String licensePlate) {
         this.setTitle("Thông tin xe");
@@ -42,6 +36,16 @@ public class VehicleInfoDialog extends JDialog {
         // center form
         JPanel centerForm = new JPanel(new GridLayout(4, 2, 16, 16));
         centerForm.setOpaque(false);
+
+        licensePlateField = UiKit.createTextField(12);
+        brandField = UiKit.createTextField(12);
+        modelField = UiKit.createTextField(12);
+        typeField = UiKit.createComboBox(new String[] { "Xe côn", "Xe số", "Xe ga" });
+        displacementField = UiKit.createTextField(12);
+        pricePerDayField = UiKit.createTextField(12);
+        statusComboBox = UiKit
+            .createComboBox(new String[] { "Sẵn sàng", "Đang cho thuê", "Bảo trì" });
+
         Vehicle currVehicle = VehicleBLL.getVehicle(licensePlate);
         if (currVehicle != null) {
             licensePlateField.setText(currVehicle.getLicensePlate());
