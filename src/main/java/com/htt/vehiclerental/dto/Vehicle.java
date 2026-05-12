@@ -21,7 +21,8 @@ public class Vehicle {
     public Vehicle() {
     }
 
-    public Vehicle(int id, String licensePlate, String model, String brand, VehicleType vehicleType, int displacement, int pricePerDay, VehicleStatus status, LocalDateTime createdAt, boolean isDeleted) {
+    public Vehicle(int id, String licensePlate, String model, String brand, VehicleType vehicleType, int displacement,
+            int pricePerDay, VehicleStatus status, LocalDateTime createdAt, boolean isDeleted) {
         this.id = id;
         this.licensePlate = licensePlate;
         this.model = model;
@@ -45,8 +46,7 @@ public class Vehicle {
                 (int) map.get("pricePerDay"),
                 VehicleStatus.fromString((String) map.get("status")),
                 (LocalDateTime) map.get("createdAt"),
-                (boolean) map.get("isDeleted")
-        );
+                (boolean) map.get("isDeleted"));
     }
 
     public int getId() {
