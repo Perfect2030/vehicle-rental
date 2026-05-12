@@ -93,7 +93,7 @@ public class ManageVehiclesPanel extends JPanel {
                 updateButton.addActionListener(e -> updateVehicle());
                 JButton deleteButton = UiKit.createDangerButton("Xóa xe");
                 deleteButton.addActionListener(e -> deleteVehicle());
-                JButton createRentalButton = UiKit.createPrimaryButton("Tạo hợp đồng thuê");
+                JButton createRentalButton = UiKit.createPrimaryButton("Tạo hợp đồng thuê xe");
                 createRentalButton.addActionListener(e -> createRental());
 
                 buttonPanel.add(addButton);
@@ -190,7 +190,7 @@ public class ManageVehiclesPanel extends JPanel {
 
                 if (selectedRows.length == 1) {
                         String licensePlate = (String) vehicleTable.getValueAt(selectedRows[0], 0);
-                        // new RentalInfoDialog("Tạo hợp đồng thuê", licensePlate).setVisible(true);
+                        new NewRentalDialog("Tạo hợp đồng thuê xe", licensePlate).setVisible(true);
                 } else {
                         JOptionPane.showMessageDialog(this, "Vui lòng chọn một xe để tạo hợp đồng thuê.", "Lỗi",
                                         JOptionPane.ERROR_MESSAGE);
