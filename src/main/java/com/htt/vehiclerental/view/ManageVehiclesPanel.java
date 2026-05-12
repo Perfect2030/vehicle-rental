@@ -1,13 +1,14 @@
 package com.htt.vehiclerental.view;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import com.htt.vehiclerental.bll.VehicleBLL;
 import com.htt.vehiclerental.dto.Vehicle;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.htt.vehiclerental.enums.VehicleStatus;
+import com.htt.vehiclerental.enums.VehicleType;
 
 import java.awt.*;
 
@@ -17,12 +18,11 @@ public class ManageVehiclesPanel extends JPanel {
         };
 
         JTextField searchField = UiKit.createTextField(20);
-        JComboBox<String> statusComboBox = UiKit
-                        .createComboBox(new String[] { "Tất cả", "Sẵn sàng", "Đang cho thuê", "Bảo trì" });
-        JComboBox<String> sortComboBox = UiKit.createComboBox(new String[] {
-                        "Mặc định", "Giá thuê tăng dần", "Giá thuê giảm dần",
-                        "Phân khối tăng dần",
-                        "Phân khối giảm dần"
+        JComboBox<String> statusComboBox = UiKit.createComboBox(new String[] { "Tất cả", "Sẵn sàng", "Đang cho thuê", "Bảo trì" });
+        JComboBox<String> typeComboBox = UiKit.createComboBox(new String[] { "Tất cả", "Xe côn", "Xe số", "Xe ga" });
+
+        JComboBox<String> sortComboBox = UiKit.createComboBox(new String[] { "Mặc định", "Giá thuê tăng dần", "Giá thuê giảm dần", 
+                                                                                "Phân khối tăng dần", "Phân khối giảm dần"
         });
 
         private JTable vehicleTable;
@@ -70,10 +70,16 @@ public class ManageVehiclesPanel extends JPanel {
                 centerPanel.setBorder(UiKit.createCardBorder());
 
                 // search and filter
-                JPanel searchBar = new JPanel(new GridLayout(1, 3, 16, 0));
+                JPanel searchBar = new JPanel(new GridLayout(1, 5, 16, 0));
                 searchBar.add(UiKit.createFieldBlock("Tìm kiếm", searchField));
+                searchBar.add(UiKit.createFieldBlock("Loại xe", typeComboBox));
                 searchBar.add(UiKit.createFieldBlock("Trạng thái", statusComboBox));
                 searchBar.add(UiKit.createFieldBlock("Sắp xếp theo", sortComboBox));
+
+                JButton btnSearch = UiKit.createPrimaryButton("Tìm kiếm");
+                btnSearch.addActionListener(e -> ReloadData());
+                searchBar.add(UiKit.createFieldBlock(" ", btnSearch));
+
                 searchBar.setOpaque(false);
 
                 vehicleTable = UiKit.createTable(VEHICLE_COLUMNS, new Object[][] {});
@@ -105,11 +111,30 @@ public class ManageVehiclesPanel extends JPanel {
                 ReloadData();
         }
 
+        private List<Vehicle> getVehiclesAfterFilterAndSort() {
+
+                VehicleStatus status = switch (statusComboBox.getSelectedItem().toString()) {
+                        case "Sẵn sàng" -> VehicleStatus.AVAILABLE;
+                        case "Đang cho thuê" -> VehicleStatus.RENTED;
+                        case "Bảo trì" -> VehicleStatus.MAINTENANCE;
+                        default -> null;
+                };
+
+                VehicleType type = switch (typeComboBox.getSelectedItem().toString()) {
+                        case "Xe côn" -> VehicleType.MANUAL;
+                        case "Xe số" -> VehicleType.AUTOMATIC;
+                        case "Xe ga" -> VehicleType.SCOOTER;
+                        default -> null;
+                };
+                
+                return VehicleBLL.getVehiclesAfterFilterAndSort(searchField.getText(), type, status, (String) sortComboBox.getSelectedItem());
+        }
+
         private void ReloadData() {
                 DefaultTableModel model = (DefaultTableModel) vehicleTable.getModel();
                 model.setRowCount(0); // Xóa tất cả dữ liệu hiện tại
 
-                for (Vehicle vehicle : VehicleBLL.getAllVehicles()) {
+                for (Vehicle vehicle : getVehiclesAfterFilterAndSort()) {
                         model.addRow(new Object[] { vehicle.getLicensePlate(),
                                         vehicle.getBrand(),
                                         vehicle.getModel(),
