@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.htt.vehiclerental.dto.Vehicle;
+import com.htt.vehiclerental.enums.VehicleStatus;
+import com.htt.vehiclerental.enums.VehicleType;
 
 public class VehicleDAL {
 
@@ -42,6 +44,33 @@ public class VehicleDAL {
     public static List<Vehicle> getAllVehicles() {
         String sql = "SELECT * FROM vehicle WHERE isDeleted = 0";
         var results = DBHelper.getInstance().executeQuery(sql);
+
+        List<Vehicle> vehicles = new ArrayList<>();
+        for (var result : results) {
+            vehicles.add(Vehicle.fromMap(result));
+        }
+        return vehicles;
+    }
+
+    public static List<Vehicle> getVehiclesAfterFilterAndSort(String search, VehicleType type, VehicleStatus status, String orderBy) {
+        StringBuilder sql = new StringBuilder(
+                "SELECT * FROM vehicle WHERE (licensePlate LIKE ? OR brand LIKE ? OR model LIKE ?) AND isDeleted = 0");
+
+
+        // xử lý status và type
+        if (status != null) {
+            sql.append(" AND status = '").append(status.name()).append("'");
+        }
+        if (type != null) {
+            sql.append(" AND vehicleType = '").append(type.name()).append("'");
+        }
+        
+
+        if(orderBy != null && !orderBy.isEmpty()) {
+            sql.append(" ORDER BY ").append(orderBy);
+        } 
+
+        var results = DBHelper.getInstance().executeQuery(sql.toString(), "%" + search + "%", "%" + search + "%", "%" + search + "%");
 
         List<Vehicle> vehicles = new ArrayList<>();
         for (var result : results) {

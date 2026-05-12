@@ -2,11 +2,21 @@ package com.htt.vehiclerental.bll;
 
 import java.util.List;
 import com.htt.vehiclerental.dto.Vehicle;
+import com.htt.vehiclerental.enums.VehicleStatus;
+import com.htt.vehiclerental.enums.VehicleType;
 import com.htt.vehiclerental.dal.VehicleDAL;
 
 public class VehicleBLL {
-    public static List<Vehicle> getAllVehicles() {
-        return VehicleDAL.getAllVehicles();
+    public static List<Vehicle> getVehiclesAfterFilterAndSort(String search, VehicleType type, VehicleStatus status, String sortBy) {
+        String orderBy = switch (sortBy) {
+            case "Giá thuê tăng dần" -> "pricePerDay ASC";
+            case "Giá thuê giảm dần" -> "pricePerDay DESC";
+            case "Phân khối tăng dần" -> "displacement ASC";
+            case "Phân khối giảm dần" -> "displacement DESC";
+            default -> "id DESC"; // Mặc định xe mới nhất lên đầu
+        };
+
+        return VehicleDAL.getVehiclesAfterFilterAndSort(search, type, status, orderBy);
     }
 
     public static boolean addVehicle(Vehicle vehicle) {
