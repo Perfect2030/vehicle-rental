@@ -1,9 +1,9 @@
 package com.htt.vehiclerental.enums;
 
 public enum VehicleType {
-    MANUAL("Xe số"),
-    AUTOMATIC("Xe ga"),
-    SCOOTER("Xe côn");
+    MANUAL("Xe côn"),
+    AUTOMATIC("Xe số"),
+    SCOOTER("Xe ga");
 
     private final String displayName;
 
