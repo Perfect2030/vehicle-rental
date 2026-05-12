@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
@@ -27,8 +28,7 @@ public class ManageCustomersPanel extends JPanel {
     private JTextField searchField;
     private JTable table;
     private JComboBox<String> sortComboBox;
-    private JButton addButton;
-    private JButton updateButton;
+    private JLabel totalCustomersLabel, totalRentingLabel;
 
     public ManageCustomersPanel() {
         initComponents();
@@ -47,11 +47,14 @@ public class ManageCustomersPanel extends JPanel {
             JPanel banner = UiKit.createInfoBanner("Quản lý khách hàng", "Lưu và tra cứu thông tin khách thuê theo số định danh, số điện thoại và địa chỉ.", UiKit.INFO);
             banner.setPreferredSize(new Dimension(0, 100));
 
-            JPanel info = new JPanel(new GridLayout(1, 3, 16, 16));
+            JPanel info = new JPanel(new GridLayout(1, 2, 16, 16));
             info.setOpaque(false);
 
-            JPanel card1 = UiKit.createMetricCard("Tổng số khách hàng", "120", "", UiKit.PRIMARY);
-            JPanel card2 = UiKit.createMetricCard("Số khách hàng đang thuê", "5", "", UiKit.WARNING);
+            totalCustomersLabel = UiKit.createMetricValueLabel("0"); 
+            totalRentingLabel = UiKit.createMetricValueLabel("0");
+
+            JPanel card1 = UiKit.createMetricCard("Tổng số khách hàng", totalCustomersLabel.getText(), "", UiKit.PRIMARY);
+            JPanel card2 = UiKit.createMetricCard("Số khách hàng đang thuê", totalRentingLabel.getText(), "", UiKit.WARNING);
 
             info.add(card1);
             info.add(card2);
@@ -65,13 +68,16 @@ public class ManageCustomersPanel extends JPanel {
         center.setBorder(UiKit.createCardBorder());
 
 
-            JPanel searchBar = new JPanel(new GridLayout(1, 2, 16, 0));
+            JPanel searchBar = new JPanel(new GridLayout(1, 3, 16, 0));
 
                 searchField = UiKit.createTextField(20);
-                sortComboBox = UiKit.createComboBox(new String[] {"Mặc định", "Tên A-Z", "Tên Z-A"});
+                sortComboBox = UiKit.createComboBox(new String[] {"Mặc định", "Họ và tên A-Z", "Họ và tên Z-A"});
+                JButton searchButton = UiKit.createPrimaryButton("Tìm kiếm");
+                    searchButton.addActionListener(e -> updateTable());
 
                 searchBar.add(UiKit.createFieldBlock("Tìm kiếm", searchField));
                 searchBar.add(UiKit.createFieldBlock("Sắp xếp", sortComboBox));
+                searchBar.add(UiKit.createFieldBlock(" ", searchButton));
 
             searchBar.setOpaque(false);
 
@@ -88,7 +94,7 @@ public class ManageCustomersPanel extends JPanel {
                 JButton updateButton = UiKit.createPrimaryButton("Cập nhật thông tin");
                     updateButton.addActionListener(e -> updateCustomer());
 
-                JButton deleteButton = UiKit.createSecondaryButton("Xóa khách hàng");
+                JButton deleteButton = UiKit.createDangerButton("Xóa khách hàng");
                     deleteButton.addActionListener(e -> deleteCustomer());
 
             buttonPanel.add(addButton);
@@ -102,6 +108,7 @@ public class ManageCustomersPanel extends JPanel {
         add(northPanel, BorderLayout.NORTH);
         add(center, BorderLayout.CENTER);
     }   
+    
     public void updateTable() {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
@@ -110,7 +117,7 @@ public class ManageCustomersPanel extends JPanel {
         // if (sortComboBox.getSelectedIndex() == 1)
         //
 
-        List<Customer> customers = CustomerBLL.searchCustomers(searchField.getText());
+        List<Customer> customers = CustomerBLL.searchCustomers(searchField.getText(), sortComboBox.getSelectedIndex());
 
         for (Customer customer : customers) {
             model.addRow(new Object[] {
@@ -120,6 +127,10 @@ public class ManageCustomersPanel extends JPanel {
                 customer.getAddress()
             });
         }
+
+        //update metrics
+        totalCustomersLabel.setText(String.valueOf(CustomerBLL.getCustomerCount()));
+        // totalRentingLabel.setText(String.valueOf(CustomerBLL.()));
 
         table.revalidate();
         table.repaint();

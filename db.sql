@@ -1,3 +1,4 @@
+drop database if exists vehicle_rental;
 create database vehicle_rental;
 use vehicle_rental;
 
@@ -56,7 +57,7 @@ create table `rental` (
 
 create table `extrafee_type` (
     `id` int auto_increment primary key,
-    `name` varchar(100),       -- Trầy xe, Vỡ gương...
+    `name` varchar(100) unique,       -- Trầy xe, Vỡ gương...
     `amount` int not null,          -- Số tiền phạt tiêu chuẩn cho loại phí này
     `description` varchar(255)
 );

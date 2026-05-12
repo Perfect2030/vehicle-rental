@@ -1,5 +1,7 @@
 package com.htt.vehiclerental.dal;
 
+import java.util.List;
+
 import com.htt.vehiclerental.dto.ExtraFeeType;
 
 public class ExtraFeeTypeDAL {
@@ -27,12 +29,29 @@ public class ExtraFeeTypeDAL {
         return ExtraFeeType.fromMap(result.get(0));
     }
 
-    public static ExtraFeeType searchExtraFeeType(String name, int minAmount, int maxAmount, String description) {
-        String sql = "SELECT * FROM extrafee_type WHERE name LIKE ? AND (amount >= ? OR ? = -1) AND (amount <= ? OR ? = -1) AND description LIKE ?";
-        var result = DBHelper.getInstance().executeQuery(sql, "%" + name + "%", minAmount, minAmount, maxAmount, maxAmount, "%" + description + "%");
+    public static ExtraFeeType getExtraFeeTypeByName(String name) {
+        String sql = "SELECT * FROM extrafee_type WHERE name = ?";
+        var result = DBHelper.getInstance().executeQuery(sql, name);
 
         if (result.isEmpty()) return null;
 
         return ExtraFeeType.fromMap(result.get(0));
+    }
+
+    public static List<ExtraFeeType> searchExtraFeeTypes(String name, int sortOption) {
+        String sql = "SELECT * FROM extrafee_type WHERE name LIKE ?";
+
+        switch (sortOption) {
+            case 1: sql += " ORDER BY name ASC"; break;
+            case 2: sql += " ORDER BY name DESC"; break;
+            case 3: sql += " ORDER BY amount ASC"; break;
+            case 4: sql += " ORDER BY amount DESC"; break;
+        }
+
+        var result = DBHelper.getInstance().executeQuery(sql, "%" + name + "%");
+
+        if (result.isEmpty()) return null;
+
+        return result.stream().map(ExtraFeeType::fromMap).toList();
     }
 }

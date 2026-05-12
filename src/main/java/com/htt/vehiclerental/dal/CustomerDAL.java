@@ -41,9 +41,13 @@ public class CustomerDAL {
         return customers;
     }
 
-    public static List<Customer> searchCustomers(String keyword) {
-        String sql = "SELECT * FROM customer WHERE fullName LIKE ? OR phoneNumber LIKE ? OR address LIKE ?";
-        var results = DBHelper.getInstance().executeQuery(sql, "%" + keyword + "%", "%" + keyword + "%", "%" + keyword + "%");
+    public static List<Customer> searchCustomers(String keyword, int sortOption) {
+        String sql = "SELECT * FROM customer WHERE fullName LIKE ? OR phoneNumber LIKE ?";
+
+        if (sortOption == 1) sql += " ORDER BY fullName ASC";
+        else if (sortOption == 2) sql += " ORDER BY fullName DESC";
+
+        var results = DBHelper.getInstance().executeQuery(sql, "%" + keyword + "%", "%" + keyword + "%");
 
         List<Customer> customers = new ArrayList<>();
         for (var result : results) {
@@ -51,4 +55,13 @@ public class CustomerDAL {
         }
         return customers;
     }    
+
+    public static int getCustomerCount() {
+        String sql = "SELECT COUNT(*) AS count FROM customer";
+        var result = DBHelper.getInstance().executeQuery(sql);
+
+        if (result.isEmpty()) return 0;
+
+        return ((Long) result.get(0).get("count")).intValue();
+    }
 }

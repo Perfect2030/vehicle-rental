@@ -88,11 +88,15 @@ public class CustomerBLL {
         return CustomerDAL.getAllCustomers();
     }
 
-    public static List<Customer> searchCustomers(String keyword) {
+    public static List<Customer> searchCustomers(String keyword, int sortOption) {
         if (keyword == null) {
             keyword = "";
         }
 
-        return CustomerDAL.searchCustomers(keyword.trim());
+        return CustomerDAL.searchCustomers(keyword.trim(), sortOption);
+    }
+
+    public static int getCustomerCount() {
+        return CustomerDAL.getCustomerCount();
     }
 }
