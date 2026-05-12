@@ -43,7 +43,7 @@ public class CustomerInfoDialog extends JDialog {
         phoneField.setText(customer.getPhoneNumber());
         addressField.setText(customer.getAddress());
 
-        identityField.setEnabled(false);
+        identityField.setEditable(false);
     }
 
     public void initComponents(String title) {
@@ -111,9 +111,6 @@ public class CustomerInfoDialog extends JDialog {
                 case CustomerBLL.INVALID_INPUT:
                     UiKit.showErrorDialog(this, "Thông tin khách hàng không hợp lệ. Vui lòng kiểm tra lại.");
                     return;
-                case CustomerBLL.DATABASE_ERROR:
-                    UiKit.showErrorDialog(this, "Lỗi cơ sở dữ liệu. Vui lòng thử lại sau.");
-                    return;
                 default:
                     UiKit.showErrorDialog(this, "Không thể cập nhật thông tin khách hàng. Vui lòng thử lại.");
                     return;
@@ -127,9 +124,6 @@ public class CustomerInfoDialog extends JDialog {
                     return;
                 case CustomerBLL.INVALID_INPUT:
                     UiKit.showErrorDialog(this, "Thông tin khách hàng không hợp lệ. Vui lòng kiểm tra lại.");
-                    return;
-                case CustomerBLL.DATABASE_ERROR:
-                    UiKit.showErrorDialog(this, "Lỗi cơ sở dữ liệu. Vui lòng thử lại sau.");
                     return;
                 default:
                     UiKit.showErrorDialog(this, "Không thể lưu thông tin khách hàng. Vui lòng thử lại.");
