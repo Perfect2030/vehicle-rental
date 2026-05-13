@@ -147,7 +147,7 @@ public class Rental {
     }
 
     public String getStatus() {
-        return status.name();
+        return status.toString();
     }
 
     public void setStatus(String status) {

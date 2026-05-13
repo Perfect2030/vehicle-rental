@@ -71,7 +71,7 @@ public class ManageRentalsPanel extends JPanel {
 
         searchBar.add(UiKit.createFieldBlock("Tìm Kiếm", searchField));
         searchBar.add(UiKit.createFieldBlock("Trạng thái", sortComboBox));
-        searchBar.add(UiKit.createFieldBlock("", searchButton));
+        searchBar.add(UiKit.createFieldBlock(" ", searchButton));
 
         table = UiKit.createTable(
         new String[] { "Mã số thuê", "Tên khách hàng", "Biển số xe", "Hãng xe", "Mẫu xe", "Ngày thuê", "Ngày trả dự kiến", "Trạng thái" },

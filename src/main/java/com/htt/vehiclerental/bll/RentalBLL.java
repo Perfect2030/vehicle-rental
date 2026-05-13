@@ -152,7 +152,7 @@ public class RentalBLL {
         if (rental == null) {
             return false;
         }
-        rental.setStatus("CANCELED");
+        rental.setStatus("CANCELLED");
 
         // Update vehicle status to AVAILABLE
         Vehicle vehicle = VehicleDAL.getVehicle(rental.getVehicleId());

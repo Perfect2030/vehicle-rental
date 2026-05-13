@@ -97,8 +97,8 @@ public class AddExtraFeeDialog extends JDialog {
     private void addExtraFee(){
         try {
             int amt = Integer.parseInt(price.getText().trim());
-            int extraFeeTypeId = feeTypeComboBox.getSelectedIndex() == 0 ? -1 : extraFeeTypes.get(feeTypeComboBox.getSelectedIndex()).getId();
-            var rentalExtraFee = new RentalExtraFee(0, this.rentalId, extraFeeTypeId, amt, description.getText().trim());
+            String nameFee = type.getText().trim();
+            var rentalExtraFee = new RentalExtraFee(0, this.rentalId, nameFee, amt, description.getText().trim());
             boolean ok = RentalBLL.addRentalExtraFee(rentalExtraFee);
             if (!ok) {
                 JOptionPane.showMessageDialog(this, "Thêm phí thất bại", "Lỗi", JOptionPane.ERROR_MESSAGE);
