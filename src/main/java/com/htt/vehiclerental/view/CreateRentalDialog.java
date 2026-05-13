@@ -24,16 +24,16 @@ public class CreateRentalDialog extends JDialog {
     private JSpinner startHour, expectedReturnHour;
     private JTextField depositField, totalAmountField;
 
-    public CreateRentalDialog(String title, String licensePlate) {
+    public CreateRentalDialog(String title, int id) {
         this.setTitle("Tạo hợp đồng thuê xe");
         this.setSize(1080, 580);
         this.setLocationRelativeTo(null);
         this.setModal(true);
 
-        initComponents(title, licensePlate);
+        initComponents(title, id);
     }
 
-    public void initComponents(String title, String licensePlate) {
+    public void initComponents(String title, int id) {
 
         // center
         JPanel center = UiKit.createSurfacePanel();
@@ -71,7 +71,7 @@ public class CreateRentalDialog extends JDialog {
         totalAmountField = UiKit.createTextField(12);
         totalAmountField.setEditable(false);
 
-        Vehicle currVehicle = VehicleBLL.getVehicle(licensePlate);
+        Vehicle currVehicle = VehicleBLL.getVehicle(id);
         if (currVehicle != null) {
             licensePlateField.setText(currVehicle.getLicensePlate());
             brandField.setText(currVehicle.getBrand());

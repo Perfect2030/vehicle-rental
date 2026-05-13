@@ -14,16 +14,16 @@ public class VehicleInfoDialog extends JDialog {
     JTextField licensePlateField, brandField, modelField, displacementField, pricePerDayField;
     JComboBox<String> typeField, statusComboBox;
 
-    public VehicleInfoDialog(String title, String licensePlate) {
+    public VehicleInfoDialog(String title, int id) {
         this.setTitle("Thông tin xe");
         this.setSize(800, 500);
         this.setLocationRelativeTo(null);
         this.setModal(true);
 
-        initComponents(title, licensePlate);
+        initComponents(title, id);
     }
 
-    public void initComponents(String title, String licensePlate) {
+    public void initComponents(String title, int id) {
 
         // center
         JPanel center = UiKit.createSurfacePanel();
@@ -46,7 +46,7 @@ public class VehicleInfoDialog extends JDialog {
         statusComboBox = UiKit
             .createComboBox(new String[] { "Sẵn sàng", "Bảo trì" });
 
-        Vehicle currVehicle = VehicleBLL.getVehicle(licensePlate);
+        Vehicle currVehicle = VehicleBLL.getVehicle(id);
         if (currVehicle != null) {
             licensePlateField.setText(currVehicle.getLicensePlate());
             brandField.setText(currVehicle.getBrand());
@@ -111,13 +111,14 @@ public class VehicleInfoDialog extends JDialog {
                 case VehicleBLL.SUCCESS:
                     JOptionPane.showMessageDialog(this, "Cập nhật thông tin xe thành công.", "Thông báo",
                             JOptionPane.INFORMATION_MESSAGE);
+                    this.dispose();
                     break;
                 case VehicleBLL.NOT_FOUND:
                     JOptionPane.showMessageDialog(this, "Xe không tồn tại.", "Lỗi",
                             JOptionPane.ERROR_MESSAGE);
                     break;
                 case VehicleBLL.RENTAL_EXISTS:
-                    JOptionPane.showMessageDialog(this, "Xe đang được thuê hoặc đang có đơn thuê trong tương lai. Vui lòng hoàn tất giao dịch thuê trước khi cập nhật.", "Lỗi",
+                    JOptionPane.showMessageDialog(this, "Không thể cập nhật trạng thái. Lý do: xe đang được thuê hoặc đang có đơn thuê trong tương lai. Vui lòng hoàn tất giao dịch thuê trước khi cập nhật.", "Lỗi",
                             JOptionPane.ERROR_MESSAGE);
                     break;
                 case VehicleBLL.DATABASE_ERROR:
@@ -136,6 +137,7 @@ public class VehicleInfoDialog extends JDialog {
                 case VehicleBLL.SUCCESS:
                     JOptionPane.showMessageDialog(this, "Thêm xe mới thành công.", "Thông báo",
                             JOptionPane.INFORMATION_MESSAGE);
+                    this.dispose();
                     break;
                 case VehicleBLL.VEHICLE_EXISTS:
                     JOptionPane.showMessageDialog(this, "Xe với biển số này đã tồn tại.", "Lỗi",
@@ -152,7 +154,6 @@ public class VehicleInfoDialog extends JDialog {
                     break;
             }
         }
-        this.dispose();
     }
 
     public void cancel() {

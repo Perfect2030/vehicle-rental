@@ -26,23 +26,13 @@ public class VehicleDAL {
                 vehicle.getStatus(), vehicle.getCreatedAt(), vehicle.getId()) > 0;
     }
 
-    public static boolean delete(String licensePlate) {
-        String sql = "UPDATE vehicle SET isDeleted = 1 WHERE licensePlate = ?";
-        return DBHelper.getInstance().executeUpdate(sql, licensePlate) > 0;
-    }
-
-    public static Vehicle getVehicle(String licensePlate) {
-        String sql = "SELECT * FROM vehicle WHERE licensePlate = ? AND isDeleted = 0";
-        var result = DBHelper.getInstance().executeQuery(sql, licensePlate);
-
-        if (result.isEmpty())
-            return null;
-
-        return Vehicle.fromMap(result.get(0));
+    public static boolean delete(int id) {
+         String sql = "UPDATE vehicle SET isDeleted = 1 WHERE id = ?";
+        return DBHelper.getInstance().executeUpdate(sql, id) > 0;
     }
 
     public static Vehicle getVehicle(int id) {
-        String sql = "SELECT * FROM vehicle WHERE id = ? AND isDeleted = 0";
+        String sql = "SELECT * FROM vehicle WHERE id = ?";
         var result = DBHelper.getInstance().executeQuery(sql, id);
 
         if (result.isEmpty())
@@ -52,7 +42,7 @@ public class VehicleDAL {
     }
 
     public static List<Vehicle> getAllVehicles() {
-        String sql = "SELECT * FROM vehicle WHERE isDeleted = 0";
+        String sql = "SELECT * FROM vehicle";
         var results = DBHelper.getInstance().executeQuery(sql);
 
         List<Vehicle> vehicles = new ArrayList<>();
@@ -89,4 +79,9 @@ public class VehicleDAL {
         return vehicles;
     }
 
+    public static boolean isVehicleExists(String licensePlate) {
+        String sql = "SELECT * FROM vehicle WHERE licensePlate = ? AND isDeleted = 0";
+        var result = DBHelper.getInstance().executeQuery(sql, licensePlate);
+        return !result.isEmpty();
+    }
 }
