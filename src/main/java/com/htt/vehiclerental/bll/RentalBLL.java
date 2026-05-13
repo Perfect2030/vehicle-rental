@@ -6,9 +6,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.htt.vehiclerental.dto.*;
+import com.htt.vehiclerental.enums.RentalStatus;
 import com.htt.vehiclerental.dal.*;
 
 public class RentalBLL {
+
+    public static final int SUCCESS = 1;
+    public static final int RENTAL_EXISTS = -1;
+    public static final int DATABASE_ERROR = -2;
+    public static final int NOT_FOUND_VEHICLE_OR_CUSTOMER = -3;
+
     public static List<RentalView> getAllRentalsView() {
         List<Rental> rentals = RentalDAL.getAllRentals();
         List<RentalView> rentalViews = new ArrayList<>();
@@ -156,5 +163,34 @@ public class RentalBLL {
         return RentalDAL.update(rental);
     }
 
+     public static int addRental(CreateRental rental) {
+        // Kiểm tra xem khách hàng và xe có tồn tại không
+        if (CustomerDAL.getCustomer(rental.getCustomerId()) == null || VehicleDAL.getVehicle(rental.getVehicleId()) == null) {
+            return NOT_FOUND_VEHICLE_OR_CUSTOMER; // Không tìm thấy khách hàng hoặc xe
+        }
+
+        // Kiểm tra xem đã có hợp đồng thuê nào cho xe này trong khoảng thời gian này chưa
+        if (RentalDAL.checkRentalConflict(rental.getVehicleId(), rental.getStartTime(), rental.getExpectedReturnTime())) {
+            return RENTAL_EXISTS; // Đã có hợp đồng thuê xung đột
+        }
+
+        Rental newRental = new Rental();
+        newRental.setCustomerId(rental.getCustomerId());
+        newRental.setVehicleId(rental.getVehicleId());
+        newRental.setStartTime(rental.getStartTime());
+        newRental.setExpectedReturnTime(rental.getExpectedReturnTime());
+        newRental.setPricePerDay(rental.getPricePerDay());
+        newRental.setDeposit(rental.getDeposit());
+        newRental.setTotalAmount(rental.getTotalAmount());
+        newRental.setStatusEnum(RentalStatus.CREATED);
+        newRental.setCreatedAt(LocalDateTime.now());
+
+        // Thêm hợp đồng thuê vào cơ sở dữ liệu
+        if (!RentalDAL.add(newRental)) {
+            return DATABASE_ERROR; // Lỗi khi thêm vào cơ sở dữ liệu
+        }
+
+        return SUCCESS; // Thành công
+    }
 
 }
