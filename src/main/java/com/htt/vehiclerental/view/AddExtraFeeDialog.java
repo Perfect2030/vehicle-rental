@@ -15,7 +15,7 @@ import java.util.List;
 public class AddExtraFeeDialog extends JDialog {
     private int rentalId;
     JComboBox<String> feeTypeComboBox;
-    JTextField type, price, amount, description;
+    JTextField type, price, description;
     JButton addButton, cancelButton;
     List<ExtraFeeType> extraFeeTypes;
     public AddExtraFeeDialog(Object rentalId) {
@@ -31,7 +31,7 @@ public class AddExtraFeeDialog extends JDialog {
     private void initComponents() {
         setLayout(new BorderLayout());
 
-        feeTypeComboBox = UiKit.createComboBox();
+        feeTypeComboBox = UiKit.createComboBox("Phí khác");
 
         //add action listener for feeTypeComboBox
         feeTypeComboBox.addActionListener(e -> {
@@ -43,7 +43,7 @@ public class AddExtraFeeDialog extends JDialog {
                 return;
             }
             if (selectedIndex >= 0 && extraFeeTypes != null && selectedIndex < extraFeeTypes.size()) {
-                ExtraFeeType selectedType = extraFeeTypes.get(selectedIndex);
+                ExtraFeeType selectedType = extraFeeTypes.get(selectedIndex - 1); // -1 because of the default "Phí khác" item
                 type.setText(selectedType.getName());
                 price.setText(String.valueOf(selectedType.getAmount()));
                 description.setText(selectedType.getDescription());
@@ -57,16 +57,14 @@ public class AddExtraFeeDialog extends JDialog {
         add(cbbPanel, BorderLayout.NORTH);
 
         JPanel body = UiKit.createSurfacePanel();
-        body.setLayout(new GridLayout(4, 1, 16, 16));
+        body.setLayout(new GridLayout(3, 1, 16, 16));
         
         type = UiKit.createTextField(20);
         price = UiKit.createTextField(20);
-        amount = UiKit.createTextField(20);
         description = UiKit.createTextField(20);
 
         body.add(UiKit.createFieldBlock("Loại phí", type));
-        body.add(UiKit.createFieldBlock("Giá", price));
-        body.add(UiKit.createFieldBlock("Số lượng", amount));
+        body.add(UiKit.createFieldBlock("Giá (VND)", price));
         body.add(UiKit.createFieldBlock("Mô tả", description));
 
         add(body, BorderLayout.CENTER);

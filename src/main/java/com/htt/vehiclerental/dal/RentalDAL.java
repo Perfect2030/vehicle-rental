@@ -3,6 +3,7 @@ package com.htt.vehiclerental.dal;
 import java.util.List;
 
 import com.htt.vehiclerental.dto.Rental;
+import com.htt.vehiclerental.dto.RentalView;
 
 public class RentalDAL {
     public static boolean add(Rental rental) {
@@ -81,5 +82,31 @@ public class RentalDAL {
 
         int count = Integer.parseInt(result.get(0).get("count").toString());
         return count > 0;
+    }
+
+    public static List<RentalView> searchRentalsViews(String searchTerm, String statusFilter) {
+        String sql = "SELECT r.id AS rentalId, c.fullName AS customerName, v.licensePlate, v.brand, v.model, r.startTime, r.expectedReturnTime, r.status " +
+                     "FROM rental r " +
+                     "JOIN customer c ON r.customerId = c.id " +
+                     "JOIN vehicle v ON r.vehicleId = v.id " +
+                     "WHERE (c.fullName LIKE ? OR v.licensePlate LIKE ? OR v.brand LIKE ? OR v.model LIKE ?) " +
+                     "AND (? = '' OR r.status = ?)";
+        var results = DBHelper.getInstance().executeQuery(sql, "%" + searchTerm + "%", "%" + searchTerm + "%", "%" + searchTerm + "%", "%" + searchTerm + "%", statusFilter, statusFilter);
+
+        List<RentalView> rentalViews = new java.util.ArrayList<>();
+        for (var result : results) {
+            RentalView view = new RentalView(
+                Integer.parseInt(result.get("rentalId").toString()),
+                result.get("customerName").toString(),
+                result.get("licensePlate").toString(),
+                result.get("brand").toString(),
+                result.get("model").toString(),
+                java.time.LocalDateTime.parse(result.get("startTime").toString()),
+                java.time.LocalDateTime.parse(result.get("expectedReturnTime").toString()),
+                result.get("status").toString()
+            );
+            rentalViews.add(view);
+        }
+        return rentalViews;
     }
 }

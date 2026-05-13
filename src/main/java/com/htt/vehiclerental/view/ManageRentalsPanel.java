@@ -10,6 +10,7 @@ import javax.swing.table.DefaultTableModel;
 
 import com.htt.vehiclerental.bll.RentalBLL;
 import com.htt.vehiclerental.dto.RentalView;
+import java.util.List;
 
 public class ManageRentalsPanel extends JPanel {
     private JTextField searchField;
@@ -66,12 +67,15 @@ public class ManageRentalsPanel extends JPanel {
         searchBar.setOpaque(false);
 
         searchField = UiKit.createTextField(20);
-        sortComboBox = UiKit.createComboBox(new String[] {"Tất cả", "Đang cho thuê", "Đã hoàn thành", "Quá hạn"});
+        sortComboBox = UiKit.createComboBox(new String[] {"Tất cả","Đã tạo", "Đang cho thuê", "Đã hoàn thành","Đã hủy" });
         searchButton = UiKit.createPrimaryButton("Tìm kiếm");
+
+        searchButton.addActionListener(e -> updateTable());
 
         searchBar.add(UiKit.createFieldBlock("Tìm Kiếm", searchField));
         searchBar.add(UiKit.createFieldBlock("Trạng thái", sortComboBox));
         searchBar.add(UiKit.createFieldBlock(" ", searchButton));
+
 
         table = UiKit.createTable(
         new String[] { "Mã số thuê", "Tên khách hàng", "Biển số xe", "Hãng xe", "Mẫu xe", "Ngày thuê", "Ngày trả dự kiến", "Trạng thái" },
@@ -174,4 +178,23 @@ public class ManageRentalsPanel extends JPanel {
         }
     }
     
+    private void updateTable() {
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0);
+
+        List<RentalView> rentals = RentalBLL.searchRentalsViews(searchField.getText(), sortComboBox.getSelectedItem().toString());
+        for (RentalView row : rentals) {
+            model.addRow(new Object[] {
+                row.getRentalId(),
+                row.getCustomerName(),
+                row.getLicensePlate(),
+                row.getBrand(),
+                row.getModel(),
+                row.getStartTime(),
+                row.getExpectedReturnTime(),
+                row.getStatus()
+            });
+        }
+
+    }
 }

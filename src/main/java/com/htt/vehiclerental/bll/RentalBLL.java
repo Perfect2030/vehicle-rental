@@ -87,7 +87,7 @@ public class RentalBLL {
                 vehicle != null ? vehicle.getLicensePlate() + " - " + vehicle.getBrand() + " " + vehicle.getModel() : "Unknown",
                 rental.getPricePerDay(),
                 rental.getStartTime(),
-                LocalDateTime.now(), // Assuming actual return time is now for completion
+                LocalDateTime.now(), 
                 rental.getExtraFee(),
                 totalAmount,
                 extraFees
@@ -136,6 +136,11 @@ public class RentalBLL {
         if (rental == null) {
             return false;
         }
+
+        //kiểm tra xem xe đã có hợp đồng thuê nào đang ACTIVE chưa
+        if (VehicleDAL.getVehicle(rental.getVehicleId()).getStatus().equals("RENTED")) {
+            return false; 
+        }
         rental.setStatus("ACTIVE");
 
         // Update vehicle status to RENTED
@@ -151,6 +156,9 @@ public class RentalBLL {
         Rental rental = RentalDAL.getRental(rentalId);
         if (rental == null) {
             return false;
+        }
+        if(!rental.getStatus().equals("CREATED")) {
+            return false; // Chỉ cho phép hủy khi hợp đồng đang ở trạng thái CREATED
         }
         rental.setStatus("CANCELLED");
 
@@ -191,6 +199,16 @@ public class RentalBLL {
         }
 
         return SUCCESS; // Thành công
+    }
+
+    public static List<RentalView> searchRentalsViews(String searchTerm, String statusFilter) {
+        if(searchTerm == null) {
+            searchTerm = "";
+        }
+        if(statusFilter == null || statusFilter.equals("Tất cả")) {
+            statusFilter = "";
+        }
+        return RentalDAL.searchRentalsViews(searchTerm, statusFilter);
     }
 
 }
