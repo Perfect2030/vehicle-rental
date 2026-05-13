@@ -4,13 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;  
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import com.htt.vehiclerental.bll.RentalBLL;
-import com.htt.vehiclerental.dal.RentalDAL;
 import com.htt.vehiclerental.dto.RentalView;
 
 public class ManageRentalsPanel extends JPanel {
@@ -18,11 +16,15 @@ public class ManageRentalsPanel extends JPanel {
     private JComboBox<String> sortComboBox;
     private JTable table;
     private DefaultTableModel tableModel;
+    JButton searchButton;
     private JButton detailButton;
     private JButton completedButton;
+    private JButton giaoxeButton;
+    private JButton huyButton;
 
     public ManageRentalsPanel() {
         initComponents();
+        loadRentals();
     }
 
     private void initComponents() {
@@ -41,10 +43,10 @@ public class ManageRentalsPanel extends JPanel {
         JPanel info = new JPanel(new GridLayout(1, 4, 16, 0));
         info.setOpaque(false);
 
-        JPanel card1 = UiKit.createMetricCard("Tổng số xe", "120", "", UiKit.PRIMARY);
-        JPanel card2 = UiKit.createMetricCard("Số xe đang cho thuê", "5", "", UiKit.WARNING);
-        JPanel card4 = UiKit.createMetricCard("Số xe đang bảo trì", "10", "", UiKit.INFO);
-        JPanel card3 = UiKit.createMetricCard("Số xe sẵn có", "105", "", UiKit.SUCCESS);
+        JPanel card1 = UiKit.createMetricCard("Tổng số đơn thuê", "120", "", UiKit.PRIMARY);
+        JPanel card2 = UiKit.createMetricCard("Số đơn đang cho thuê", "5", "", UiKit.INFO);
+        JPanel card4 = UiKit.createMetricCard("Số đơn quá hạn", "10", "", UiKit.WARNING);
+        JPanel card3 = UiKit.createMetricCard("Số đơn đã hoàn thành", "105", "", UiKit.SUCCESS);
 
         info.add(card1);
         info.add(card2);
@@ -60,21 +62,21 @@ public class ManageRentalsPanel extends JPanel {
         center.setBorder(UiKit.createCardBorder());
 
         //center north
-        JPanel searchBar = new JPanel(new GridLayout(1, 2, 16, 0));
+        JPanel searchBar = new JPanel(new GridLayout(1, 3, 16, 0));
         searchBar.setOpaque(false);
 
         searchField = UiKit.createTextField(20);
         sortComboBox = UiKit.createComboBox(new String[] {"Tất cả", "Đang cho thuê", "Đã hoàn thành", "Quá hạn"});
+        searchButton = UiKit.createPrimaryButton("Tìm kiếm");
 
         searchBar.add(UiKit.createFieldBlock("Tìm Kiếm", searchField));
         searchBar.add(UiKit.createFieldBlock("Trạng thái", sortComboBox));
+        searchBar.add(UiKit.createFieldBlock("", searchButton));
 
         table = UiKit.createTable(
         new String[] { "Mã số thuê", "Tên khách hàng", "Biển số xe", "Hãng xe", "Mẫu xe", "Ngày thuê", "Ngày trả dự kiến", "Trạng thái" },
         new Object[0][0]);
         tableModel = (DefaultTableModel) table.getModel();
-
-        loadRentals();
 
         center.add(searchBar, BorderLayout.NORTH);
         center.add(UiKit.createTableScrollPane(table), BorderLayout.CENTER);
@@ -85,14 +87,69 @@ public class ManageRentalsPanel extends JPanel {
         centerSouth.setOpaque(false);
         detailButton = UiKit.createPrimaryButton("Xem chi tiết");
         completedButton = UiKit.createPrimaryButton("Trả xe");
+        giaoxeButton = UiKit.createPrimaryButton("Giao xe");
+        huyButton = UiKit.createSecondaryButton("Hủy đơn thuê");
 
         // add action listeners
         // truyền vào id của thuê xe để hiển thị chi tiết trong dialog ( cột dầu tiên của table )
-        detailButton.addActionListener(e -> {new RentalDetailDialog(table.getValueAt(table.getSelectedRow(), 0)).setVisible(true);});
-        completedButton.addActionListener(e -> {new RentalCompletionDialog(table.getValueAt(table.getSelectedRow(), 0)).setVisible(true);});
+        detailButton.addActionListener(e -> {
+            new RentalDetailDialog(table.getValueAt(table.getSelectedRow(), 0)).setVisible(true);
+        });
+        completedButton.addActionListener(e -> {new RentalCompletionDialog(table.getValueAt(table.getSelectedRow(), 0)).setVisible(true);
+                                                    loadRentals();
+                                                });
+
+        giaoxeButton.addActionListener(e -> {
+            // gọi hàm giao xe trong bll với id của thuê xe
+            int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn giao xe cho đơn thuê này?", "Xác nhận giao xe", JOptionPane.YES_NO_OPTION);
+            if (confirm != JOptionPane.YES_OPTION) {
+                return;
+            }
+            boolean success = RentalBLL.startRental((Integer) table.getValueAt(table.getSelectedRow(), 0));
+            if (success) {                JOptionPane.showMessageDialog(this, "Giao xe thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Giao xe thất bại. Vui lòng thử lại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+            loadRentals();
+        });
+
+        huyButton.addActionListener(e -> {
+            int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn hủy đơn thuê này?", "Xác nhận hủy", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                boolean success = RentalBLL.cancelRental((Integer) table.getValueAt(table.getSelectedRow(), 0));
+                if (success) {
+                    JOptionPane.showMessageDialog(this, "Hủy đơn thuê thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Hủy đơn thuê thất bại. Vui lòng thử lại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+                loadRentals();
+            }
+        });
+
+        detailButton.setEnabled(false);
+        completedButton.setEnabled(false);
+        giaoxeButton.setEnabled(false);
+        huyButton.setEnabled(false);
+
+        table.getSelectionModel().addListSelectionListener(e -> {
+            boolean isSelected = table.getSelectedRow() != -1;
+            detailButton.setEnabled(isSelected);
+
+            if (!isSelected) {
+                completedButton.setEnabled(false);
+                return;
+            }
+
+            String status = (String) table.getValueAt(table.getSelectedRow(), 7);
+            completedButton.setEnabled(status.equals("ACTIVE"));
+            giaoxeButton.setEnabled(status.equals("CREATED"));
+            huyButton.setEnabled(status.equals("CREATED"));
+        });
 
         centerSouth.add(detailButton);
         centerSouth.add(completedButton);
+        centerSouth.add(giaoxeButton);
+        centerSouth.add(huyButton);
         center.add(centerSouth, BorderLayout.SOUTH);
 
         // add to main panel

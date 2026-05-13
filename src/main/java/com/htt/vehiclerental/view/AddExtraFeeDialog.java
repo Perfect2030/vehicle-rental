@@ -6,23 +6,50 @@ import java.awt.GridLayout;
 
 import javax.swing.*;
 
+import com.htt.vehiclerental.bll.RentalBLL;
+import com.htt.vehiclerental.dto.ExtraFeeType;
+import com.htt.vehiclerental.dto.RentalExtraFee;
+
+import java.util.List;
+
 public class AddExtraFeeDialog extends JDialog {
-    
+    private int rentalId;
     JComboBox<String> feeTypeComboBox;
     JTextField type, price, amount, description;
     JButton addButton, cancelButton;
+    List<ExtraFeeType> extraFeeTypes;
     public AddExtraFeeDialog(Object rentalId) {
+        this.rentalId = (Integer) rentalId;
         setTitle("Thêm phí phát sinh");
         setSize(400, 600);
         setLocationRelativeTo(null);
         setModal(true);
         initComponents();
+        loadCBBData();
     }
 
     private void initComponents() {
         setLayout(new BorderLayout());
 
-        feeTypeComboBox = UiKit.createComboBox("Phí trễ hạn", "Phí hư hỏng", "Phí khác");
+        feeTypeComboBox = UiKit.createComboBox();
+
+        //add action listener for feeTypeComboBox
+        feeTypeComboBox.addActionListener(e -> {
+            int selectedIndex = feeTypeComboBox.getSelectedIndex();
+            if(selectedIndex == 0) {
+                type.setText("");
+                price.setText("");
+                description.setText("");
+                return;
+            }
+            if (selectedIndex >= 0 && extraFeeTypes != null && selectedIndex < extraFeeTypes.size()) {
+                ExtraFeeType selectedType = extraFeeTypes.get(selectedIndex);
+                type.setText(selectedType.getName());
+                price.setText(String.valueOf(selectedType.getAmount()));
+                description.setText(selectedType.getDescription());
+            }
+        });
+
         JPanel cbbPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JLabel titleLabel = new JLabel("Loại phí phát sinh");
         cbbPanel.add(titleLabel);
@@ -48,6 +75,8 @@ public class AddExtraFeeDialog extends JDialog {
         addButton = UiKit.createSecondaryButton("Thêm");
         cancelButton = UiKit.createSecondaryButton("Hủy");
 
+        addButton.addActionListener(e -> addExtraFee());
+
         cancelButton.addActionListener(e -> dispose());
 
         btnPanel.add(addButton);
@@ -56,5 +85,28 @@ public class AddExtraFeeDialog extends JDialog {
         
 
         add(btnPanel, BorderLayout.SOUTH);
+    }
+    private void loadCBBData() {
+        extraFeeTypes = RentalBLL.getAllExtraFeeTypes();
+        if (extraFeeTypes == null) return;
+        for (var type : extraFeeTypes) {
+            feeTypeComboBox.addItem(type.getName());
+        }
+    }
+
+    private void addExtraFee(){
+        try {
+            int amt = Integer.parseInt(price.getText().trim());
+            int extraFeeTypeId = feeTypeComboBox.getSelectedIndex() == 0 ? -1 : extraFeeTypes.get(feeTypeComboBox.getSelectedIndex()).getId();
+            var rentalExtraFee = new RentalExtraFee(0, this.rentalId, extraFeeTypeId, amt, description.getText().trim());
+            boolean ok = RentalBLL.addRentalExtraFee(rentalExtraFee);
+            if (!ok) {
+                JOptionPane.showMessageDialog(this, "Thêm phí thất bại", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            } else {
+                dispose();
+            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Giá phải là số nguyên hợp lệ", "Lỗi nhập", JOptionPane.WARNING_MESSAGE);
+        }
     }
 }
