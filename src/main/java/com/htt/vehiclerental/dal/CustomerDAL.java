@@ -35,8 +35,17 @@ public class CustomerDAL {
         return Customer.fromMap(result.get(0));
     }
 
+    public static Customer getCustomer(String identityNumber) {
+        String sql = "SELECT * FROM customer WHERE identityNumber = ? AND isDeleted = 0";
+        var result = DBHelper.getInstance().executeQuery(sql, identityNumber);
+
+        if (result.isEmpty()) return null;
+
+        return Customer.fromMap(result.get(0));
+    }
+
     public static boolean isCustomerExists(String identityNumber) {
-        String sql = "SELECT identityNumber AS count FROM customer WHERE identityNumber = ? AND isDeleted = 0";
+        String sql = "SELECT identityNumber FROM customer WHERE identityNumber = ? AND isDeleted = 0";
         var result = DBHelper.getInstance().executeQuery(sql, identityNumber);
 
         if (result.isEmpty()) return false;
