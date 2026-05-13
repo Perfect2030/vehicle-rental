@@ -15,8 +15,7 @@ create table `vehicle` (
     
     `status` ENUM ('AVAILABLE', 'RENTED', 'MAINTENANCE') default 'AVAILABLE',
     
-    `createdAt` datetime default current_timestamp,
-    `isDeleted` boolean default false
+    `createdAt` datetime default current_timestamp
 );
 
 create table `customer` (
@@ -86,25 +85,25 @@ insert into `system_config` (`key`, `value`) values
 -- Seed data for testing
 -- =========================
 
-insert into `vehicle` (`licensePlate`, `model`, `brand`, `vehicleType`, `displacement`, `pricePerDay`, `status`, `isDeleted`) values
-('59A1-12345', 'Vision 2024', 'Honda', 'SCOOTER', 110, 150000, 'AVAILABLE', false),
-('59A1-23456', 'Air Blade 160', 'Honda', 'SCOOTER', 160, 220000, 'AVAILABLE', false),
-('59B2-34567', 'Exciter 155', 'Yamaha', 'MANUAL', 155, 250000, 'RENTED', false),
-('59B2-45678', 'Sirius FI', 'Yamaha', 'AUTOMATIC', 113, 130000, 'AVAILABLE', false),
-('59C3-56789', 'Lead 125', 'Honda', 'SCOOTER', 125, 180000, 'AVAILABLE', false),
-('59C3-67890', 'Janus', 'Yamaha', 'SCOOTER', 125, 140000, 'RENTED', false),
-('59D4-11111', 'SH Mode', 'Honda', 'SCOOTER', 125, 280000, 'MAINTENANCE', false),
-('59D4-22222', 'Wave Alpha', 'Honda', 'AUTOMATIC', 100, 120000, 'AVAILABLE', false),
-('59E5-33333', 'NVX 155', 'Yamaha', 'SCOOTER', 155, 230000, 'AVAILABLE', false),
-('59E5-44444', 'Winner X', 'Honda', 'MANUAL', 150, 240000, 'RENTED', false),
-('59F6-55555', 'Grande', 'Yamaha', 'SCOOTER', 125, 170000, 'AVAILABLE', false),
-('59F6-66666', 'Vario 160', 'Honda', 'SCOOTER', 160, 260000, 'AVAILABLE', false),
-('59G7-77777', 'SH 125i', 'Honda', 'SCOOTER', 125, 320000, 'MAINTENANCE', false),
-('59G7-88888', 'Future 125', 'Honda', 'AUTOMATIC', 125, 160000, 'AVAILABLE', false),
-('59H8-99999', 'PG-1', 'Yamaha', 'AUTOMATIC', 150, 200000, 'AVAILABLE', false),
-('59H8-12121', 'FreeGo', 'Yamaha', 'SCOOTER', 125, 150000, 'RENTED', false),
-('59K9-34343', 'Blade 110', 'Honda', 'AUTOMATIC', 110, 110000, 'AVAILABLE', true),
-('59K9-56565', 'Jupiter', 'Yamaha', 'AUTOMATIC', 135, 145000, 'AVAILABLE', false);
+insert into `vehicle` (`licensePlate`, `model`, `brand`, `vehicleType`, `displacement`, `pricePerDay`, `status`) values
+('59A1-12345', 'Vision 2024', 'Honda', 'SCOOTER', 110, 150000, 'AVAILABLE'),
+('59A1-23456', 'Air Blade 160', 'Honda', 'SCOOTER', 160, 220000, 'AVAILABLE'),
+('59B2-34567', 'Exciter 155', 'Yamaha', 'MANUAL', 155, 250000, 'RENTED'),
+('59B2-45678', 'Sirius FI', 'Yamaha', 'AUTOMATIC', 113, 130000, 'AVAILABLE'),
+('59C3-56789', 'Lead 125', 'Honda', 'SCOOTER', 125, 180000, 'AVAILABLE'),
+('59C3-67890', 'Janus', 'Yamaha', 'SCOOTER', 125, 140000, 'RENTED'),
+('59D4-11111', 'SH Mode', 'Honda', 'SCOOTER', 125, 280000, 'MAINTENANCE'),
+('59D4-22222', 'Wave Alpha', 'Honda', 'AUTOMATIC', 100, 120000, 'AVAILABLE'),
+('59E5-33333', 'NVX 155', 'Yamaha', 'SCOOTER', 155, 230000, 'AVAILABLE'),
+('59E5-44444', 'Winner X', 'Honda', 'MANUAL', 150, 240000, 'RENTED'),
+('59F6-55555', 'Grande', 'Yamaha', 'SCOOTER', 125, 170000, 'AVAILABLE'),
+('59F6-66666', 'Vario 160', 'Honda', 'SCOOTER', 160, 260000, 'AVAILABLE'),
+('59G7-77777', 'SH 125i', 'Honda', 'SCOOTER', 125, 320000, 'MAINTENANCE'),
+('59G7-88888', 'Future 125', 'Honda', 'AUTOMATIC', 125, 160000, 'AVAILABLE'),
+('59H8-99999', 'PG-1', 'Yamaha', 'AUTOMATIC', 150, 200000, 'AVAILABLE'),
+('59H8-12121', 'FreeGo', 'Yamaha', 'SCOOTER', 125, 150000, 'RENTED'),
+('59K9-34343', 'Blade 110', 'Honda', 'AUTOMATIC', 110, 110000, 'AVAILABLE'),
+('59K9-56565', 'Jupiter', 'Yamaha', 'AUTOMATIC', 135, 145000, 'AVAILABLE');
 
 insert into `customer` (`identityNumber`, `fullName`, `phoneNumber`, `address`) values
 ('079123456789', 'Nguyen Van An', '0909123456', 'Quan 1, TP.HCM'),

@@ -175,7 +175,29 @@ public class ManageVehiclesPanel extends JPanel {
                                         JOptionPane.YES_NO_OPTION);
                         if (confirm == JOptionPane.YES_OPTION) {
                                 for (int row : selectedRows) {
-                                        VehicleBLL.deleteVehicle((String) vehicleTable.getValueAt(row, 0));
+                                        switch (VehicleBLL.deleteVehicle((String) vehicleTable.getValueAt(row, 0))) {
+                                                case VehicleBLL.SUCCESS:
+                                                        JOptionPane.showMessageDialog(this, "Xóa xe thành công.", "Thông báo",
+                                                                JOptionPane.INFORMATION_MESSAGE);
+                                                        break;
+                                                case VehicleBLL.NOT_FOUND:
+                                                        JOptionPane.showMessageDialog(this, "Xe không tồn tại.", "Lỗi",
+                                                                JOptionPane.ERROR_MESSAGE);
+                                                        break;
+                                                case VehicleBLL.RENTAL_EXISTS:
+                                                        JOptionPane.showMessageDialog(this, "Xe đang được thuê. Vui lòng hoàn tất giao dịch thuê trước khi xóa.", "Lỗi",
+                                                                JOptionPane.ERROR_MESSAGE);
+                                                        break;
+                                                case VehicleBLL.DATABASE_ERROR:
+                                                        JOptionPane.showMessageDialog(this, "Lỗi cơ sở dữ liệu.", "Lỗi",
+                                                                JOptionPane.ERROR_MESSAGE);
+                                                        break;
+                                        
+                                                default:
+                                                        JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi. Vui lòng thử lại sau!", "Lỗi",
+                                                                JOptionPane.ERROR_MESSAGE);
+                                                        break;
+                                        }
                                 }
                                 this.ReloadData();
                         }
