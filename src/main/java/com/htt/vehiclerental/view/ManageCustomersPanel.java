@@ -18,11 +18,12 @@ import javax.swing.table.DefaultTableModel;
 
 import com.htt.vehiclerental.bll.CustomerBLL;
 import com.htt.vehiclerental.dto.Customer;
+import com.htt.vehiclerental.dto.CustomerDetail;
 
 public class ManageCustomersPanel extends JPanel {
 
     private static final String[] CUSTOMER_COLUMNS = {
-        "Số định danh", "Họ và tên", "Số điện thoại", "Địa chỉ"
+        "Mã khách hàng", "Số định danh", "Họ và tên", "Số điện thoại", "Địa chỉ"
     };
 
     private JTextField searchField;
@@ -88,6 +89,9 @@ public class ManageCustomersPanel extends JPanel {
             JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 16, 16));
                 buttonPanel.setOpaque(false);
 
+                JButton viewDetailsButton = UiKit.createPrimaryButton("Xem chi tiết");
+                    viewDetailsButton.addActionListener(e -> viewCustomerDetails());
+
                 JButton addButton = UiKit.createPrimaryButton("Thêm khách mới");
                     addButton.addActionListener(e -> addCustomer());
 
@@ -97,6 +101,7 @@ public class ManageCustomersPanel extends JPanel {
                 JButton deleteButton = UiKit.createDangerButton("Xóa khách hàng");
                     deleteButton.addActionListener(e -> deleteCustomer());
 
+            buttonPanel.add(viewDetailsButton);
             buttonPanel.add(addButton);
             buttonPanel.add(updateButton);
             buttonPanel.add(deleteButton);
@@ -116,11 +121,13 @@ public class ManageCustomersPanel extends JPanel {
         //sort criteria
         // if (sortComboBox.getSelectedIndex() == 1)
         //
+        table.removeColumn(table.getColumnModel().getColumn(0));
 
         List<Customer> customers = CustomerBLL.searchCustomers(searchField.getText(), sortComboBox.getSelectedIndex());
 
         for (Customer customer : customers) {
             model.addRow(new Object[] {
+                customer.getId(),
                 customer.getIdentityNumber(),
                 customer.getFullName(),
                 customer.getPhoneNumber(),
@@ -144,15 +151,15 @@ public class ManageCustomersPanel extends JPanel {
     public void updateCustomer() {
         int selectedRow = table.getSelectedRow();
         if (selectedRow == -1) {
-            UiKit.showErrorDialog(this, "Vui lòng chọn một khách hàng để cập nhật thông tin.");
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một khách hàng để cập nhật thông tin.", "Lỗi", JOptionPane.ERROR_MESSAGE);
              return;
         }
 
-        String identityNumber = (String) table.getValueAt(selectedRow, 0);
+        int customerId = (int) table.getValueAt(selectedRow, 0);
         
-        Customer customer = CustomerBLL.getCustomer(identityNumber);
+        Customer customer = CustomerBLL.getCustomer(customerId);
         if (customer == null) {
-            UiKit.showErrorDialog(this, "Không thể lấy thông tin khách hàng.");
+            JOptionPane.showMessageDialog(this, "Không thể lấy thông tin khách hàng.", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -163,11 +170,11 @@ public class ManageCustomersPanel extends JPanel {
     public void deleteCustomer() {
         int selectedRow = table.getSelectedRow();
         if (selectedRow == -1) {
-            UiKit.showErrorDialog(this, "Vui lòng chọn một khách hàng để xóa.");
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một khách hàng để xóa.", "Lỗi", JOptionPane.ERROR_MESSAGE);
              return;
         }
 
-        String identityNumber = (String) table.getValueAt(selectedRow, 0);
+        int customerId = (int) table.getValueAt(selectedRow, 0);
 
         //confirm delete
         int confirm = UiKit.showConfirmDialog(this, "Bạn có chắc muốn xóa khách hàng này?");
@@ -176,21 +183,39 @@ public class ManageCustomersPanel extends JPanel {
         }
 
         //delete customer
-        switch (CustomerBLL.deleteCustomer(identityNumber)) {
+        switch (CustomerBLL.deleteCustomer(customerId)) {
+            case CustomerBLL.SUCCESS:
+                break;
             case CustomerBLL.INVALID_INPUT:
-                UiKit.showErrorDialog(this, "Số định danh không hợp lệ.");
+                JOptionPane.showMessageDialog(this, "Mã khách hàng không hợp lệ.", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 return;
             case CustomerBLL.NOT_FOUND:
-                UiKit.showErrorDialog(this, "Không tìm thấy khách hàng.");
+                JOptionPane.showMessageDialog(this, "Không tìm thấy khách hàng.", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 return;
-            case CustomerBLL.RENTAL_EXISTS:
-                UiKit.showErrorDialog(this, "Không thể xóa khách hàng có hợp đồng thuê đang tồn tại.");
-                return;
-            case CustomerBLL.DATABASE_ERROR:
-                UiKit.showErrorDialog(this, "Đã xảy ra lỗi khi xóa khách hàng. Vui lòng thử lại sau.");
+            default:
+                JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi khi xóa khách hàng. Vui lòng thử lại sau.", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 return;
         }
 
         this.updateTable();
+    }
+
+    public void viewCustomerDetails() {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một khách hàng để xem chi tiết.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+             return;
+        }
+
+        int customerId = (int) table.getValueAt(selectedRow, 0);
+
+        CustomerDetail customerDetail = CustomerBLL.getCustomerDetail(customerId);
+
+        if (customerDetail == null) {
+            JOptionPane.showMessageDialog(this, "Không thể lấy thông tin khách hàng.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        new CustomerDetailsDialog(customerDetail).setVisible(true);
     }
 }

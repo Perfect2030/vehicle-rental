@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 public class Customer {
+    private int id;
     private String identityNumber;
     private String fullName;
     private String phoneNumber;
@@ -13,7 +14,17 @@ public class Customer {
     public Customer() {
     }
 
+    public Customer(int id, String identityNumber, String fullName, String phoneNumber, String address, LocalDateTime createdAt) {
+        this.id = id;
+        this.identityNumber = identityNumber;
+        this.fullName = fullName;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.createdAt = createdAt;
+    }
+
     public Customer(String identityNumber, String fullName, String phoneNumber, String address, LocalDateTime createdAt) {
+        this.id = 0; //auto assign
         this.identityNumber = identityNumber;
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
@@ -23,12 +34,21 @@ public class Customer {
 
     public static Customer fromMap(Map<String, Object> map) {
         return new Customer(
+                (int) map.get("id"),
                 (String) map.get("identityNumber"),
                 (String) map.get("fullName"),
                 (String) map.get("phoneNumber"),
                 (String) map.get("address"),
                 (LocalDateTime) map.get("createdAt")
         );
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getIdentityNumber() {
@@ -74,7 +94,8 @@ public class Customer {
     @Override
     public String toString() {
         return "Customer{" +
-                "identityNumber='" + identityNumber + '\'' +
+                "id=" + id +
+                ", identityNumber='" + identityNumber + '\'' +
                 ", fullName='" + fullName + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", address='" + address + '\'' +

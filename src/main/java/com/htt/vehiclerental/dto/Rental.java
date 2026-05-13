@@ -7,7 +7,7 @@ import com.htt.vehiclerental.enums.RentalStatus;
 
 public class Rental {
     private int id;
-    private String customerId;
+    private int customerId;
     private int vehicleId;
     private LocalDateTime startTime;
     private LocalDateTime expectedReturnTime;
@@ -23,7 +23,7 @@ public class Rental {
     public Rental() {
     }
 
-    public Rental(int id, String customerId, int vehicleId, LocalDateTime startTime, LocalDateTime expectedReturnTime, 
+    public Rental(int id, int customerId, int vehicleId, LocalDateTime startTime, LocalDateTime expectedReturnTime, 
                   LocalDateTime actualReturnTime, int pricePerDay, int deposit, int estimatedTotal, int extraFee, int totalAmount, RentalStatus status, LocalDateTime createdAt) {
         this.id = id;
         this.customerId = customerId;
@@ -43,7 +43,7 @@ public class Rental {
     public static Rental fromMap(Map<String, Object> map) {
         return new Rental(
                 (int) map.get("id"),
-                (String) map.get("customerId"),
+                (int) map.get("customerId"),
                 (int) map.get("vehicleId"),
                 (LocalDateTime) map.get("startTime"),
                 (LocalDateTime) map.get("expectedReturnTime"),
@@ -66,11 +66,11 @@ public class Rental {
         this.id = id;
     }
 
-    public String getCustomerId() {
+    public int getCustomerId() {
         return customerId;
     }
 
-    public void setCustomerId(String customerId) {
+    public void setCustomerId(int customerId) {
         this.customerId = customerId;
     }
 

@@ -19,20 +19,22 @@ create table `vehicle` (
     `isDeleted` boolean default false
 );
 
-create table `customer` (
-    `identityNumber` varchar(20) primary key,
+create table `customer` ( 
+    `id` int auto_increment primary key,
+    `identityNumber` varchar(20) null,
     `fullName` varchar(100) not null,
     `phoneNumber` varchar(15),
     
     `address` varchar(255),
     
-    `createdAt` datetime default current_timestamp
+    `createdAt` datetime default current_timestamp,
+    `isDeleted` boolean default false
 );
 
 create table `rental` (
     `id` int auto_increment primary key,
     
-    `customerId` varchar(20) not null,
+    `customerId` int not null,
     `vehicleId` int not null,
     
     `startTime` datetime not null,
@@ -51,7 +53,7 @@ create table `rental` (
     
     `createdAt` datetime default current_timestamp,
     
-    foreign key (`customerId`) references `customer`(`identityNumber`),
+    foreign key (`customerId`) references `customer`(`id`),
     foreign key (`vehicleId`) references `vehicle`(`id`)
 );
 
@@ -73,14 +75,6 @@ create table `rental_extrafee` (
     foreign key (`rentalId`) references `rental`(`id`),
     foreign key (`extraFeeTypeId`) references `extrafee_type`(`id`)
 );
-
-create table `system_config` (
-    `key` varchar(50) primary key,
-    `value` varchar(255) not null
-);
-
-insert into `system_config` (`key`, `value`) values
-('PENALTY_PER_HOUR', '20000');
 
 -- =========================
 -- Seed data for testing
@@ -132,32 +126,18 @@ insert into `extrafee_type` (`name`, `amount`, `description`) values
 
 insert into `rental`
 (`customerId`, `vehicleId`, `startTime`, `expectedReturnTime`, `actualReturnTime`, `pricePerDay`, `deposit`, `estimatedTotal`, `extraFee`, `totalAmount`, `status`) values
-('079123456789', 1,  '2026-03-01 08:00:00', '2026-03-03 08:00:00', '2026-03-03 09:10:00', 150000, 500000, 300000, 20000, 320000, 'COMPLETED'),
-('079123456790', 2,  '2026-03-05 09:00:00', '2026-03-06 09:00:00', '2026-03-06 08:40:00', 220000, 500000, 220000, 0, 220000, 'COMPLETED'),
-('079123456791', 3,  '2026-05-05 10:00:00', '2026-05-07 10:00:00', null,                  250000, 700000, 500000, 0, null,    'ACTIVE'),
-('079123456792', 8,  '2026-05-10 07:30:00', '2026-05-12 07:30:00', null,                  120000, 400000, 240000, 0, null,    'CREATED'),
-('079123456793', 5,  '2026-04-10 14:00:00', '2026-04-12 14:00:00', null,                  180000, 500000, 360000, 0, null,    'CANCELLED'),
-('079123456794', 6,  '2026-05-04 16:00:00', '2026-05-06 16:00:00', null,                  140000, 400000, 280000, 0, null,    'ACTIVE'),
-('079123456795', 4,  '2026-02-20 09:00:00', '2026-02-22 09:00:00', '2026-02-22 12:30:00', 130000, 300000, 260000, 190000, 450000, 'COMPLETED'),
-('079123456796', 9,  '2026-02-25 12:00:00', '2026-02-28 12:00:00', '2026-02-28 11:00:00', 230000, 700000, 690000, 0, 690000, 'COMPLETED'),
-('079123456797', 10, '2026-05-06 08:30:00', '2026-05-08 08:30:00', null,                  240000, 700000, 480000, 0, null,    'ACTIVE'),
-('079123456798', 11, '2026-01-10 08:00:00', '2026-01-12 08:00:00', '2026-01-12 08:00:00', 170000, 400000, 340000, 30000, 370000, 'COMPLETED'),
-('079123456799', 12, '2026-01-15 13:00:00', '2026-01-16 13:00:00', '2026-01-16 15:10:00', 260000, 600000, 260000, 70000, 330000, 'COMPLETED'),
-('079123456800', 14, '2026-04-01 09:00:00', '2026-04-03 09:00:00', '2026-04-03 09:00:00', 160000, 400000, 320000, 0, 320000, 'COMPLETED'),
-('079123456789', 15, '2026-04-15 10:00:00', '2026-04-17 10:00:00', '2026-04-17 14:30:00', 200000, 500000, 400000, 190000, 590000, 'COMPLETED'),
-('079123456792', 16, '2026-05-03 07:00:00', '2026-05-09 07:00:00', null,                  150000, 600000, 900000, 0, null,    'ACTIVE'),
-('079123456793', 18, '2026-05-20 09:30:00', '2026-05-23 09:30:00', null,                  145000, 400000, 435000, 0, null,    'CREATED'),
-('079123456794', 2,  '2026-03-20 09:00:00', '2026-03-21 09:00:00', null,                  220000, 300000, 220000, 0, null,    'CANCELLED');
+(1, 1,  '2026-03-01 08:00:00', '2026-03-03 08:00:00', '2026-03-03 09:10:00', 150000, 500000, 300000, 20000, 320000, 'COMPLETED'),
+(2, 2,  '2026-03-05 09:00:00', '2026-03-06 09:00:00', '2026-03-06 08:40:00', 220000, 500000, 220000, 0, 220000, 'COMPLETED'),
+(3, 3,  '2026-05-05 10:00:00', '2026-05-07 10:00:00', null,                  250000, 700000, 500000, 0, null,    'ACTIVE'),
+(4, 8,  '2026-05-10 07:30:00', '2026-05-12 07:30:00', null,                  120000, 400000, 240000, 0, null,    'CREATED'),
+(5, 5,  '2026-04-10 14:00:00', '2026-04-12 14:00:00', null,                  180000, 500000, 360000, 0, null,    'CANCELLED'),
+(6, 6,  '2026-05-04 16:00:00', '2026-05-06 16:00:00', null,                  140000, 400000, 280000, 0, null,    'ACTIVE'),
+(7, 4,  '2026-02-20 09:00:00', '2026-02-22 09:00:00', '2026-02-22 12:30:00', 130000, 300000, 260000, 190000, 450000, 'COMPLETED'),
+(9, 7,  '2026-03-15 08:00:00', '2026-03-17 08:00:00', null,                  30000, 100000, 60000, 0, null,    'ACTIVE'),
+(9, 9,  '2026-04-01 10:00:00', '2026-04-03 10:00:00', null,                  230000, 500000, 460000, 0, null,    'CREATED'),
+(10, 10, '2026-05-01 09:00:00', '2026-05-03 09:00:00', '2026-05-03 18:30:00', 240000, 600000, 480000, 30000, 510000, 'COMPLETED');
 
 insert into `rental_extrafee` (`rentalId`, `extraFeeTypeId`, `amount`, `description`) values
 (1, 1, 20000, 'Tra xe tre 1 gio 10 phut, tinh 1 gio'),
 (7, 2, 150000, 'Tray ben hong phai xe'),
-(7, 7, 40000, 'Rua xe + ve sinh noi that'),
-(10, 7, 30000, 'Xe ban sau chuyen di duong dai'),
-(11, 1, 20000, 'Tra tre hon 2 gio, giam mot phan do thong cam'),
-(11, 5, 50000, 'Muc xang thieu so voi ban giao'),
-(13, 3, 250000, 'Vo guong trai khi dung xe'),
-(13, 4, 120000, 'Mat mu bao hiem kem theo xe'),
-(13, 1, 20000, 'Tre 4 gio 30 phut, tinh 1 muc co ban'),
-(null, 8, 180000, 'Phi cuu ho custom khi xechet may luc khuya'),
-(null, 2, 100000, 'Muc tray nhe theo thoa thuan giam gia');
+(7, 7, 40000, 'Rua xe + ve sinh noi that');

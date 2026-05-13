@@ -2,11 +2,9 @@ package com.htt.vehiclerental.dto;
 
 import java.time.LocalDateTime;
 
-import com.htt.vehiclerental.enums.RentalStatus;
-
 public class CreateRental {
     private int id;
-    private String customerId;
+    private int customerId;
     private int vehicleId;
     private LocalDateTime startTime;
     private LocalDateTime expectedReturnTime;
@@ -17,7 +15,7 @@ public class CreateRental {
     public CreateRental() {
     }
 
-    public CreateRental(int id, String customerId, int vehicleId, LocalDateTime startTime, LocalDateTime expectedReturnTime,
+    public CreateRental(int id, int customerId, int vehicleId, LocalDateTime startTime, LocalDateTime expectedReturnTime,
                   int pricePerDay, int deposit, int totalAmount) {
         this.id = id;
         this.customerId = customerId;
@@ -37,11 +35,11 @@ public class CreateRental {
         this.id = id;
     }
 
-    public String getCustomerId() {
+    public int getCustomerId() {
         return customerId;
     }
 
-    public void setCustomerId(String customerId) {
+    public void setCustomerId(int customerId) {
         this.customerId = customerId;
     }
 
@@ -97,7 +95,7 @@ public class CreateRental {
     public String toString() {
         return "Rental{" +
                 "id=" + id +
-                ", customerId='" + customerId + '\'' +
+                ", customerId=" + customerId +
                 ", vehicleId=" + vehicleId +
                 ", startTime=" + startTime +
                 ", expectedReturnTime=" + expectedReturnTime +

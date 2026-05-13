@@ -40,9 +40,9 @@ public class RentalDAL {
         return rentals;
     }
 
-    public static List<Rental> getRentalsByCustomer(String identityNumber) {
+    public static List<Rental> getRentalsByCustomer(int customerId) {
         String sql = "SELECT r.* FROM rental r WHERE r.customerId = ?";
-        var results = DBHelper.getInstance().executeQuery(sql, identityNumber);
+        var results = DBHelper.getInstance().executeQuery(sql, customerId);
 
         List<Rental> rentals = new java.util.ArrayList<>();
         for (var result : results) {

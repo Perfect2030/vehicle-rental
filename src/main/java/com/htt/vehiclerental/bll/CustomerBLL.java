@@ -6,6 +6,7 @@ import java.util.List;
 import com.htt.vehiclerental.dal.CustomerDAL;
 import com.htt.vehiclerental.dal.RentalDAL;
 import com.htt.vehiclerental.dto.Customer;
+import com.htt.vehiclerental.dto.CustomerDetail;
 
 public class CustomerBLL {
 
@@ -24,7 +25,7 @@ public class CustomerBLL {
             return INVALID_INPUT;
         }
 
-        if (CustomerDAL.getCustomer(customer.getIdentityNumber()) != null) {
+        if (CustomerDAL.isCustomerExists(customer.getIdentityNumber())) {
             return CUSTOMER_EXISTS; // Customer with this identity number already exists
         }
 
@@ -45,7 +46,7 @@ public class CustomerBLL {
             return INVALID_INPUT;
         }
 
-        if (CustomerDAL.getCustomer(customer.getIdentityNumber()) == null) {
+        if (CustomerDAL.getCustomer(customer.getId()) == null) {
             return NOT_FOUND; // Customer with this identity number does not exist
         }
 
@@ -56,32 +57,48 @@ public class CustomerBLL {
         return SUCCESS;
     }
 
-    public static int deleteCustomer(String identityNumber) {
-        if (identityNumber == null || identityNumber.isEmpty()) {
+    public static int deleteCustomer(int customerId) {
+        if (customerId <= 0) {
             return INVALID_INPUT;
         }
 
-        if (CustomerDAL.getCustomer(identityNumber) == null) {
+        if (CustomerDAL.getCustomer(customerId) == null) {
             return NOT_FOUND; // Customer with this identity number does not exist
         }
 
         //check if customer has rentals before deleting
-        if (!RentalDAL.getRentalsByCustomer(identityNumber).isEmpty()) {
-            return RENTAL_EXISTS; // Cannot delete customer with existing rentals
+        if (!RentalDAL.getRentalsByCustomer(customerId).isEmpty()) {
+            
+            if (!CustomerDAL.softDelete(customerId)) {
+                return DATABASE_ERROR; // Failed to soft delete customer from the database
+            }
+
+            return SUCCESS;
         }
 
-        if (!CustomerDAL.delete(identityNumber)) {
+        if (!CustomerDAL.hardDelete(customerId)) {
             return DATABASE_ERROR; // Failed to delete customer from the database
         }
 
         return SUCCESS;
     }
 
-    public static Customer getCustomer(String identityNumber) {
-        if (identityNumber == null || identityNumber.isEmpty()) {
+    public static Customer getCustomer(int customerId) {
+        if (customerId <= 0) {
             return null;
         }
-        return CustomerDAL.getCustomer(identityNumber);
+        return CustomerDAL.getCustomer(customerId);
+    }
+
+    public static CustomerDetail getCustomerDetail(int customerId) {
+        Customer customer = getCustomer(customerId);
+        if (customer == null) {
+            return null;
+        }
+
+        int totalRentals = RentalDAL.getRentalsByCustomer(customerId).size();
+
+        return new CustomerDetail(customer, totalRentals);
     }
 
     public static List<Customer> getAllCustomers() {
