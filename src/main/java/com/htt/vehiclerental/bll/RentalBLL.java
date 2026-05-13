@@ -208,6 +208,23 @@ public class RentalBLL {
         if(statusFilter == null || statusFilter.equals("Tất cả")) {
             statusFilter = "";
         }
+        // chuyển status filter từ tiếng Việt sang tiếng Anh để so sánh với dữ liệu trong database
+        switch (statusFilter) {
+            case "Đã tạo":
+                statusFilter = "CREATED";
+                break;
+            case "Đang cho thuê":
+                statusFilter = "ACTIVE";
+                break;
+            case "Đã hoàn thành":
+                statusFilter = "COMPLETED";
+                break;
+            case "Đã hủy":
+                statusFilter = "CANCELLED";
+                break;
+            default:
+                statusFilter = "";
+        }
         return RentalDAL.searchRentalsViews(searchTerm, statusFilter);
     }
 

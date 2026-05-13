@@ -196,5 +196,7 @@ public class ManageRentalsPanel extends JPanel {
             });
         }
 
+        
+
     }
 }

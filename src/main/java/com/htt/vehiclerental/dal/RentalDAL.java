@@ -1,5 +1,6 @@
 package com.htt.vehiclerental.dal;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.htt.vehiclerental.dto.Rental;
@@ -94,17 +95,18 @@ public class RentalDAL {
         var results = DBHelper.getInstance().executeQuery(sql, "%" + searchTerm + "%", "%" + searchTerm + "%", "%" + searchTerm + "%", "%" + searchTerm + "%", statusFilter, statusFilter);
 
         List<RentalView> rentalViews = new java.util.ArrayList<>();
+        if(results == null) return rentalViews;
         for (var result : results) {
             RentalView view = new RentalView(
-                Integer.parseInt(result.get("rentalId").toString()),
-                result.get("customerName").toString(),
-                result.get("licensePlate").toString(),
-                result.get("brand").toString(),
-                result.get("model").toString(),
-                java.time.LocalDateTime.parse(result.get("startTime").toString()),
-                java.time.LocalDateTime.parse(result.get("expectedReturnTime").toString()),
-                result.get("status").toString()
-            );
+            Integer.parseInt(result.get("id").toString()),
+            result.get("fullName").toString(),
+            result.get("licensePlate").toString(),
+            result.get("brand").toString(),
+            result.get("model").toString(),
+            LocalDateTime.parse(result.get("startTime").toString()),
+            LocalDateTime.parse(result.get("expectedReturnTime").toString()),
+            result.get("status").toString()
+        );
             rentalViews.add(view);
         }
         return rentalViews;
