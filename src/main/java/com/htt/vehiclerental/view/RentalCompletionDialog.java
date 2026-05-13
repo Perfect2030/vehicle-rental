@@ -16,6 +16,8 @@ import javax.swing.table.DefaultTableModel;
 
 import com.htt.vehiclerental.bll.RentalBLL;
 import com.htt.vehiclerental.dto.RentalCompletion;
+import java.time.format.DateTimeFormatter;
+
 
 public class RentalCompletionDialog  extends JDialog{
     private int rentalId;
@@ -92,7 +94,7 @@ public class RentalCompletionDialog  extends JDialog{
         body.add(extraFeePanel);
 
         //
-        JPanel bottomJPanel = new JPanel();
+        JPanel bottomJPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 16));
         xacnhan = UiKit.createPrimaryButton("Xác nhận hoàn thành");
         huy = UiKit.createSecondaryButton("Thoát");
         bottomJPanel.add(xacnhan);
@@ -112,8 +114,8 @@ public class RentalCompletionDialog  extends JDialog{
         //
         vehicleInfo.setText(data.getVehicleInfo());
         pricePerDay.setText(String.format("%,d VND", data.getPricePerDay()));
-        rentalDate.setText(data.getRentalDate().toString());
-        actualReturnTime.setText(data.getActualReturnTime().toString());
+        rentalDate.setText(data.getRentalDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+        actualReturnTime.setText(data.getActualReturnTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         extraFees.setText(String.format("%,d VND", data.getExtraFees()));
         totalAmount.setText(String.format("%,d VND", data.getTotalAmount()));
 
