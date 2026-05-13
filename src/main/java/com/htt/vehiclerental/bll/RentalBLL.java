@@ -181,7 +181,7 @@ public class RentalBLL {
         newRental.setExpectedReturnTime(rental.getExpectedReturnTime());
         newRental.setPricePerDay(rental.getPricePerDay());
         newRental.setDeposit(rental.getDeposit());
-        newRental.setTotalAmount(rental.getTotalAmount());
+        newRental.setEstimatedTotal(rental.getEstimatedTotal());
         newRental.setStatusEnum(RentalStatus.CREATED);
         newRental.setCreatedAt(LocalDateTime.now());
 

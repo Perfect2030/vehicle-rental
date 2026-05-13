@@ -10,13 +10,13 @@ public class CreateRental {
     private LocalDateTime expectedReturnTime;
     private int pricePerDay;
     private int deposit;
-    private int totalAmount;
+    private int estimatedTotal;
 
     public CreateRental() {
     }
 
     public CreateRental(int id, int customerId, int vehicleId, LocalDateTime startTime, LocalDateTime expectedReturnTime,
-                  int pricePerDay, int deposit, int totalAmount) {
+                  int pricePerDay, int deposit, int estimatedTotal) {
         this.id = id;
         this.customerId = customerId;
         this.vehicleId = vehicleId;
@@ -24,7 +24,7 @@ public class CreateRental {
         this.expectedReturnTime = expectedReturnTime;
         this.pricePerDay = pricePerDay;
         this.deposit = deposit;
-        this.totalAmount = totalAmount;
+        this.estimatedTotal = estimatedTotal;
     }
 
     public int getId() {
@@ -83,12 +83,12 @@ public class CreateRental {
         this.deposit = deposit;
     }
 
-    public int getTotalAmount() {
-        return totalAmount;
+    public int getEstimatedTotal() {
+        return estimatedTotal;
     }
 
-    public void setTotalAmount(int totalAmount) {
-        this.totalAmount = totalAmount;
+    public void setEstimatedTotal(int estimatedTotal) {
+        this.estimatedTotal = estimatedTotal;
     }
 
     @Override
@@ -100,7 +100,7 @@ public class CreateRental {
                 ", startTime=" + startTime +
                 ", expectedReturnTime=" + expectedReturnTime +
                 ", deposit=" + deposit +
-                ", totalAmount=" + totalAmount +
+                ", estimatedTotal=" + estimatedTotal +
                 '}';
     }
 }

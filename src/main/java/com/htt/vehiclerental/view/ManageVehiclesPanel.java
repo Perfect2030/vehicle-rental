@@ -88,6 +88,8 @@ public class ManageVehiclesPanel extends JPanel {
                 JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 16, 16));
                 buttonPanel.setOpaque(false);
 
+                JButton viewDetailButton = UiKit.createPrimaryButton("Xem chi tiết");
+                viewDetailButton.addActionListener(e -> viewDetail());
                 JButton addButton = UiKit.createPrimaryButton("Thêm xe mới");
                 addButton.addActionListener(e -> addVehicle());
                 JButton updateButton = UiKit.createPrimaryButton("Cập nhật thông tin xe");
@@ -97,6 +99,7 @@ public class ManageVehiclesPanel extends JPanel {
                 JButton createRentalButton = UiKit.createPrimaryButton("Tạo hợp đồng thuê xe");
                 createRentalButton.addActionListener(e -> createRental());
 
+                buttonPanel.add(viewDetailButton);
                 buttonPanel.add(addButton);
                 buttonPanel.add(updateButton);
                 buttonPanel.add(deleteButton);
@@ -221,5 +224,16 @@ public class ManageVehiclesPanel extends JPanel {
                                         JOptionPane.ERROR_MESSAGE);
                 }
         }
+        
+        private void viewDetail() {
+                int[] selectedRows = vehicleTable.getSelectedRows();
 
+                if (selectedRows.length == 1) {
+                        int id = (int) vehicleTable.getModel().getValueAt(vehicleTable.convertRowIndexToModel(selectedRows[0]), 0);
+                        //new VehicleDetailDialog(id).setVisible(true);
+                } else {
+                        JOptionPane.showMessageDialog(this, "Vui lòng chọn một xe để xem chi tiết.", "Lỗi",
+                                        JOptionPane.ERROR_MESSAGE);
+                }
+        }
 }
