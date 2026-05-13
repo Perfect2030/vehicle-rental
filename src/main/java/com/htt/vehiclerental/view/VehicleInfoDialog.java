@@ -109,21 +109,49 @@ public class VehicleInfoDialog extends JDialog {
                         : VehicleStatus.MAINTENANCE);
 
         if (isUpdate) {
-            if (VehicleBLL.updateVehicle(vehicle)) {
-                JOptionPane.showMessageDialog(this, "Cập nhật thông tin xe thành công.", "Thông báo",
-                        JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(this, "Cập nhật thông tin xe thất bại.", "Lỗi",
-                        JOptionPane.ERROR_MESSAGE);
+            switch (VehicleBLL.updateVehicle(vehicle)) {
+                case VehicleBLL.SUCCESS:
+                    JOptionPane.showMessageDialog(this, "Cập nhật thông tin xe thành công.", "Thông báo",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    break;
+                case VehicleBLL.NOT_FOUND:
+                    JOptionPane.showMessageDialog(this, "Xe không tồn tại.", "Lỗi",
+                            JOptionPane.ERROR_MESSAGE);
+                    break;
+                case VehicleBLL.RENTAL_EXISTS:
+                    JOptionPane.showMessageDialog(this, "Xe đang được thuê. Vui lòng hoàn tất giao dịch thuê trước khi cập nhật.", "Lỗi",
+                            JOptionPane.ERROR_MESSAGE);
+                    break;
+                case VehicleBLL.DATABASE_ERROR:
+                    JOptionPane.showMessageDialog(this, "Lỗi cơ sở dữ liệu.", "Lỗi",
+                            JOptionPane.ERROR_MESSAGE);
+                    break;
+            
+                default:
+                    JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi. Vui lòng thử lại sau!", "Lỗi",
+                            JOptionPane.ERROR_MESSAGE);
+                    break;
             }
         } else {
             vehicle.setCreatedAt(LocalDateTime.now());
-            if (VehicleBLL.addVehicle(vehicle)) {
-                JOptionPane.showMessageDialog(this, "Thêm mới xe thành công.", "Thông báo",
-                        JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(this, "Thêm mới xe thất bại.", "Lỗi",
-                        JOptionPane.ERROR_MESSAGE);
+            switch (VehicleBLL.addVehicle(vehicle)) {
+                case VehicleBLL.SUCCESS:
+                    JOptionPane.showMessageDialog(this, "Thêm xe mới thành công.", "Thông báo",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    break;
+                case VehicleBLL.VEHICLE_EXISTS:
+                    JOptionPane.showMessageDialog(this, "Xe với biển số này đã tồn tại.", "Lỗi",
+                            JOptionPane.ERROR_MESSAGE);
+                    break;
+                case VehicleBLL.DATABASE_ERROR:
+                    JOptionPane.showMessageDialog(this, "Lỗi cơ sở dữ liệu.", "Lỗi",
+                            JOptionPane.ERROR_MESSAGE);
+                    break;
+            
+                default:
+                    JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi. Vui lòng thử lại sau!", "Lỗi",
+                            JOptionPane.ERROR_MESSAGE);
+                    break;
             }
         }
         this.dispose();

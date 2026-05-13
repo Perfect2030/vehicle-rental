@@ -27,12 +27,12 @@ public class VehicleDAL {
     }
 
     public static boolean delete(String licensePlate) {
-        String sql = "UPDATE vehicle SET isDeleted = 1 WHERE licensePlate = ?";
+        String sql = "DELETE FROM vehicle WHERE licensePlate = ?";
         return DBHelper.getInstance().executeUpdate(sql, licensePlate) > 0;
     }
 
     public static Vehicle getVehicle(String licensePlate) {
-        String sql = "SELECT * FROM vehicle WHERE licensePlate = ? AND isDeleted = 0";
+        String sql = "SELECT * FROM vehicle WHERE licensePlate = ?";
         var result = DBHelper.getInstance().executeQuery(sql, licensePlate);
 
         if (result.isEmpty())
@@ -42,7 +42,7 @@ public class VehicleDAL {
     }
 
     public static Vehicle getVehicle(int id) {
-        String sql = "SELECT * FROM vehicle WHERE id = ? AND isDeleted = 0";
+        String sql = "SELECT * FROM vehicle WHERE id = ?";
         var result = DBHelper.getInstance().executeQuery(sql, id);
 
         if (result.isEmpty())
@@ -52,7 +52,7 @@ public class VehicleDAL {
     }
 
     public static List<Vehicle> getAllVehicles() {
-        String sql = "SELECT * FROM vehicle WHERE isDeleted = 0";
+        String sql = "SELECT * FROM vehicle";
         var results = DBHelper.getInstance().executeQuery(sql);
 
         List<Vehicle> vehicles = new ArrayList<>();
@@ -64,7 +64,7 @@ public class VehicleDAL {
 
     public static List<Vehicle> getVehiclesAfterFilterAndSort(String search, VehicleType type, VehicleStatus status, String orderBy) {
         StringBuilder sql = new StringBuilder(
-                "SELECT * FROM vehicle WHERE (licensePlate LIKE ? OR brand LIKE ? OR model LIKE ?) AND isDeleted = 0");
+                "SELECT * FROM vehicle WHERE (licensePlate LIKE ? OR brand LIKE ? OR model LIKE ?)");
 
 
         // xử lý status và type
@@ -91,7 +91,7 @@ public class VehicleDAL {
 
     public static List<Vehicle> searchVehicles(String model, String brand, String vehicleType, int displacement,
             int pricePerDay, String status) {
-        String sql = "SELECT * FROM vehicle WHERE (model LIKE ? AND brand LIKE ? AND vehicleType LIKE ? AND (displacement >= ? OR ? = -1) AND (pricePerDay <= ? OR ? = -1) AND status = ?) AND isDeleted = 0";
+        String sql = "SELECT * FROM vehicle WHERE (model LIKE ? AND brand LIKE ? AND vehicleType LIKE ? AND (displacement >= ? OR ? = -1) AND (pricePerDay <= ? OR ? = -1) AND status = ?)";
         var results = DBHelper.getInstance().executeQuery(sql, "%" + model + "%", "%" + brand + "%",
                 "%" + vehicleType + "%", displacement, displacement, pricePerDay, pricePerDay, status);
 

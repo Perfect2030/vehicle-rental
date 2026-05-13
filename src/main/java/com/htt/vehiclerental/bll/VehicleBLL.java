@@ -5,8 +5,16 @@ import com.htt.vehiclerental.dto.Vehicle;
 import com.htt.vehiclerental.enums.VehicleStatus;
 import com.htt.vehiclerental.enums.VehicleType;
 import com.htt.vehiclerental.dal.VehicleDAL;
+import com.htt.vehiclerental.bll.RentalBLL;
 
 public class VehicleBLL {
+
+    public static final int SUCCESS = 1;
+    public static final int NOT_FOUND = -1;
+    public static final int RENTAL_EXISTS = -2;
+    public static final int DATABASE_ERROR = -3;
+    public static final int VEHICLE_EXISTS = -4;
+
     public static List<Vehicle> getVehiclesAfterFilterAndSort(String search, VehicleType type, VehicleStatus status, String sortBy) {
         String orderBy = switch (sortBy) {
             case "Giá thuê tăng dần" -> "pricePerDay ASC";
@@ -19,16 +27,47 @@ public class VehicleBLL {
         return VehicleDAL.getVehiclesAfterFilterAndSort(search, type, status, orderBy);
     }
 
-    public static boolean addVehicle(Vehicle vehicle) {
-        return VehicleDAL.add(vehicle);
+    public static int addVehicle(Vehicle vehicle) {
+        if(VehicleDAL.getVehicle(vehicle.getLicensePlate()) != null) {
+            return VEHICLE_EXISTS; 
+        }
+
+        if(!VehicleDAL.add(vehicle)) {
+            return DATABASE_ERROR; 
+        }
+
+        return SUCCESS;
     }
 
-    public static boolean updateVehicle(Vehicle vehicle) {
-        return VehicleDAL.update(vehicle);
+    public static int updateVehicle(Vehicle vehicle) {
+        Vehicle existingVehicle = VehicleDAL.getVehicle(vehicle.getId());
+        if(existingVehicle == null) {
+            return NOT_FOUND; 
+        }
+        if(existingVehicle.getStatusEnum() == VehicleStatus.RENTED) {
+            return RENTAL_EXISTS; 
+        }
+        if(!VehicleDAL.update(vehicle)) {
+            return DATABASE_ERROR;
+        }
+
+        return SUCCESS;
     }
 
-    public static boolean deleteVehicle(String licensePlate) {
-        return VehicleDAL.delete(licensePlate);
+    public static int deleteVehicle(String licensePlate) {
+        Vehicle vehicle = VehicleDAL.getVehicle(licensePlate);
+        if(vehicle == null) {
+            return NOT_FOUND;
+        }
+        if(vehicle.getStatusEnum() == VehicleStatus.RENTED) {
+            return RENTAL_EXISTS;
+        }
+
+        if(!VehicleDAL.delete(licensePlate)) {
+            return DATABASE_ERROR;
+        }
+        
+        return SUCCESS;
     }
 
     public static List<Vehicle> searchVehicles(String model, String brand, String vehicleType, int displacement,
