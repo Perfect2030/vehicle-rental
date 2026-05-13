@@ -5,17 +5,17 @@ import java.util.Map;
 public class RentalExtraFee {
     private int id;
     private Integer rentalId; // Nullable vì cho phép custom khi không có lỗi khác
-    private int extraFeeTypeId;
+    private String name;
     private int amount;
     private String description;
 
     public RentalExtraFee() {
     }
 
-    public RentalExtraFee(int id, Integer rentalId, int extraFeeTypeId, int amount, String description) {
+    public RentalExtraFee(int id, int rentalId, String name, int amount, String description) {
         this.id = id;
         this.rentalId = rentalId;
-        this.extraFeeTypeId = extraFeeTypeId;
+        this.name = name;
         this.amount = amount;
         this.description = description;
     }
@@ -26,7 +26,7 @@ public class RentalExtraFee {
         return new RentalExtraFee(
                 (int) map.get("id"),
                 (Integer) map.get("rentalId"),
-                (int) map.get("extraFeeTypeId"),
+                (String) map.get("name"),
                 (int) map.get("amount"),
                 (String) map.get("description")
         );
@@ -48,12 +48,12 @@ public class RentalExtraFee {
         this.rentalId = rentalId;
     }
 
-    public int getExtraFeeTypeId() {
-        return extraFeeTypeId;
+    public String getName() {
+        return name;
     }
 
-    public void setExtraFeeTypeId(int extraFeeTypeId) {
-        this.extraFeeTypeId = extraFeeTypeId;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getAmount() {
@@ -77,7 +77,7 @@ public class RentalExtraFee {
         return "RentalExtraFee{" +
                 "id=" + id +
                 ", rentalId=" + rentalId +
-                ", extraFeeTypeId=" + extraFeeTypeId +
+                ", name='" + name + '\'' +
                 ", amount=" + amount +
                 ", description='" + description + '\'' +
                 '}';

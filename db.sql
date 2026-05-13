@@ -67,13 +67,12 @@ create table `extrafee_type` (
 create table `rental_extrafee` (
     `id` int auto_increment primary key,
     `rentalId` int null,
-    `extraFeeTypeId` int not null,
 
+    `name` varchar(100) not null, -- Tên loại phí (có thể lấy từ extrafee_type hoặc nhập trực tiếp nếu có thỏa thuận riêng)
     `amount` int not null, -- Số tiền thực tế phải trả cho loại phí này (có thể khác với amount trong ExtraFeeType nếu có thỏa thuận riêng)
     `description` varchar(255), -- Mô tả chi tiết về phí này (ví dụ: "Trầy xe do khách hàng không cẩn thận")
     
-    foreign key (`rentalId`) references `rental`(`id`),
-    foreign key (`extraFeeTypeId`) references `extrafee_type`(`id`)
+    foreign key (`rentalId`) references `rental`(`id`)
 );
 
 -- =========================
@@ -137,7 +136,7 @@ insert into `rental`
 (9, 9,  '2026-04-01 10:00:00', '2026-04-03 10:00:00', null,                  230000, 500000, 460000, 0, null,    'CREATED'),
 (10, 10, '2026-05-01 09:00:00', '2026-05-03 09:00:00', '2026-05-03 18:30:00', 240000, 600000, 480000, 30000, 510000, 'COMPLETED');
 
-insert into `rental_extrafee` (`rentalId`, `extraFeeTypeId`, `amount`, `description`) values
-(1, 1, 20000, 'Tra xe tre 1 gio 10 phut, tinh 1 gio'),
-(7, 2, 150000, 'Tray ben hong phai xe'),
-(7, 7, 40000, 'Rua xe + ve sinh noi that');
+insert into `rental_extrafee` (`rentalId`, `name`, `amount`, `description`) values
+(1, 'Tra xe tre theo gio', 20000, 'Tra xe tre 1 gio 10 phut, tinh 1 gio'),
+(7, 'Tray xe nhe', 150000, 'Tray ben hong phai xe'),
+(7, 'Rua xe', 40000, 'Rua xe + ve sinh noi that');
