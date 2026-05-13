@@ -98,17 +98,28 @@ public class RentalDAL {
         if(results == null) return rentalViews;
         for (var result : results) {
             RentalView view = new RentalView(
-            Integer.parseInt(result.get("id").toString()),
-            result.get("fullName").toString(),
-            result.get("licensePlate").toString(),
-            result.get("brand").toString(),
-            result.get("model").toString(),
-            LocalDateTime.parse(result.get("startTime").toString()),
-            LocalDateTime.parse(result.get("expectedReturnTime").toString()),
-            result.get("status").toString()
-        );
-            rentalViews.add(view);
+              Integer.parseInt(result.get("id").toString()),
+              result.get("fullName").toString(),
+              result.get("licensePlate").toString(),
+              result.get("brand").toString(),
+              result.get("model").toString(),
+              LocalDateTime.parse(result.get("startTime").toString()),
+              LocalDateTime.parse(result.get("expectedReturnTime").toString()),
+              result.get("status").toString()
+          );
+          rentalViews.add(view);
         }
         return rentalViews;
+    }
+  
+    public static List<Rental> getRentalsByTime(LocalDateTime start, LocalDateTime end) {
+        String sql = "SELECT * FROM rental WHERE startTime >= ? AND startTime <= ? AND status = 'COMPLETED'";
+        var results = DBHelper.getInstance().executeQuery(sql, start, end);
+
+        List<Rental> rentals = new java.util.ArrayList<>();
+        for (var result : results) {
+            rentals.add(Rental.fromMap(result));
+        }
+        return rentals;
     }
 }

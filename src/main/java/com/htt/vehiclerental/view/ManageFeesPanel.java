@@ -39,7 +39,7 @@ public class ManageFeesPanel extends JPanel {
         setLayout(new BorderLayout(0, 16));
 
         //north
-        JPanel banner = UiKit.createInfoBanner("Quản lý phí", "Lưu và tra cứu thông tin phí.", UiKit.INFO);
+        JPanel banner = UiKit.createInfoBanner("Quản lý phí", "Tạo và quản lý thông tin phí.", UiKit.INFO);
         banner.setPreferredSize(new Dimension(0, 100));
 
         //center 
