@@ -115,6 +115,18 @@ public class CreateRentalDialog extends JDialog {
         centerForm.add(UiKit.createFieldBlock("Giờ thuê", startHour));
         centerForm.add(UiKit.createFieldBlock("Ngày trả dự kiến", expectedReturnDay));
         centerForm.add(UiKit.createFieldBlock("Giờ trả dự kiến", expectedReturnHour));
+        startDay.getDateEditor().addPropertyChangeListener(e -> {
+            if (e.getPropertyName().equals("date") && startDay.getDate() != null && expectedReturnDay.getDate() != null && 
+                   !pricePerDayField.getText().isEmpty() && startHour.getValue() != null && expectedReturnHour.getValue() != null) {
+                CalculateTotalAmount();
+            }
+        });
+        startHour.addChangeListener(e -> {
+            if (startDay.getDate() != null && expectedReturnDay.getDate() != null && 
+                   !pricePerDayField.getText().isEmpty() && startHour.getValue() != null && expectedReturnHour.getValue() != null) {
+                CalculateTotalAmount();
+            }
+        });
         expectedReturnDay.getDateEditor().addPropertyChangeListener(e -> {
             if (e.getPropertyName().equals("date") && startDay.getDate() != null && expectedReturnDay.getDate() != null && 
                    !pricePerDayField.getText().isEmpty() && startHour.getValue() != null && expectedReturnHour.getValue() != null) {
@@ -127,6 +139,7 @@ public class CreateRentalDialog extends JDialog {
                 CalculateTotalAmount();
             }
         });
+        
         centerForm.add(UiKit.createFieldBlock("Tiền đặt cọc (VNĐ)", depositField));
         centerForm.add(UiKit.createFieldBlock("Tổng tiền dự kiến (VNĐ)", totalAmountField));
 
