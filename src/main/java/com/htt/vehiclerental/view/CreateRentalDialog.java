@@ -22,7 +22,7 @@ public class CreateRentalDialog extends JDialog {
     private JTextField identityNumberField, fullNameField, phoneNumberField, addressField;
     private JDateChooser startDay, expectedReturnDay;
     private JSpinner startHour, expectedReturnHour;
-    private JTextField depositField, totalAmountField;
+    private JTextField depositField, estimatedTotalField;
 
     public CreateRentalDialog(String title, int id) {
         this.setTitle("Tạo hợp đồng thuê xe");
@@ -68,8 +68,8 @@ public class CreateRentalDialog extends JDialog {
         expectedReturnHour.setEditor(new JSpinner.DateEditor(expectedReturnHour, "HH:mm"));
 
         depositField = UiKit.createTextField(12);
-        totalAmountField = UiKit.createTextField(12);
-        totalAmountField.setEditable(false);
+        estimatedTotalField = UiKit.createTextField(12);
+        estimatedTotalField.setEditable(false);
 
         Vehicle currVehicle = VehicleBLL.getVehicle(id);
         if (currVehicle != null) {
@@ -118,30 +118,30 @@ public class CreateRentalDialog extends JDialog {
         startDay.getDateEditor().addPropertyChangeListener(e -> {
             if (e.getPropertyName().equals("date") && startDay.getDate() != null && expectedReturnDay.getDate() != null && 
                    !pricePerDayField.getText().isEmpty() && startHour.getValue() != null && expectedReturnHour.getValue() != null) {
-                CalculateTotalAmount();
+                CalculateEstimatedTotal();
             }
         });
         startHour.addChangeListener(e -> {
             if (startDay.getDate() != null && expectedReturnDay.getDate() != null && 
                    !pricePerDayField.getText().isEmpty() && startHour.getValue() != null && expectedReturnHour.getValue() != null) {
-                CalculateTotalAmount();
+                CalculateEstimatedTotal();
             }
         });
         expectedReturnDay.getDateEditor().addPropertyChangeListener(e -> {
             if (e.getPropertyName().equals("date") && startDay.getDate() != null && expectedReturnDay.getDate() != null && 
                    !pricePerDayField.getText().isEmpty() && startHour.getValue() != null && expectedReturnHour.getValue() != null) {
-                CalculateTotalAmount();
+                CalculateEstimatedTotal();
             }
         });
         expectedReturnHour.addChangeListener(e -> {
             if (startDay.getDate() != null && expectedReturnDay.getDate() != null && 
                    !pricePerDayField.getText().isEmpty() && startHour.getValue() != null && expectedReturnHour.getValue() != null) {
-                CalculateTotalAmount();
+                CalculateEstimatedTotal();
             }
         });
         
         centerForm.add(UiKit.createFieldBlock("Tiền đặt cọc (VNĐ)", depositField));
-        centerForm.add(UiKit.createFieldBlock("Tổng tiền dự kiến (VNĐ)", totalAmountField));
+        centerForm.add(UiKit.createFieldBlock("Tổng tiền dự kiến (VNĐ)", estimatedTotalField));
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 16, 0));
         buttonPanel.setOpaque(false);
@@ -199,22 +199,22 @@ public class CreateRentalDialog extends JDialog {
         return LocalDateTime.of(year, month, day, hour, minute);
     }
 
-    private void CalculateTotalAmount() {
+    private void CalculateEstimatedTotal() {
         LocalDateTime startDateTime = getLocalDateTime(startDay, startHour);
         LocalDateTime expectedReturnDateTime = getLocalDateTime(expectedReturnDay, expectedReturnHour);
 
         if (startDateTime != null && expectedReturnDateTime != null && !pricePerDayField.getText().isEmpty() && expectedReturnDateTime.isAfter(startDateTime)) {
-            int totalAmount = (int) ((Duration.between(startDateTime, expectedReturnDateTime).toMinutes() / 1440.0) * Integer.parseInt(pricePerDayField.getText().trim()));
-            totalAmountField.setText(String.valueOf(totalAmount));
+            int estimatedTotal = (int) ((Duration.between(startDateTime, expectedReturnDateTime).toMinutes() / 1440.0) * Integer.parseInt(pricePerDayField.getText().trim()));
+            estimatedTotalField.setText(String.valueOf(estimatedTotal));
             
         } else {
-            totalAmountField.setText("");
+            estimatedTotalField.setText("");
         }
     } 
 
     public void saveInfo(Vehicle vehicle) {
         if (identityNumberField.getText().isEmpty() || fullNameField.getText().isEmpty() || phoneNumberField.getText().isEmpty() || addressField.getText().isEmpty() ||
-            startDay.getDate() == null || expectedReturnDay.getDate() == null || startDay.getDate().after(expectedReturnDay.getDate()) || depositField.getText().isEmpty() || totalAmountField.getText().isEmpty()) {
+            startDay.getDate() == null || expectedReturnDay.getDate() == null || startDay.getDate().after(expectedReturnDay.getDate()) || depositField.getText().isEmpty() || estimatedTotalField.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng kiểm tra lại thông tin.", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -237,7 +237,7 @@ public class CreateRentalDialog extends JDialog {
         rental.setExpectedReturnTime(getLocalDateTime(expectedReturnDay, expectedReturnHour));
         rental.setPricePerDay(Integer.parseInt(pricePerDayField.getText().trim()));
         rental.setDeposit(Integer.parseInt(depositField.getText().trim()));
-        rental.setTotalAmount(Integer.parseInt(totalAmountField.getText().trim()));
+        rental.setEstimatedTotal(Integer.parseInt(estimatedTotalField.getText().trim()));
         
        switch (RentalBLL.addRental(rental)) {
         case RentalBLL.SUCCESS:
