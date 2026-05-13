@@ -15,7 +15,8 @@ create table `vehicle` (
     
     `status` ENUM ('AVAILABLE', 'RENTED', 'MAINTENANCE') default 'AVAILABLE',
     
-    `createdAt` datetime default current_timestamp
+    `createdAt` datetime default current_timestamp,
+    `isDeleted` boolean default false
 );
 
 create table `customer` (

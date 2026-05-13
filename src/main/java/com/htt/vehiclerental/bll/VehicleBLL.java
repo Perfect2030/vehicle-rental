@@ -4,8 +4,8 @@ import java.util.List;
 import com.htt.vehiclerental.dto.Vehicle;
 import com.htt.vehiclerental.enums.VehicleStatus;
 import com.htt.vehiclerental.enums.VehicleType;
+import com.htt.vehiclerental.dal.RentalDAL;
 import com.htt.vehiclerental.dal.VehicleDAL;
-import com.htt.vehiclerental.bll.RentalBLL;
 
 public class VehicleBLL {
 
@@ -44,9 +44,12 @@ public class VehicleBLL {
         if(existingVehicle == null) {
             return NOT_FOUND; 
         }
-        if(existingVehicle.getStatusEnum() == VehicleStatus.RENTED) {
-            return RENTAL_EXISTS; 
+        if(existingVehicle.getStatusEnum() == VehicleStatus.AVAILABLE && vehicle.getStatusEnum() == VehicleStatus.MAINTENANCE) {
+            if(RentalDAL.hasFutureRental(vehicle.getId(), java.time.LocalDateTime.now())) {
+                return RENTAL_EXISTS;
+            }
         }
+
         if(!VehicleDAL.update(vehicle)) {
             return DATABASE_ERROR;
         }
@@ -62,17 +65,17 @@ public class VehicleBLL {
         if(vehicle.getStatusEnum() == VehicleStatus.RENTED) {
             return RENTAL_EXISTS;
         }
+        if(vehicle.getStatusEnum() == VehicleStatus.AVAILABLE) {
+            if(RentalDAL.hasFutureRental(vehicle.getId(), java.time.LocalDateTime.now())) {
+                return RENTAL_EXISTS;
+            }
+        }
 
         if(!VehicleDAL.delete(licensePlate)) {
             return DATABASE_ERROR;
         }
         
         return SUCCESS;
-    }
-
-    public static List<Vehicle> searchVehicles(String model, String brand, String vehicleType, int displacement,
-            int pricePerDay, String status) {
-        return VehicleDAL.searchVehicles(model, brand, vehicleType, displacement, pricePerDay, status);
     }
 
     public static Vehicle getVehicle(String licensePlate) {

@@ -163,7 +163,7 @@ public class RentalBLL {
         return RentalDAL.update(rental);
     }
 
-     public static int addRental(CreateRental rental) {
+    public static int addRental(CreateRental rental) {
         // Kiểm tra xem khách hàng và xe có tồn tại không
         if (CustomerDAL.getCustomer(rental.getCustomerId()) == null || VehicleDAL.getVehicle(rental.getVehicleId()) == null) {
             return NOT_FOUND_VEHICLE_OR_CUSTOMER; // Không tìm thấy khách hàng hoặc xe

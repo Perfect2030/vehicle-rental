@@ -185,7 +185,7 @@ public class ManageVehiclesPanel extends JPanel {
                                                                 JOptionPane.ERROR_MESSAGE);
                                                         break;
                                                 case VehicleBLL.RENTAL_EXISTS:
-                                                        JOptionPane.showMessageDialog(this, "Xe đang được thuê. Vui lòng hoàn tất giao dịch thuê trước khi xóa.", "Lỗi",
+                                                        JOptionPane.showMessageDialog(this, "Xe đang được thuê hoặc có đơn thuê trong tương lai. Vui lòng hoàn tất giao dịch thuê trước khi xóa.", "Lỗi",
                                                                 JOptionPane.ERROR_MESSAGE);
                                                         break;
                                                 case VehicleBLL.DATABASE_ERROR:
