@@ -78,7 +78,7 @@ public class RentalCompletionDialog  extends JDialog{
 
         // extra fees table
         extraFeesTable = UiKit.createTable(
-            new String[] {"Mã phí", "Tên phí", "Giá phạt", "Số lượng"},
+            new String[] {"Tên phí", "Giá phạt", "Mô tả"},
             new Object[][] {}
         );
 
@@ -123,10 +123,9 @@ public class RentalCompletionDialog  extends JDialog{
         tableModel.setRowCount(0); // Clear existing rows
         for (var fee : extraFeeDetails) {
             tableModel.addRow(new Object[]{
-                fee.getExtraFeeTypeId(),
+                fee.getName(),
+                String.format("%,d VND", fee.getAmount()),
                 fee.getDescription(),
-                fee.getAmount(),
-                1
             });
         }
          
