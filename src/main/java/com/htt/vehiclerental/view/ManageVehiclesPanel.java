@@ -230,7 +230,7 @@ public class ManageVehiclesPanel extends JPanel {
 
                 if (selectedRows.length == 1) {
                         int id = (int) vehicleTable.getModel().getValueAt(vehicleTable.convertRowIndexToModel(selectedRows[0]), 0);
-                        //new VehicleDetailDialog(id).setVisible(true);
+                        new VehicleDetailDialog(id).setVisible(true);
                 } else {
                         JOptionPane.showMessageDialog(this, "Vui lòng chọn một xe để xem chi tiết.", "Lỗi",
                                         JOptionPane.ERROR_MESSAGE);
