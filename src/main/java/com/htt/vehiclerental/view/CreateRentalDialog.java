@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.Calendar;
 import java.time.Duration;
 
-import com.htt.vehiclerental.bll.CreateRentalBLL;
+import com.htt.vehiclerental.bll.RentalBLL;
 import com.htt.vehiclerental.bll.CustomerBLL;
 import com.htt.vehiclerental.bll.VehicleBLL;
 import com.htt.vehiclerental.dto.Customer;
@@ -225,18 +225,18 @@ public class CreateRentalDialog extends JDialog {
         rental.setDeposit(Integer.parseInt(depositField.getText().trim()));
         rental.setTotalAmount(Integer.parseInt(totalAmountField.getText().trim()));
         
-       switch (CreateRentalBLL.addRental(rental)) {
-        case CreateRentalBLL.SUCCESS:
+       switch (RentalBLL.addRental(rental)) {
+        case RentalBLL.SUCCESS:
             JOptionPane.showMessageDialog(this, "Thêm hợp đồng thuê thành công.", "Thành công", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
             break;
-        case CreateRentalBLL.RENTAL_EXISTS:
+        case RentalBLL.RENTAL_EXISTS:
             JOptionPane.showMessageDialog(this, "Xe đã có người thuê vào khoảng thời gian đó. Vui lòng chọn xe khác hoặc điều chỉnh thời gian thuê.", "Lỗi", JOptionPane.ERROR_MESSAGE);
             break;
-        case CreateRentalBLL.DATABASE_ERROR:
+        case RentalBLL.DATABASE_ERROR:
             JOptionPane.showMessageDialog(this, "Lỗi cơ sở dữ liệu.", "Lỗi", JOptionPane.ERROR_MESSAGE);
             break;
-        case CreateRentalBLL.NOT_FOUND_VEHICLE_OR_CUSTOMER:
+        case RentalBLL.NOT_FOUND_VEHICLE_OR_CUSTOMER:
             JOptionPane.showMessageDialog(this, "Không tìm thấy xe hoặc khách hàng.", "Lỗi", JOptionPane.ERROR_MESSAGE);
             break;
         default:
