@@ -54,4 +54,13 @@ public class ExtraFeeTypeDAL {
 
         return result.stream().map(ExtraFeeType::fromMap).toList();
     }
+
+    public static List<ExtraFeeType> getAllExtraFeeTypes() {
+        String sql = "SELECT * FROM extrafee_type";
+        var result = DBHelper.getInstance().executeQuery(sql);
+
+        if (result.isEmpty()) return null;
+
+        return result.stream().map(ExtraFeeType::fromMap).toList();
+    }
 }

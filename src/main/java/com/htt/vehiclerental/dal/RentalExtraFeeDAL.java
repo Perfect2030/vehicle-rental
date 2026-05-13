@@ -7,7 +7,7 @@ import com.htt.vehiclerental.dto.RentalExtraFee;
 public class RentalExtraFeeDAL {
     public static boolean add(RentalExtraFee rentalExtraFee) {
         String sql = "INSERT INTO rental_extrafee (rentalId, extraFeeTypeId, amount, description) VALUES (?, ?, ?, ?)";
-        return DBHelper.getInstance().executeUpdate(sql, rentalExtraFee.getId(), rentalExtraFee.getExtraFeeTypeId(), rentalExtraFee.getAmount(), rentalExtraFee.getDescription()) > 0;
+        return DBHelper.getInstance().executeUpdate(sql, rentalExtraFee.getRentalId(), rentalExtraFee.getExtraFeeTypeId(), rentalExtraFee.getAmount(), rentalExtraFee.getDescription()) > 0;
     }
 
     public static boolean update(RentalExtraFee rentalExtraFee) {

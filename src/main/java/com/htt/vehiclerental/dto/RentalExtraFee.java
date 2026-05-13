@@ -20,6 +20,8 @@ public class RentalExtraFee {
         this.description = description;
     }
 
+    
+
     public static RentalExtraFee fromMap(Map<String, Object> map) {
         return new RentalExtraFee(
                 (int) map.get("id"),

@@ -1,5 +1,7 @@
 package com.htt.vehiclerental.bll;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,4 +64,97 @@ public class RentalBLL {
         );
         return detail;
     }
+
+    public static RentalCompletion getRentalCompletion(int rentalId) {
+        Rental rental = RentalDAL.getRental(rentalId);
+        if (rental == null) {
+            return null;
+        }
+        Vehicle vehicle = VehicleDAL.getVehicle(rental.getVehicleId());
+        List<RentalExtraFee>  extraFees = RentalExtraFeeDAL.getRentalExtraFeesByRentalId(rentalId);
+
+        int totalAmount = (int)(rental.getPricePerDay() 
+                    * (Duration.between(rental.getStartTime(), LocalDateTime.now()).toMinutes()/1440 ) 
+                    + rental.getExtraFee());
+        RentalCompletion completion = new RentalCompletion(
+                vehicle != null ? vehicle.getLicensePlate() + " - " + vehicle.getBrand() + " " + vehicle.getModel() : "Unknown",
+                rental.getPricePerDay(),
+                rental.getStartTime(),
+                LocalDateTime.now(), // Assuming actual return time is now for completion
+                rental.getExtraFee(),
+                totalAmount,
+                extraFees
+        );
+        return completion;
+    }
+
+    public static List<ExtraFeeType> getAllExtraFeeTypes() {
+        return ExtraFeeTypeDAL.getAllExtraFeeTypes();
+    }
+
+    public static boolean addRentalExtraFee(RentalExtraFee rentalExtraFee) {
+        boolean result = RentalExtraFeeDAL.add(rentalExtraFee);
+
+        // After adding extra fee, we should also update the total extra fee in Rental table
+        if (result) {
+            Rental rental = RentalDAL.getRental(rentalExtraFee.getRentalId());
+            if (rental != null) {
+                rental.setExtraFee(rental.getExtraFee() + rentalExtraFee.getAmount());
+                RentalDAL.update(rental);
+            }
+        }
+        return result;
+    }
+
+    public static boolean completeRental(int rentalId, LocalDateTime actualReturnTime, int totalAmount) {
+        Rental rental = RentalDAL.getRental(rentalId);
+        if (rental == null) {
+            return false;
+        }
+        rental.setActualReturnTime(actualReturnTime);
+        rental.setTotalAmount(totalAmount);
+        rental.setStatus("COMPLETED");
+
+        // Update vehicle status to AVAILABLE
+        Vehicle vehicle = VehicleDAL.getVehicle(rental.getVehicleId());
+        if (vehicle != null) {
+            vehicle.setStatus("AVAILABLE");
+            VehicleDAL.update(vehicle);
+        }
+        return RentalDAL.update(rental);
+    }
+
+    public static boolean startRental(int rentalId) {
+        Rental rental = RentalDAL.getRental(rentalId);
+        if (rental == null) {
+            return false;
+        }
+        rental.setStatus("ACTIVE");
+
+        // Update vehicle status to RENTED
+        Vehicle vehicle = VehicleDAL.getVehicle(rental.getVehicleId());
+        if (vehicle != null) {
+            vehicle.setStatus("RENTED");
+            VehicleDAL.update(vehicle);
+        }
+        return RentalDAL.update(rental);
+    }
+
+    public static boolean cancelRental(int rentalId) {
+        Rental rental = RentalDAL.getRental(rentalId);
+        if (rental == null) {
+            return false;
+        }
+        rental.setStatus("CANCELED");
+
+        // Update vehicle status to AVAILABLE
+        Vehicle vehicle = VehicleDAL.getVehicle(rental.getVehicleId());
+        if (vehicle != null) {
+            vehicle.setStatus("AVAILABLE");
+            VehicleDAL.update(vehicle);
+        }
+        return RentalDAL.update(rental);
+    }
+
+
 }

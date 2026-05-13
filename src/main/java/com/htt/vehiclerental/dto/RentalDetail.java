@@ -4,25 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class RentalDetail {
-    // rentalId,
-
-    //  vehiclePlate, 
-    //  vehicleBrand,
-    //  vehicleModel,
-
-    //  customerId, 
-    //  customerName,
-    //  customerPhone,
-    //  customerAddress, 
-     
-    //  rentalDate, 
-    //  expectedReturnDate,
-    //  actualReturnTime,
-
-    //  pricePerDay,
-    //  estimatedTotal, // giá dự kiến (tính theo ngày thuê * giá thuê xe)
-    //  totalAmount, // tổng tiền phải trả (có thể bao gồm phí phát sinh)
-    //  extraFees; // tổng phí phát sinh (nếu có)
+   
     private int rentalId;
     private String vehiclePlate;
     private String vehicleBrand;

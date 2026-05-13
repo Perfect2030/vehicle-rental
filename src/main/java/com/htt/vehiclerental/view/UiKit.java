@@ -41,6 +41,7 @@ public final class UiKit {
     public static final Font TITLE_FONT = new Font("Segoe UI", Font.BOLD, 26);
     public static final Font SECTION_FONT = new Font("Segoe UI", Font.BOLD, 18);
     public static final Font BODY_FONT = new Font("Segoe UI", Font.PLAIN, 14);
+    public static final Font BODY_FONT_BOLD = new Font("Segoe UI", Font.BOLD, 14);
     public static final Font SMALL_FONT = new Font("Segoe UI", Font.PLAIN, 12);
     public static final Font BUTTON_FONT = new Font("Segoe UI", Font.BOLD, 13);
 
@@ -153,6 +154,20 @@ public final class UiKit {
 
         JLabel label = new JLabel(labelText);
         label.setFont(BODY_FONT);
+        label.setForeground(TEXT);
+
+        block.add(label, java.awt.BorderLayout.NORTH);
+        block.add(component, java.awt.BorderLayout.CENTER);
+        return block;
+    }
+
+    public static JPanel createFieldBlock_Bold(String labelText, JComponent component) {
+        JPanel block = new JPanel();
+        block.setOpaque(false);
+        block.setLayout(new java.awt.BorderLayout(0, 6));
+
+        JLabel label = new JLabel(labelText);
+        label.setFont(BODY_FONT_BOLD);
         label.setForeground(TEXT);
 
         block.add(label, java.awt.BorderLayout.NORTH);
