@@ -28,7 +28,7 @@ public class VehicleBLL {
     }
 
     public static int addVehicle(Vehicle vehicle) {
-        if(VehicleDAL.getVehicle(vehicle.getLicensePlate()) != null) {
+        if(VehicleDAL.isVehicleExists(vehicle.getLicensePlate())) {
             return VEHICLE_EXISTS; 
         }
 
@@ -57,8 +57,8 @@ public class VehicleBLL {
         return SUCCESS;
     }
 
-    public static int deleteVehicle(String licensePlate) {
-        Vehicle vehicle = VehicleDAL.getVehicle(licensePlate);
+    public static int deleteVehicle(int id) {
+        Vehicle vehicle = VehicleDAL.getVehicle(id);
         if(vehicle == null) {
             return NOT_FOUND;
         }
@@ -71,14 +71,14 @@ public class VehicleBLL {
             }
         }
 
-        if(!VehicleDAL.delete(licensePlate)) {
+        if(!VehicleDAL.delete(id)) {
             return DATABASE_ERROR;
         }
         
         return SUCCESS;
     }
 
-    public static Vehicle getVehicle(String licensePlate) {
-        return VehicleDAL.getVehicle(licensePlate);
+    public static Vehicle getVehicle(int id) {
+        return VehicleDAL.getVehicle(id);
     }
 }

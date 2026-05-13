@@ -4,7 +4,7 @@ use vehicle_rental;
 
 create table `vehicle` (
     `id` int auto_increment primary key,
-    `licensePlate` varchar(20) not null unique,
+    `licensePlate` varchar(20) not null,
     `model` varchar(100),
     `brand` varchar(50),
     `vehicleType` ENUM ('MANUAL', 'AUTOMATIC', 'SCOOTER') not null,

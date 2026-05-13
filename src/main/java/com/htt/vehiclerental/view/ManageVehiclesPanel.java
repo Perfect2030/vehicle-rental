@@ -14,7 +14,7 @@ import java.awt.*;
 
 public class ManageVehiclesPanel extends JPanel {
         private static final String[] VEHICLE_COLUMNS = {
-                        "Biển số", "Hãng xe", "Mẫu xe", "Loại xe", "Phân khối", "Giá thuê/ngày", "Trạng thái"
+                        "Id", "Biển số", "Hãng xe", "Mẫu xe", "Loại xe", "Phân khối", "Giá thuê/ngày", "Trạng thái"
         };
 
         JTextField searchField = UiKit.createTextField(20);
@@ -83,6 +83,7 @@ public class ManageVehiclesPanel extends JPanel {
                 searchBar.setOpaque(false);
 
                 vehicleTable = UiKit.createTable(VEHICLE_COLUMNS, new Object[][] {});
+                vehicleTable.removeColumn(vehicleTable.getColumnModel().getColumn(0));
 
                 JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 16, 16));
                 buttonPanel.setOpaque(false);
@@ -135,7 +136,9 @@ public class ManageVehiclesPanel extends JPanel {
                 model.setRowCount(0); // Xóa tất cả dữ liệu hiện tại
 
                 for (Vehicle vehicle : getVehiclesAfterFilterAndSort()) {
-                        model.addRow(new Object[] { vehicle.getLicensePlate(),
+                        model.addRow(new Object[] { 
+                                        vehicle.getId(),
+                                        vehicle.getLicensePlate(),
                                         vehicle.getBrand(),
                                         vehicle.getModel(),
                                         vehicle.getVehicleType().getDisplayName(),
@@ -149,19 +152,19 @@ public class ManageVehiclesPanel extends JPanel {
         }
 
         private void addVehicle() {
-                new VehicleInfoDialog("Thêm xe mới", null).setVisible(true);
+                new VehicleInfoDialog("Thêm xe mới", -1).setVisible(true);
                 this.ReloadData();
         }
 
         private void updateVehicle() {
                 int[] selectedRows = vehicleTable.getSelectedRows();
 
-                if (selectedRows.length == 1) {
-                        String licensePlate = (String) vehicleTable.getValueAt(selectedRows[0], 0);
-                        new VehicleInfoDialog("Cập nhật thông tin xe", licensePlate).setVisible(true);
+                if (selectedRows.length == 1 && !vehicleTable.getModel().getValueAt(vehicleTable.convertRowIndexToModel(selectedRows[0]), 7).equals("Đang cho thuê")) {
+                        int id = (int) vehicleTable.getModel().getValueAt((int) vehicleTable.convertRowIndexToModel(selectedRows[0]), 0);
+                        new VehicleInfoDialog("Cập nhật thông tin xe", id).setVisible(true);
                         this.ReloadData();
                 } else {
-                        JOptionPane.showMessageDialog(this, "Vui lòng chọn một xe để cập nhật.", "Lỗi",
+                        JOptionPane.showMessageDialog(this, "Vui lòng chọn một xe đang không được thuê để cập nhật.", "Lỗi",
                                         JOptionPane.ERROR_MESSAGE);
                 }
         }
@@ -175,7 +178,7 @@ public class ManageVehiclesPanel extends JPanel {
                                         JOptionPane.YES_NO_OPTION);
                         if (confirm == JOptionPane.YES_OPTION) {
                                 for (int row : selectedRows) {
-                                        switch (VehicleBLL.deleteVehicle((String) vehicleTable.getValueAt(row, 0))) {
+                                        switch (VehicleBLL.deleteVehicle((int) vehicleTable.getModel().getValueAt(vehicleTable.convertRowIndexToModel(row), 0))) {
                                                 case VehicleBLL.SUCCESS:
                                                         JOptionPane.showMessageDialog(this, "Xóa xe thành công.", "Thông báo",
                                                                 JOptionPane.INFORMATION_MESSAGE);
@@ -210,9 +213,9 @@ public class ManageVehiclesPanel extends JPanel {
         private void createRental() {
                 int[] selectedRows = vehicleTable.getSelectedRows();
 
-                if (selectedRows.length == 1 && vehicleTable.getValueAt(selectedRows[0], 6).equals("Sẵn sàng")) {
-                        String licensePlate = (String) vehicleTable.getValueAt(selectedRows[0], 0);
-                        new CreateRentalDialog("Tạo hợp đồng thuê xe", licensePlate).setVisible(true);
+                if (selectedRows.length == 1 && vehicleTable.getModel().getValueAt(vehicleTable.convertRowIndexToModel(selectedRows[0]), 7).equals("Sẵn sàng")) {
+                        int id = (int) vehicleTable.getModel().getValueAt(vehicleTable.convertRowIndexToModel(selectedRows[0]), 0);
+                        new CreateRentalDialog("Tạo hợp đồng thuê xe", id).setVisible(true);
                 } else {
                         JOptionPane.showMessageDialog(this, "Vui lòng chọn một xe ở trạng thái sẵn sàng để tạo hợp đồng thuê.", "Lỗi",
                                         JOptionPane.ERROR_MESSAGE);
