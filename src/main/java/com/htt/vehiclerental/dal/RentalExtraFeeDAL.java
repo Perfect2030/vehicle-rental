@@ -6,13 +6,13 @@ import com.htt.vehiclerental.dto.RentalExtraFee;
 
 public class RentalExtraFeeDAL {
     public static boolean add(RentalExtraFee rentalExtraFee) {
-        String sql = "INSERT INTO rental_extrafee (rentalId, extraFeeTypeId, amount, description) VALUES (?, ?, ?, ?)";
-        return DBHelper.getInstance().executeUpdate(sql, rentalExtraFee.getRentalId(), rentalExtraFee.getExtraFeeTypeId(), rentalExtraFee.getAmount(), rentalExtraFee.getDescription()) > 0;
+        String sql = "INSERT INTO rental_extrafee (rentalId, name, amount, description) VALUES (?, ?, ?, ?)";
+        return DBHelper.getInstance().executeUpdate(sql, rentalExtraFee.getRentalId(), rentalExtraFee.getName(), rentalExtraFee.getAmount(), rentalExtraFee.getDescription()) > 0;
     }
 
     public static boolean update(RentalExtraFee rentalExtraFee) {
-        String sql = "UPDATE rental_extrafee SET rentalId = ?, extraFeeTypeId = ?, amount = ?, description = ? WHERE id = ?";
-        return DBHelper.getInstance().executeUpdate(sql, rentalExtraFee.getRentalId(), rentalExtraFee.getExtraFeeTypeId(), rentalExtraFee.getAmount(), rentalExtraFee.getDescription(), rentalExtraFee.getId()) > 0;
+        String sql = "UPDATE rental_extrafee SET rentalId = ?, name = ?, amount = ?, description = ? WHERE id = ?";
+        return DBHelper.getInstance().executeUpdate(sql, rentalExtraFee.getRentalId(), rentalExtraFee.getName(), rentalExtraFee.getAmount(), rentalExtraFee.getDescription(), rentalExtraFee.getId()) > 0;
     }
 
     // public static boolean delete(int rentalExtraFeeId) {
