@@ -44,7 +44,7 @@ public class VehicleInfoDialog extends JDialog {
         displacementField = UiKit.createTextField(12);
         pricePerDayField = UiKit.createTextField(12);
         statusComboBox = UiKit
-            .createComboBox(new String[] { "Sẵn sàng", "Đang cho thuê", "Bảo trì" });
+            .createComboBox(new String[] { "Sẵn sàng", "Bảo trì" });
 
         Vehicle currVehicle = VehicleBLL.getVehicle(licensePlate);
         if (currVehicle != null) {
@@ -104,9 +104,7 @@ public class VehicleInfoDialog extends JDialog {
                 : typeField.getSelectedItem().toString().equals("Xe số") ? VehicleType.AUTOMATIC : VehicleType.SCOOTER);
         vehicle.setDisplacement(Integer.parseInt(displacementField.getText()));
         vehicle.setPricePerDay(Integer.parseInt(pricePerDayField.getText()));
-        vehicle.setStatusEnum(statusComboBox.getSelectedItem().toString().equals("Sẵn sàng") ? VehicleStatus.AVAILABLE
-                : statusComboBox.getSelectedItem().toString().equals("Đang cho thuê") ? VehicleStatus.RENTED
-                        : VehicleStatus.MAINTENANCE);
+        vehicle.setStatusEnum(statusComboBox.getSelectedItem().toString().equals("Sẵn sàng") ? VehicleStatus.AVAILABLE : VehicleStatus.MAINTENANCE);
 
         if (isUpdate) {
             switch (VehicleBLL.updateVehicle(vehicle)) {
@@ -119,7 +117,7 @@ public class VehicleInfoDialog extends JDialog {
                             JOptionPane.ERROR_MESSAGE);
                     break;
                 case VehicleBLL.RENTAL_EXISTS:
-                    JOptionPane.showMessageDialog(this, "Xe đang được thuê. Vui lòng hoàn tất giao dịch thuê trước khi cập nhật.", "Lỗi",
+                    JOptionPane.showMessageDialog(this, "Xe đang được thuê hoặc đang có đơn thuê trong tương lai. Vui lòng hoàn tất giao dịch thuê trước khi cập nhật.", "Lỗi",
                             JOptionPane.ERROR_MESSAGE);
                     break;
                 case VehicleBLL.DATABASE_ERROR:

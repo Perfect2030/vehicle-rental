@@ -16,12 +16,13 @@ public class Vehicle {
     private int pricePerDay;
     private VehicleStatus status;
     private LocalDateTime createdAt;
+    private boolean isDeleted;
 
     public Vehicle() {
     }
 
     public Vehicle(int id, String licensePlate, String model, String brand, VehicleType vehicleType, int displacement,
-            int pricePerDay, VehicleStatus status, LocalDateTime createdAt) {
+            int pricePerDay, VehicleStatus status, LocalDateTime createdAt, boolean isDeleted) {
         this.id = id;
         this.licensePlate = licensePlate;
         this.model = model;
@@ -31,6 +32,7 @@ public class Vehicle {
         this.pricePerDay = pricePerDay;
         this.status = status;
         this.createdAt = createdAt;
+        this.isDeleted = isDeleted;
     }
 
     public static Vehicle fromMap(Map<String, Object> map) {
@@ -43,7 +45,8 @@ public class Vehicle {
                 (int) map.get("displacement"),
                 (int) map.get("pricePerDay"),
                 VehicleStatus.fromString((String) map.get("status")),
-                (LocalDateTime) map.get("createdAt")
+                (LocalDateTime) map.get("createdAt"),
+                (boolean) map.get("isDeleted")
         );
     }
 
@@ -131,6 +134,13 @@ public class Vehicle {
         this.createdAt = createdAt;
     }
 
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
 
     @Override
     public String toString() {

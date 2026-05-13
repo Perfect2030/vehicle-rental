@@ -72,4 +72,14 @@ public class RentalDAL {
         int count = Integer.parseInt(result.get(0).get("count").toString());
         return count > 0;
     }    
+
+    public static boolean hasFutureRental(int vehicleId, java.time.LocalDateTime startTime) {
+        String sql = "SELECT COUNT(*) AS count FROM rental WHERE vehicleId = ? AND startTime > ? AND status IN ('ACTIVE', 'CREATED')";
+        var result = DBHelper.getInstance().executeQuery(sql, vehicleId, startTime);
+
+        if (result.isEmpty()) return false;
+
+        int count = Integer.parseInt(result.get(0).get("count").toString());
+        return count > 0;
+    }
 }
