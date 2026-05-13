@@ -12,17 +12,22 @@ public class CustomerDAL {
     }
 
     public static boolean update(Customer customer) {
-        String sql = "UPDATE customer SET fullName = ?, phoneNumber = ?, address = ?, createdAt = ? WHERE identityNumber = ?";
-        return DBHelper.getInstance().executeUpdate(sql, customer.getFullName(), customer.getPhoneNumber(), customer.getAddress(), customer.getCreatedAt(), customer.getIdentityNumber()) > 0;
+        String sql = "UPDATE customer SET fullName = ?, phoneNumber = ?, address = ?, createdAt = ? WHERE id = ?";
+        return DBHelper.getInstance().executeUpdate(sql, customer.getFullName(), customer.getPhoneNumber(), customer.getAddress(), customer.getCreatedAt(), customer.getId()) > 0;
     }
 
-    public static boolean delete(String customerId) {
-        String sql = "DELETE FROM customer WHERE identityNumber = ?";
+    public static boolean hardDelete(int customerId) {
+        String sql = "DELETE FROM customer WHERE id = ?";
         return DBHelper.getInstance().executeUpdate(sql, customerId) > 0;
     }
 
-    public static Customer getCustomer(String customerId) {
-        String sql = "SELECT * FROM customer WHERE identityNumber = ?";
+    public static boolean softDelete(int customerId) {
+        String sql = "UPDATE customer SET isDeleted = 1 WHERE id = ?";
+        return DBHelper.getInstance().executeUpdate(sql, customerId) > 0;
+    }
+
+    public static Customer getCustomer(int customerId) {
+        String sql = "SELECT * FROM customer WHERE id = ?";
         var result = DBHelper.getInstance().executeQuery(sql, customerId);
 
         if (result.isEmpty()) return null;
@@ -30,8 +35,17 @@ public class CustomerDAL {
         return Customer.fromMap(result.get(0));
     }
 
+    public static boolean isCustomerExists(String identityNumber) {
+        String sql = "SELECT identityNumber AS count FROM customer WHERE identityNumber = ? AND isDeleted = 0";
+        var result = DBHelper.getInstance().executeQuery(sql, identityNumber);
+
+        if (result.isEmpty()) return false;
+
+        return true;
+    }
+
     public static List<Customer> getAllCustomers() {
-        String sql = "SELECT * FROM customer";
+        String sql = "SELECT * FROM customer WHERE isDeleted = 0";
         var results = DBHelper.getInstance().executeQuery(sql);
 
         List<Customer> customers = new ArrayList<>();
@@ -42,7 +56,7 @@ public class CustomerDAL {
     }
 
     public static List<Customer> searchCustomers(String keyword, int sortOption) {
-        String sql = "SELECT * FROM customer WHERE fullName LIKE ? OR phoneNumber LIKE ?";
+        String sql = "SELECT * FROM customer WHERE (fullName LIKE ? OR phoneNumber LIKE ?) AND isDeleted = 0";
 
         if (sortOption == 1) sql += " ORDER BY fullName ASC";
         else if (sortOption == 2) sql += " ORDER BY fullName DESC";
@@ -57,7 +71,7 @@ public class CustomerDAL {
     }    
 
     public static int getCustomerCount() {
-        String sql = "SELECT COUNT(*) AS count FROM customer";
+        String sql = "SELECT COUNT(*) AS count FROM customer WHERE isDeleted = 0";
         var result = DBHelper.getInstance().executeQuery(sql);
 
         if (result.isEmpty()) return 0;
