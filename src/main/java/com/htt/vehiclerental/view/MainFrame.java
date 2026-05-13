@@ -15,6 +15,8 @@ public class MainFrame extends JFrame {
     private JPanel mainContent;
     private JButton selectedButton = null;
 
+    private JPanel manageVehiclesPanel, manageCustomersPanel, manageRentalsPanel, manageFeesPanel, generateReportsPanel;
+
 
     public MainFrame() {
         setTitle("Vehicle Rental System");
@@ -91,12 +93,17 @@ public class MainFrame extends JFrame {
         JPanel mainContent = new JPanel(new CardLayout());
         //add các màn hình
 
-        mainContent.add(new ManageVehiclesPanel(), "ManageVehicles");
-        mainContent.add(new ManageCustomersPanel(), "ManageCustomers");
-        mainContent.add(new ManageRentalsPanel(), "ManageRentals");
-        mainContent.add(new ManageFeesPanel(), "ManageFees");
-        mainContent.add(new GenerateReportsPanel(), "GenerateReports");
+        manageVehiclesPanel = new ManageVehiclesPanel();
+        manageCustomersPanel = new ManageCustomersPanel();
+        manageRentalsPanel = new ManageRentalsPanel();
+        manageFeesPanel = new ManageFeesPanel();
+        generateReportsPanel = new GenerateReportsPanel();
 
+        mainContent.add(manageVehiclesPanel, "ManageVehicles");
+        mainContent.add(manageCustomersPanel, "ManageCustomers");
+        mainContent.add(manageRentalsPanel, "ManageRentals");
+        mainContent.add(manageFeesPanel, "ManageFees");
+        mainContent.add(generateReportsPanel, "GenerateReports");
         return mainContent;
     }
 
@@ -105,4 +112,29 @@ public class MainFrame extends JFrame {
         cl.show(mainContent, panelName);
     }
     
+    public void showPanel(String panelName, String keyword) {
+        CardLayout cl = (CardLayout) mainContent.getLayout();
+
+        switch (panelName) {
+            // case "ManageVehicles":
+            //     ((ManageVehiclesPanel) manageVehiclesPanel).searchAndHighlight(keyword);
+            //     break;
+            // case "ManageCustomers":
+            //     ((ManageCustomersPanel) manageCustomersPanel).searchAndHighlight(keyword);
+            //     break;
+            // case "ManageRentals":
+            //     // ((ManageRentalsPanel) manageRentalsPanel).searchBar.setText(keyword);
+            //     ((ManageRentalsPanel) manageRentalsPanel).loadRentals();
+            //     break;
+            // case "ManageFees":
+            //     ((ManageFeesPanel) manageFeesPanel).searchAndHighlight(keyword);
+            //     break;
+            // case "GenerateReports":
+            //     // Không có chức năng tìm kiếm, có thể bỏ qua
+            //     break;
+        }
+
+        cl.show(mainContent, panelName);
+
+    }
 }

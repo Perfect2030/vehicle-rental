@@ -1,5 +1,6 @@
 package com.htt.vehiclerental.dal;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.htt.vehiclerental.dto.Rental;
@@ -81,5 +82,16 @@ public class RentalDAL {
 
         int count = Integer.parseInt(result.get(0).get("count").toString());
         return count > 0;
+    }
+
+    public static List<Rental> getRentalsByTime(LocalDateTime start, LocalDateTime end) {
+        String sql = "SELECT * FROM rental WHERE startTime >= ? AND startTime <= ? AND status = 'COMPLETED'";
+        var results = DBHelper.getInstance().executeQuery(sql, start, end);
+
+        List<Rental> rentals = new java.util.ArrayList<>();
+        for (var result : results) {
+            rentals.add(Rental.fromMap(result));
+        }
+        return rentals;
     }
 }

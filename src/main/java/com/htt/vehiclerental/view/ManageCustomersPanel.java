@@ -121,7 +121,6 @@ public class ManageCustomersPanel extends JPanel {
         //sort criteria
         // if (sortComboBox.getSelectedIndex() == 1)
         //
-        table.removeColumn(table.getColumnModel().getColumn(0));
 
         List<Customer> customers = CustomerBLL.searchCustomers(searchField.getText(), sortComboBox.getSelectedIndex());
 
@@ -216,6 +215,7 @@ public class ManageCustomersPanel extends JPanel {
             return;
         }
 
-        new CustomerDetailsDialog(customerDetail).setVisible(true);
+        MainFrame mainFrame = (MainFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
+        new CustomerDetailsDialog(mainFrame, customerDetail).setVisible(true);
     }
-}
+}   
