@@ -123,6 +123,33 @@ public final class UiKit {
         return card;
     }
 
+    public static JPanel createMetricCard(String label, JLabel value, String note, Color accent) {
+        JPanel card = new JPanel();
+        card.setLayout(new javax.swing.BoxLayout(card, javax.swing.BoxLayout.Y_AXIS));
+        card.setBackground(SURFACE);
+        card.setBorder(createCardBorder());
+        card.setPreferredSize(new Dimension(0, 100));
+
+        JPanel accentBar = new JPanel();
+        accentBar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 4));
+        accentBar.setPreferredSize(new Dimension(100, 4));
+        accentBar.setBackground(accent);
+        accentBar.setBorder(new EmptyBorder(0, 0, 0, 0));
+
+        JLabel metricLabel = createMetricLabel(label);
+        JLabel metricValue = value;
+        JLabel metricNote = createSubtitleLabel(note);
+
+        card.add(accentBar);
+        card.add(javax.swing.Box.createVerticalStrut(5));
+        card.add(metricLabel);
+        card.add(javax.swing.Box.createVerticalStrut(0));
+        card.add(metricValue);
+        card.add(javax.swing.Box.createVerticalStrut(6));
+        card.add(metricNote);
+        return card;
+    }
+
     public static JPanel createSectionHeader(String title, String subtitle) {
         JPanel panel = new JPanel();
         panel.setOpaque(false);
