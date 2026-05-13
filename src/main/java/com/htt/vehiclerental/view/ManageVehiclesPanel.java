@@ -210,11 +210,11 @@ public class ManageVehiclesPanel extends JPanel {
         private void createRental() {
                 int[] selectedRows = vehicleTable.getSelectedRows();
 
-                if (selectedRows.length == 1) {
+                if (selectedRows.length == 1 && vehicleTable.getValueAt(selectedRows[0], 6).equals("Sẵn sàng")) {
                         String licensePlate = (String) vehicleTable.getValueAt(selectedRows[0], 0);
-                        new NewRentalDialog("Tạo hợp đồng thuê xe", licensePlate).setVisible(true);
+                        new CreateRentalDialog("Tạo hợp đồng thuê xe", licensePlate).setVisible(true);
                 } else {
-                        JOptionPane.showMessageDialog(this, "Vui lòng chọn một xe để tạo hợp đồng thuê.", "Lỗi",
+                        JOptionPane.showMessageDialog(this, "Vui lòng chọn một xe ở trạng thái sẵn sàng để tạo hợp đồng thuê.", "Lỗi",
                                         JOptionPane.ERROR_MESSAGE);
                 }
         }

@@ -4,23 +4,29 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.Calendar;
+import java.time.Duration;
 
+import com.htt.vehiclerental.bll.CreateRentalBLL;
 import com.htt.vehiclerental.bll.CustomerBLL;
 import com.htt.vehiclerental.bll.VehicleBLL;
 import com.htt.vehiclerental.dto.Customer;
 import com.htt.vehiclerental.dto.Vehicle;
+import com.htt.vehiclerental.dto.CreateRental;
 
 import com.toedter.calendar.JDateChooser;
 
-public class NewRentalDialog extends JDialog {
+public class CreateRentalDialog extends JDialog {
     private JTextField licensePlateField, brandField, modelField, typeField, displacementField, pricePerDayField;
     private JTextField identityNumberField, fullNameField, phoneNumberField, addressField;
-    private JDateChooser startTime, expectedReturnTime;
+    private JDateChooser startDay, expectedReturnDay;
+    private JSpinner startHour, expectedReturnHour;
     private JTextField depositField, totalAmountField;
 
-    public NewRentalDialog(String title, String licensePlate) {
+    public CreateRentalDialog(String title, String licensePlate) {
         this.setTitle("Tạo hợp đồng thuê xe");
-        this.setSize(930, 660);
+        this.setSize(1080, 580);
         this.setLocationRelativeTo(null);
         this.setModal(true);
 
@@ -38,7 +44,7 @@ public class NewRentalDialog extends JDialog {
         JPanel centerHeader = UiKit.createSectionHeader(title, "");
 
         // center form
-        JPanel centerForm = new JPanel(new GridLayout(6, 3, 16, 16));
+        JPanel centerForm = new JPanel(new GridLayout(5, 4, 16, 16));
         centerForm.setOpaque(false);
 
         //
@@ -54,8 +60,12 @@ public class NewRentalDialog extends JDialog {
         phoneNumberField = UiKit.createTextField(12);
         addressField = UiKit.createTextField(12);
 
-        startTime = new JDateChooser(); startTime.setDateFormatString("dd/MM/yyyy HH:mm");
-        expectedReturnTime = new JDateChooser(); expectedReturnTime.setDateFormatString("dd/MM/yyyy HH:mm");
+        startDay = new JDateChooser(); startDay.setDateFormatString("dd/MM/yyyy");
+        startHour = new JSpinner(new SpinnerDateModel());
+        startHour.setEditor(new JSpinner.DateEditor(startHour, "HH:mm"));
+        expectedReturnDay = new JDateChooser(); expectedReturnDay.setDateFormatString("dd/MM/yyyy");
+        expectedReturnHour = new JSpinner(new SpinnerDateModel());
+        expectedReturnHour.setEditor(new JSpinner.DateEditor(expectedReturnHour, "HH:mm"));
 
         depositField = UiKit.createTextField(12);
         totalAmountField = UiKit.createTextField(12);
@@ -77,10 +87,9 @@ public class NewRentalDialog extends JDialog {
         centerForm.add(UiKit.createFieldBlock("Mẫu xe", modelField));
         centerForm.add(UiKit.createFieldBlock("Loại xe", typeField));
         centerForm.add(UiKit.createFieldBlock("Phân khối", displacementField));
-        centerForm.add(UiKit.createFieldBlock("Giá thuê/ngày (VNĐ)", pricePerDayField));
+        centerForm.add(UiKit.createFieldBlock("Giá thuê/ngày (VNĐ)", pricePerDayField)); centerForm.add(new JLabel()); centerForm.add(new JLabel());
 
         // khách hàng
-        Customer customer;
         centerForm.add(UiKit.createFieldBlock("Số định danh khách hàng", identityNumberField));
         identityNumberField.addFocusListener(new FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
@@ -99,14 +108,22 @@ public class NewRentalDialog extends JDialog {
 
         centerForm.add(UiKit.createFieldBlock("Họ và tên khách hàng", fullNameField));
         centerForm.add(UiKit.createFieldBlock("Số điện thoại khách hàng", phoneNumberField));
-        centerForm.add(UiKit.createFieldBlock("Địa chỉ khách hàng", addressField)); centerForm.add(new JLabel()); centerForm.add(new JLabel());
+        centerForm.add(UiKit.createFieldBlock("Địa chỉ khách hàng", addressField)); 
 
         // thông tin thuê xe
-        centerForm.add(UiKit.createFieldBlock("Thời gian thuê", startTime));
-        centerForm.add(UiKit.createFieldBlock("Thời gian trả dự kiến", expectedReturnTime));
-        expectedReturnTime.getDateEditor().addPropertyChangeListener(e -> {
-            if (e.getPropertyName().equals("date") && startTime.getDate() != null && expectedReturnTime.getDate() != null && 
-                   !pricePerDayField.getText().isEmpty() && expectedReturnTime.getDate().after(startTime.getDate())) {
+        centerForm.add(UiKit.createFieldBlock("Ngày thuê", startDay));
+        centerForm.add(UiKit.createFieldBlock("Giờ thuê", startHour));
+        centerForm.add(UiKit.createFieldBlock("Ngày trả dự kiến", expectedReturnDay));
+        centerForm.add(UiKit.createFieldBlock("Giờ trả dự kiến", expectedReturnHour));
+        expectedReturnDay.getDateEditor().addPropertyChangeListener(e -> {
+            if (e.getPropertyName().equals("date") && startDay.getDate() != null && expectedReturnDay.getDate() != null && 
+                   !pricePerDayField.getText().isEmpty() && startHour.getValue() != null && expectedReturnHour.getValue() != null) {
+                CalculateTotalAmount();
+            }
+        });
+        expectedReturnHour.addChangeListener(e -> {
+            if (startDay.getDate() != null && expectedReturnDay.getDate() != null && 
+                   !pricePerDayField.getText().isEmpty() && startHour.getValue() != null && expectedReturnHour.getValue() != null) {
                 CalculateTotalAmount();
             }
         });
@@ -146,15 +163,37 @@ public class NewRentalDialog extends JDialog {
         }
     }
 
+    private LocalDateTime getLocalDateTime(JDateChooser dateChooser, JSpinner timeSpinner) {
+        Date date = dateChooser.getDate();
+        Date time = (Date) timeSpinner.getValue();
+
+        if (date == null || time == null) return null;
+
+        // Sử dụng Calendar để kết hợp ngày và giờ
+        Calendar dateCal = Calendar.getInstance();
+        dateCal.setTime(date);
+
+        Calendar timeCal = Calendar.getInstance();
+        timeCal.setTime(time);
+
+        // Lấy các thông số thời gian
+        int year = dateCal.get(Calendar.YEAR);
+        int month = dateCal.get(Calendar.MONTH) + 1; // Calendar month bắt đầu từ 0
+        int day = dateCal.get(Calendar.DAY_OF_MONTH);
+        int hour = timeCal.get(Calendar.HOUR_OF_DAY);
+        int minute = timeCal.get(Calendar.MINUTE);
+
+        return LocalDateTime.of(year, month, day, hour, minute);
+    }
+
     private void CalculateTotalAmount() {
-        if (startTime.getDate() != null && expectedReturnTime.getDate() != null 
-                && !pricePerDayField.getText().isEmpty() && expectedReturnTime.getDate().after(startTime.getDate())) {
-            long diffInMillies = expectedReturnTime.getDate().getTime() - startTime.getDate().getTime();
-            long diffInHours = diffInMillies / (1000 * 60 * 60);
-            long diffInDays = (diffInMillies / (1000 * 60 * 60 * 24)); // Cộng thêm 1 ngày để tính cả ngày bắt đầu
-            double pricePerDay = Double.parseDouble(pricePerDayField.getText());
-            long totalAmount = (long) Math.ceil((diffInDays + (diffInHours % 24) / 24.0) * pricePerDay); // Tính tổng tiền dựa trên số ngày và phần ngày lẻ
+        LocalDateTime startDateTime = getLocalDateTime(startDay, startHour);
+        LocalDateTime expectedReturnDateTime = getLocalDateTime(expectedReturnDay, expectedReturnHour);
+
+        if (startDateTime != null && expectedReturnDateTime != null && !pricePerDayField.getText().isEmpty() && expectedReturnDateTime.isAfter(startDateTime)) {
+            int totalAmount = (int) ((Duration.between(startDateTime, expectedReturnDateTime).toMinutes() / 1440.0) * Integer.parseInt(pricePerDayField.getText().trim()));
             totalAmountField.setText(String.valueOf(totalAmount));
+            
         } else {
             totalAmountField.setText("");
         }
@@ -162,21 +201,48 @@ public class NewRentalDialog extends JDialog {
 
     public void saveInfo(Vehicle vehicle) {
         if (identityNumberField.getText().isEmpty() || fullNameField.getText().isEmpty() || phoneNumberField.getText().isEmpty() || addressField.getText().isEmpty() ||
-            startTime.getDate() == null || expectedReturnTime.getDate() == null || startTime.getDate().after(expectedReturnTime.getDate()) || depositField.getText().isEmpty() || totalAmountField.getText().isEmpty()) {
+            startDay.getDate() == null || expectedReturnDay.getDate() == null || startDay.getDate().after(expectedReturnDay.getDate()) || depositField.getText().isEmpty() || totalAmountField.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng kiểm tra lại thông tin.", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
-        if(CustomerBLL.getCustomer(identityNumberField.getText().trim()) == null) {
-            Customer customer = new Customer(identityNumberField.getText().trim(), fullNameField.getText().trim(), phoneNumberField.getText().trim(), addressField.getText().trim(), LocalDateTime.now());
+
+        Customer customer = CustomerBLL.getCustomer(identityNumberField.getText().trim());        
+        if(customer == null) {
+            customer = new Customer(identityNumberField.getText().trim(), fullNameField.getText().trim(), phoneNumberField.getText().trim(), addressField.getText().trim(), LocalDateTime.now());
             int result = CustomerBLL.addCustomer(customer);
             if(result != CustomerBLL.SUCCESS) {
-                        JOptionPane.showMessageDialog(this, "Lỗi khi thêm khách hàng.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi, vui lòng thử lại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
                         return;
             }
         }
 
-        this.dispose();
+        CreateRental rental = new CreateRental();
+        rental.setCustomerId(customer.getIdentityNumber());
+        rental.setVehicleId(vehicle.getId());
+        rental.setStartTime(getLocalDateTime(startDay, startHour));
+        rental.setExpectedReturnTime(getLocalDateTime(expectedReturnDay, expectedReturnHour));
+        rental.setPricePerDay(Integer.parseInt(pricePerDayField.getText().trim()));
+        rental.setDeposit(Integer.parseInt(depositField.getText().trim()));
+        rental.setTotalAmount(Integer.parseInt(totalAmountField.getText().trim()));
+        
+       switch (CreateRentalBLL.addRental(rental)) {
+        case CreateRentalBLL.SUCCESS:
+            JOptionPane.showMessageDialog(this, "Thêm hợp đồng thuê thành công.", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+            this.dispose();
+            break;
+        case CreateRentalBLL.RENTAL_EXISTS:
+            JOptionPane.showMessageDialog(this, "Xe đã có người thuê vào khoảng thời gian đó. Vui lòng chọn xe khác hoặc điều chỉnh thời gian thuê.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            break;
+        case CreateRentalBLL.DATABASE_ERROR:
+            JOptionPane.showMessageDialog(this, "Lỗi cơ sở dữ liệu.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            break;
+        case CreateRentalBLL.NOT_FOUND_VEHICLE_OR_CUSTOMER:
+            JOptionPane.showMessageDialog(this, "Không tìm thấy xe hoặc khách hàng.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            break;
+        default:
+            break;
+       }
+       return;
     }
 
     public void cancel() {
