@@ -90,6 +90,13 @@ public class CustomerBLL {
         return CustomerDAL.getCustomer(customerId);
     }
 
+    public static Customer getCustomer(String identityNumber) {
+        if (identityNumber == null || identityNumber.isEmpty()) {
+            return null;
+        }
+        return CustomerDAL.getCustomer(identityNumber);
+    }
+
     public static CustomerDetail getCustomerDetail(int customerId) {
         Customer customer = getCustomer(customerId);
         if (customer == null) {

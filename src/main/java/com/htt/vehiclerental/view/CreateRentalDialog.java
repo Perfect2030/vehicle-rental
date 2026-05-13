@@ -227,10 +227,11 @@ public class CreateRentalDialog extends JDialog {
                         JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi, vui lòng thử lại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
                         return;
             }
+            customer = CustomerBLL.getCustomer(identityNumberField.getText().trim());
         }
 
         CreateRental rental = new CreateRental();
-        rental.setCustomerId(customer.getIdentityNumber());
+        rental.setCustomerId(customer.getId());
         rental.setVehicleId(vehicle.getId());
         rental.setStartTime(getLocalDateTime(startDay, startHour));
         rental.setExpectedReturnTime(getLocalDateTime(expectedReturnDay, expectedReturnHour));
