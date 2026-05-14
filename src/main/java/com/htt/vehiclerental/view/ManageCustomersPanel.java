@@ -31,6 +31,8 @@ public class ManageCustomersPanel extends JPanel {
     private JComboBox<String> sortComboBox;
     private JLabel totalCustomersLabel, totalRentingLabel;
 
+    private JButton viewDetailsButton, addButton, updateButton, deleteButton;
+
     public ManageCustomersPanel() {
         initComponents();
         updateTable();
@@ -86,19 +88,21 @@ public class ManageCustomersPanel extends JPanel {
             
             table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
+            table.getSelectionModel().addListSelectionListener(e -> updateButtonStates());
+
             JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 16, 16));
                 buttonPanel.setOpaque(false);
 
-                JButton viewDetailsButton = UiKit.createPrimaryButton("Xem chi tiết");
+                viewDetailsButton = UiKit.createPrimaryButton("Xem chi tiết");
                     viewDetailsButton.addActionListener(e -> viewCustomerDetails());
 
-                JButton addButton = UiKit.createPrimaryButton("Thêm khách mới");
+                addButton = UiKit.createPrimaryButton("Thêm khách mới");
                     addButton.addActionListener(e -> addCustomer());
 
-                JButton updateButton = UiKit.createPrimaryButton("Cập nhật thông tin");
+                updateButton = UiKit.createPrimaryButton("Cập nhật thông tin");
                     updateButton.addActionListener(e -> updateCustomer());
 
-                JButton deleteButton = UiKit.createDangerButton("Xóa khách hàng");
+                deleteButton = UiKit.createDangerButton("Xóa khách hàng");
                     deleteButton.addActionListener(e -> deleteCustomer());
 
             buttonPanel.add(viewDetailsButton);
@@ -140,6 +144,21 @@ public class ManageCustomersPanel extends JPanel {
 
         table.revalidate();
         table.repaint();
+
+        updateButtonStates();
+    }
+
+    public void updateButtonStates() {
+        boolean hasSelection = table.getSelectedRowCount() > 0;
+        if (hasSelection) {
+            viewDetailsButton.setEnabled(true);
+            updateButton.setEnabled(true);
+            deleteButton.setEnabled(true);
+        } else {
+            viewDetailsButton.setEnabled(false);
+            updateButton.setEnabled(false);
+            deleteButton.setEnabled(false);
+        }
     }
 
     public void addCustomer() {
