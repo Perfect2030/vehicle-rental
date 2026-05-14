@@ -111,7 +111,7 @@ public class VehicleDAL {
         sql = "SELECT c.identityNumber, c.fullName, c.phoneNumber, r.startTime, r.expectedReturnTime " +
                 "FROM rental r " +
                 "JOIN customer c ON r.customerId = c.id " +
-                "WHERE r.vehicleId = ? AND r.startTime > NOW() AND r.status IN ('ACTIVE', 'CREATED') " +
+                "WHERE r.vehicleId = ? AND r.expectedReturnTime > NOW() AND r.status IN ('ACTIVE', 'CREATED') " +
                 "ORDER BY r.startTime ASC";
         
         var rentalResults = DBHelper.getInstance().executeQuery(sql, id);

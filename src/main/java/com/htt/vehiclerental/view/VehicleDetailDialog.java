@@ -69,7 +69,7 @@ public class VehicleDetailDialog extends JDialog {
         upcomingRentalCustomerTable = UiKit.createTable(UPCOMING_RENTALS_CUSTOMER_COLUMNS, new Object[][] {});
 
         center.add(centerForm, BorderLayout.NORTH);
-        center.add(UiKit.createFieldBlock("Khách hàng thuê xe sắp tới", new JScrollPane(upcomingRentalCustomerTable)), BorderLayout.CENTER);
+        center.add(UiKit.createFieldBlock("Khách hàng đang hoặc chuẩn bị thuê xe trong thời gian tới", new JScrollPane(upcomingRentalCustomerTable)), BorderLayout.CENTER);
 
         // button
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 16, 0));
