@@ -96,8 +96,15 @@ public class GenerateReportsPanel extends JPanel {
             buttonPanel.add(monthlyButton);
             buttonPanel.add(yearlyButton);
 
+            JPanel customContainer = new JPanel(new BorderLayout());
+            customContainer.setOpaque(false);
+            JPanel customNorth = new JPanel(new BorderLayout());
+            customNorth.setOpaque(false);
+            JLabel emptyLabel1 = new JLabel("     ");
+            JLabel emptyLabel2 = new JLabel("     ");
+
             JPanel customReportPanel = new JPanel(new GridLayout(1, 3, 16, 16));
-                customReportPanel.setBorder(BorderFactory.createEmptyBorder(50, 150, 270, 150));
+                // customReportPanel.setBorder(BorderFactory.createEmptyBorder(50, 150, 180, 150));
                 customReportPanel.setOpaque(false);
                 
                 startDateChooser = new JDateChooser();
@@ -112,8 +119,14 @@ public class GenerateReportsPanel extends JPanel {
                 customReportPanel.add(UiKit.createFieldBlock("Ngày kết thúc", endDateChooser));
                 customReportPanel.add(UiKit.createFieldBlock(" ", customButton));
 
+        customNorth.add(emptyLabel1, BorderLayout.WEST);
+        customNorth.add(emptyLabel2, BorderLayout.EAST);
+        customNorth.add(customReportPanel, BorderLayout.CENTER);
+
+        customContainer.add(customNorth, BorderLayout.NORTH);
+
         south.add(buttonPanel, BorderLayout.NORTH);
-        south.add(customReportPanel, BorderLayout.CENTER);
+        south.add(customContainer, BorderLayout.CENTER);
 
         add(northPanel, BorderLayout.NORTH);
         add(south, BorderLayout.CENTER);
