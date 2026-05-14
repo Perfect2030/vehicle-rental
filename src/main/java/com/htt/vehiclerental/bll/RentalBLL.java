@@ -228,4 +228,27 @@ public class RentalBLL {
         return RentalDAL.searchRentalsViews(searchTerm, statusFilter);
     }
 
+    public static String getTotalRentals() {
+        return String.valueOf(RentalDAL.getTotalRentals());
+    }
+
+    public static String getActiveRentals() {
+        return String.valueOf(RentalDAL.getActiveRentals());
+    }
+
+    public static String getCompletedRentals() {
+        return String.valueOf(RentalDAL.getCompletedRentals());
+    }
+
+    public static String getOverdueRentals() {
+        return String.valueOf(RentalDAL.getOverdueRentals());
+    }
+
+    public static String getWaitingForPickupRentals() {
+        return String.valueOf(RentalDAL.getWaitingForPickupRentals());
+    }
+
+    public static String getCancelledRentals() {
+        return String.valueOf(RentalDAL.getCancelledRentals());
+    }
 }

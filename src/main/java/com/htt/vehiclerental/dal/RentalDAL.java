@@ -122,4 +122,58 @@ public class RentalDAL {
         }
         return rentals;
     }
+
+    public static String getTotalRentals(){
+        String sql = "SELECT COUNT(*) AS count FROM rental";
+        var result = DBHelper.getInstance().executeQuery(sql);
+
+        if (result.isEmpty()) return "0";
+
+        return result.get(0).get("count").toString();
+    }
+
+    public static String getActiveRentals(){
+        String sql = "SELECT COUNT(*) AS count FROM rental WHERE status = 'ACTIVE'";
+        var result = DBHelper.getInstance().executeQuery(sql);
+
+        if (result.isEmpty()) return "0";
+
+        return result.get(0).get("count").toString();
+    }
+
+    public static String getCompletedRentals(){
+        String sql = "SELECT COUNT(*) AS count FROM rental WHERE status = 'COMPLETED'";
+        var result = DBHelper.getInstance().executeQuery(sql);
+
+        if (result.isEmpty()) return "0";
+
+        return result.get(0).get("count").toString();
+    }
+
+    public static String getOverdueRentals(){
+        String sql = "SELECT COUNT(*) AS count FROM rental WHERE status = 'ACTIVE' AND expectedReturnTime < NOW()";
+        var result = DBHelper.getInstance().executeQuery(sql);
+
+        if (result.isEmpty()) return "0";
+
+        return result.get(0).get("count").toString();
+    }
+
+    public static String getWaitingForPickupRentals(){
+        String sql = "SELECT COUNT(*) AS count FROM rental WHERE status = 'CREATED'";
+        var result = DBHelper.getInstance().executeQuery(sql);
+
+        if (result.isEmpty()) return "0";
+
+        return result.get(0).get("count").toString();
+    }
+
+    public static String getCancelledRentals(){
+        String sql = "SELECT COUNT(*) AS count FROM rental WHERE status = 'CANCELLED'";
+        var result = DBHelper.getInstance().executeQuery(sql);
+
+        if (result.isEmpty()) return "0";
+
+        return result.get(0).get("count").toString();
+    }
 }
