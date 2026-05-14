@@ -15,6 +15,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
+import java.time.format.DateTimeFormatter;
 
 import com.htt.vehiclerental.bll.RentalBLL;
 import com.htt.vehiclerental.dto.RentalView;
@@ -23,7 +24,7 @@ public class ManageRentalsPanel extends JPanel {
     private JTextField searchField;
     private JComboBox<String> sortComboBox;
     private JTable table;
-    private DefaultTableModel tableModel;
+   // private DefaultTableModel tableModel;
     private JButton searchButton;
     private JButton detailButton;
     private JButton completedButton;
@@ -102,7 +103,6 @@ public class ManageRentalsPanel extends JPanel {
         table = UiKit.createTable(
         new String[] { "Mã số thuê", "Tên khách hàng", "Biển số xe", "Hãng xe", "Mẫu xe", "Ngày thuê", "Ngày trả dự kiến", "Trạng thái" },
         new Object[0][0]);
-        tableModel = (DefaultTableModel) table.getModel();
 
         center.add(searchBar, BorderLayout.NORTH);
         center.add(UiKit.createTableScrollPane(table), BorderLayout.CENTER);
@@ -184,23 +184,6 @@ public class ManageRentalsPanel extends JPanel {
         add(northPanel, BorderLayout.NORTH);
         add(center, BorderLayout.CENTER);
     }
-
-    private void loadRentals() {
-        tableModel.setRowCount(0);
-
-        for (RentalView row : RentalBLL.getAllRentalsView()) {
-            tableModel.addRow(new Object[] {
-                row.getRentalId(),
-                row.getCustomerName(),
-                row.getLicensePlate(),
-                row.getBrand(),
-                row.getModel(),
-                row.getStartTime(),
-                row.getExpectedReturnTime(),
-                row.getStatus()
-            });
-        }
-    }
     
     private void updateTable() {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
@@ -214,8 +197,8 @@ public class ManageRentalsPanel extends JPanel {
                 row.getLicensePlate(),
                 row.getBrand(),
                 row.getModel(),
-                row.getStartTime(),
-                row.getExpectedReturnTime(),
+                row.getStartTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
+                row.getExpectedReturnTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
                 row.getStatus()
             });
         }    
@@ -227,6 +210,10 @@ public class ManageRentalsPanel extends JPanel {
         waitingForPickupLabel.setText(String.format("%,d", RentalBLL.getWaitingForPickupRentals()));
         cancelledLabel.setText(String.format("%,d", RentalBLL.getCancelledRentals()));
  
+        detailButton.setEnabled(false);
+        completedButton.setEnabled(false);
+        giaoxeButton.setEnabled(false);
+        huyButton.setEnabled(false);
     }
 
     public void setSearchField(String keyword) {

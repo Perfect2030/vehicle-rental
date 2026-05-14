@@ -6,8 +6,8 @@ import com.htt.vehiclerental.bll.RentalBLL;
 import com.htt.vehiclerental.dto.RentalDetail;
 
 import java.awt.*;
-import java.util.concurrent.Flow;
 import javax.swing.table.DefaultTableModel;
+import java.time.format.DateTimeFormatter;
 
 public class RentalDetailDialog extends JDialog{
     private int Id;
@@ -130,13 +130,13 @@ public class RentalDetailDialog extends JDialog{
         customerName.setText(data.getCustomerName());
         customerPhone.setText(data.getCustomerPhone());
         customerAddress.setText(data.getCustomerAddress());
-        rentalDate.setText(data.getRentalDate().toString());
-        expectedReturnDate.setText(data.getExpectedReturnDate().toString());
-        actualReturnTime.setText(data.getActualReturnTime() != null ? data.getActualReturnTime().toString() : "NULL");
-        pricePerDay.setText(String.valueOf(data.getPricePerDay()));
-        estimatedTotal.setText(String.valueOf(data.getEstimatedTotal()));
-        totalAmount.setText(String.valueOf(data.getTotalAmount() == -1 ? "Chưa có" : data.getTotalAmount()));
-        extraFees.setText(String.valueOf(data.getExtraFees()));
+        rentalDate.setText(data.getRentalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
+        expectedReturnDate.setText(data.getExpectedReturnDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
+        actualReturnTime.setText(data.getActualReturnTime() != null ? data.getActualReturnTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) : "NULL");
+        pricePerDay.setText(String.format("%,d VND", data.getPricePerDay()));
+        estimatedTotal.setText(String.format("%,d VND", data.getEstimatedTotal()));
+        totalAmount.setText(String.format("%,d VND", data.getTotalAmount() < 0 ? 0 : data.getTotalAmount()));
+        extraFees.setText(String.format("%,d VND", data.getExtraFees()));
 
         // load extra fee details into table
         var extraFeeDetails = data.getExtraFeeDetails();

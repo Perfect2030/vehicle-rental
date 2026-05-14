@@ -164,7 +164,7 @@ public class ManageVehiclesPanel extends JPanel {
                                         vehicle.getModel(),
                                         vehicle.getVehicleType().getDisplayName(),
                                         vehicle.getDisplacement(),
-                                        vehicle.getPricePerDay(),
+                                        String.format("%,d VND", vehicle.getPricePerDay()),
                                         vehicle.getStatusEnum().getDisplayName()
                         });
                 }
