@@ -97,7 +97,7 @@ public class GenerateReportsPanel extends JPanel {
             buttonPanel.add(yearlyButton);
 
             JPanel customReportPanel = new JPanel(new GridLayout(1, 3, 16, 16));
-                customReportPanel.setBorder(BorderFactory.createEmptyBorder(50, 150, 270, 150));
+                customReportPanel.setBorder(BorderFactory.createEmptyBorder(50, 150, 120, 150));
                 customReportPanel.setOpaque(false);
                 
                 startDateChooser = new JDateChooser();

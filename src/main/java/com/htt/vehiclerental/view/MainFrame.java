@@ -18,6 +18,7 @@ public class MainFrame extends JFrame {
 
     public MainFrame() {
         setTitle("Vehicle Rental System");
+        setSize(1200, 700);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
