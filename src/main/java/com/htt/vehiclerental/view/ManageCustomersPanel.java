@@ -174,6 +174,7 @@ public class ManageCustomersPanel extends JPanel {
         }
 
         int customerId = (int) table.getValueAt(selectedRow, 0);
+        System.out.println(customerId);
         
         Customer customer = CustomerBLL.getCustomer(customerId);
         if (customer == null) {

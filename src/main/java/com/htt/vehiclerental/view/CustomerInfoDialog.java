@@ -19,6 +19,7 @@ public class CustomerInfoDialog extends JDialog {
     private JTextField addressField;
 
     private boolean isEditMode = false;
+    private int editingCustomerId = -1;
 
     public CustomerInfoDialog(String title) {
         this.setTitle("Thông tin khách hàng");
@@ -35,6 +36,7 @@ public class CustomerInfoDialog extends JDialog {
         this.setLocationRelativeTo(null);
         this.setModal(true);
         this.isEditMode = true;
+        this.editingCustomerId = customer.getId();
         
         initComponents(title);
 
@@ -96,6 +98,8 @@ public class CustomerInfoDialog extends JDialog {
         }
 
         Customer newCustomer = new Customer();
+        
+        newCustomer.setId(editingCustomerId);
         newCustomer.setIdentityNumber(identityField.getText());
         newCustomer.setFullName(nameField.getText());
         newCustomer.setPhoneNumber(phoneField.getText());
