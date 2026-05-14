@@ -3,8 +3,6 @@ package com.htt.vehiclerental.view;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.time.LocalDateTime;
-import java.util.concurrent.Flow;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -114,8 +112,8 @@ public class RentalCompletionDialog  extends JDialog{
         //
         vehicleInfo.setText(data.getVehicleInfo());
         pricePerDay.setText(String.format("%,d VND", data.getPricePerDay()));
-        rentalDate.setText(data.getRentalDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
-        actualReturnTime.setText(data.getActualReturnTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+        rentalDate.setText(data.getRentalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
+        actualReturnTime.setText(data.getActualReturnTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
         extraFees.setText(String.format("%,d VND", data.getExtraFees()));
         totalAmount.setText(String.format("%,d VND", data.getTotalAmount()));
 
