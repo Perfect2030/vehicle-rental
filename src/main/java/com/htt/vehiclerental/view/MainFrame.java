@@ -43,7 +43,7 @@ public class MainFrame extends JFrame {
         JButton btnManageCustomers = UiKit.createSidebarButton("Quản lý khách hàng");
         JButton btnManageRentals = UiKit.createSidebarButton("Quản lý thuê xe");
         JButton btnManageFees = UiKit.createSidebarButton("Quản lý phí phát sinh");
-        JButton btnGenerateReports = UiKit.createSidebarButton("Báo cáo doanh thu");
+        JButton btnGenerateReports = UiKit.createSidebarButton("Thống kê hệ thống");
 
         btnManageVehicles.addActionListener(e -> showPanel("ManageVehicles"));
         btnManageCustomers.addActionListener(e -> showPanel("ManageCustomers"));
