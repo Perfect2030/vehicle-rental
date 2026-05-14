@@ -104,7 +104,6 @@ public class GenerateReportsPanel extends JPanel {
             JLabel emptyLabel2 = new JLabel("     ");
 
             JPanel customReportPanel = new JPanel(new GridLayout(1, 3, 16, 16));
-                // customReportPanel.setBorder(BorderFactory.createEmptyBorder(50, 150, 180, 150));
                 customReportPanel.setOpaque(false);
                 
                 startDateChooser = new JDateChooser();
