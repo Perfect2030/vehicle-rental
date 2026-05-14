@@ -23,6 +23,10 @@ public class ManageRentalsPanel extends JPanel {
     private JButton giaoxeButton;
     private JButton huyButton;
 
+    JPanel card1, card2, card3, card4, card5, card6;
+    JPanel info;
+
+
     public ManageRentalsPanel() {
         initComponents();
         loadRentals();
@@ -41,18 +45,22 @@ public class ManageRentalsPanel extends JPanel {
                 "Thiết lập và quản lý thông tin thuê xe.", UiKit.INFO);
         banner.setPreferredSize(new Dimension(0, 100));
 
-        JPanel info = new JPanel(new GridLayout(1, 4, 16, 0));
+        info = new JPanel(new GridLayout(2, 3, 16, 0));
         info.setOpaque(false);
 
-        JPanel card1 = UiKit.createMetricCard("Tổng số đơn thuê", "120", "", UiKit.PRIMARY);
-        JPanel card2 = UiKit.createMetricCard("Số đơn đang cho thuê", "5", "", UiKit.INFO);
-        JPanel card4 = UiKit.createMetricCard("Số đơn quá hạn", "10", "", UiKit.WARNING);
-        JPanel card3 = UiKit.createMetricCard("Số đơn đã hoàn thành", "105", "", UiKit.SUCCESS);
+        card1 = UiKit.createMetricCard("Tổng số đơn thuê", "120", "", UiKit.PRIMARY);
+        card2 = UiKit.createMetricCard("Đơn đang cho thuê", "5", "", UiKit.INFO);
+        card4 = UiKit.createMetricCard("Đơn quá hạn", "10", "", UiKit.WARNING);
+        card3 = UiKit.createMetricCard("Đơn đã hoàn thành", "105", "", UiKit.SUCCESS);
+        card6 = UiKit.createMetricCard("Đơn đã hủy", "5", "", UiKit.DANGER);
+        card5 = UiKit.createMetricCard("Đơn chờ giao xe", "10", "", UiKit.WARNING);
 
         info.add(card1);
         info.add(card2);
         info.add(card3);
-        info.add(card4);    
+        info.add(card4);
+        info.add(card5);
+        info.add(card6);
 
         northPanel.add(banner, BorderLayout.NORTH);
         northPanel.add(info, BorderLayout.CENTER);
@@ -176,6 +184,8 @@ public class ManageRentalsPanel extends JPanel {
                 row.getStatus()
             });
         }
+
+        loadCardMetrics();
     }
     
     private void updateTable() {
@@ -194,9 +204,20 @@ public class ManageRentalsPanel extends JPanel {
                 row.getExpectedReturnTime(),
                 row.getStatus()
             });
-        }
+        }    
+    }
 
-        
+    private void loadCardMetrics() {
 
+        info.removeAll();
+        info.add(UiKit.createMetricCard("Tổng số đơn thuê", String.valueOf(RentalBLL.getTotalRentals()), "", UiKit.PRIMARY));
+        info.add(UiKit.createMetricCard("Số đơn đang cho thuê", String.valueOf(RentalBLL.getActiveRentals()), "", UiKit.INFO));
+        info.add(UiKit.createMetricCard("Số đơn đã hoàn thành", String.valueOf(RentalBLL.getCompletedRentals()), "", UiKit.SUCCESS));
+        info.add(UiKit.createMetricCard("Số đơn quá hạn", String.valueOf(RentalBLL.getOverdueRentals()), "", UiKit.WARNING));
+        info.add(UiKit.createMetricCard("Số đơn chờ giao xe", String.valueOf(RentalBLL.getWaitingForPickupRentals()), "", UiKit.WARNING));
+        info.add(UiKit.createMetricCard("Số đơn đã hủy", String.valueOf(RentalBLL.getCancelledRentals()), "", UiKit.DANGER));
+
+        revalidate();
+        repaint();
     }
 }
