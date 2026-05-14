@@ -123,4 +123,8 @@ public class CustomerBLL {
     public static int getCustomerCount() {
         return CustomerDAL.getCustomerCount();
     }
+
+    public static int getRentingCustomerCount() {
+        return RentalDAL.getRentingCustomerCount();
+    }
 }

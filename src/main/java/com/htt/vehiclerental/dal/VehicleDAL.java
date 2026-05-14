@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.htt.vehiclerental.dto.UpcomingRentalCustomer;
 import com.htt.vehiclerental.dto.Vehicle;
 import com.htt.vehiclerental.dto.VehicleDetail;
-import com.htt.vehiclerental.dto.UpcomingRentalCustomer;
 import com.htt.vehiclerental.enums.VehicleStatus;
 import com.htt.vehiclerental.enums.VehicleType;
 
@@ -124,5 +124,17 @@ public class VehicleDAL {
         vehicleDetail.setUpcomingRentalCustomers(upcomingRentalCustomers);
 
         return vehicleDetail;
+    }
+
+    public static int getVehicleCount(VehicleStatus status) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) AS count FROM vehicle WHERE isDeleted = 0");
+
+        if (status != null) {
+            sql.append(" AND status = '").append(status.name()).append("'");
+        }
+
+        var result = DBHelper.getInstance().executeQuery(sql.toString());
+        if (result.isEmpty()) return 0;
+        return ((Long) result.get(0).get("count")).intValue();
     }
 }

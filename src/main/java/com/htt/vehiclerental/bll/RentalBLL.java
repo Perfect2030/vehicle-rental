@@ -5,9 +5,21 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.htt.vehiclerental.dto.*;
+import com.htt.vehiclerental.dal.CustomerDAL;
+import com.htt.vehiclerental.dal.ExtraFeeTypeDAL;
+import com.htt.vehiclerental.dal.RentalDAL;
+import com.htt.vehiclerental.dal.RentalExtraFeeDAL;
+import com.htt.vehiclerental.dal.VehicleDAL;
+import com.htt.vehiclerental.dto.CreateRental;
+import com.htt.vehiclerental.dto.Customer;
+import com.htt.vehiclerental.dto.ExtraFeeType;
+import com.htt.vehiclerental.dto.Rental;
+import com.htt.vehiclerental.dto.RentalCompletion;
+import com.htt.vehiclerental.dto.RentalDetail;
+import com.htt.vehiclerental.dto.RentalExtraFee;
+import com.htt.vehiclerental.dto.RentalView;
+import com.htt.vehiclerental.dto.Vehicle;
 import com.htt.vehiclerental.enums.RentalStatus;
-import com.htt.vehiclerental.dal.*;
 
 public class RentalBLL {
 
@@ -228,4 +240,19 @@ public class RentalBLL {
         return RentalDAL.searchRentalsViews(searchTerm, statusFilter);
     }
 
+    public static int getTotalRentals() {
+        return RentalDAL.getRentalCount();
+    }
+
+    public static int getActiveRentals() {
+        return RentalDAL.getActiveRentalCount();
+    }
+
+    public static int getCompletedRentals() {
+        return RentalDAL.getCompletedRentalCount();
+    }
+
+    public static int getOverdueRentals() {
+        return RentalDAL.getOverdueRentalCount();
+    }
 }

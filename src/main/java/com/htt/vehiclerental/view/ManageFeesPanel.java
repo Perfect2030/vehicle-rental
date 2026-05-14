@@ -105,7 +105,7 @@ public class ManageFeesPanel extends JPanel {
             model.addRow(new Object[] {
                 feeType.getId(),
                 feeType.getName(),
-                feeType.getAmount(),
+                String.format("%,d VND", feeType.getAmount()),
                 feeType.getDescription()
             });
         }

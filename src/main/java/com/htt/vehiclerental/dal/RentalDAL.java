@@ -90,9 +90,9 @@ public class RentalDAL {
                      "FROM rental r " +
                      "JOIN customer c ON r.customerId = c.id " +
                      "JOIN vehicle v ON r.vehicleId = v.id " +
-                     "WHERE (c.fullName LIKE ? OR v.licensePlate LIKE ? OR v.brand LIKE ? OR v.model LIKE ?) " +
+                     "WHERE (c.identityNumber LIKE ? OR c.fullName LIKE ? OR v.licensePlate LIKE ? OR v.brand LIKE ? OR v.model LIKE ?) " +
                      "AND (? = '' OR r.status = ?)";
-        var results = DBHelper.getInstance().executeQuery(sql, "%" + searchTerm + "%", "%" + searchTerm + "%", "%" + searchTerm + "%", "%" + searchTerm + "%", statusFilter, statusFilter);
+        var results = DBHelper.getInstance().executeQuery(sql, "%" + searchTerm + "%", "%" + searchTerm + "%", "%" + searchTerm + "%", "%" + searchTerm + "%", "%" + searchTerm + "%", statusFilter, statusFilter);
 
         List<RentalView> rentalViews = new java.util.ArrayList<>();
         if(results == null) return rentalViews;
@@ -121,5 +121,50 @@ public class RentalDAL {
             rentals.add(Rental.fromMap(result));
         }
         return rentals;
+    }
+
+    public static int getRentingCustomerCount() {
+        String sql = "SELECT COUNT(DISTINCT customerId) AS count FROM rental WHERE status = 'ACTIVE'";
+        var result = DBHelper.getInstance().executeQuery(sql);
+
+        if (result.isEmpty()) return 0;
+
+        return ((Long) result.get(0).get("count")).intValue();
+    }
+
+    public static int getRentalCount() {
+        String sql = "SELECT COUNT(*) AS count FROM rental";
+        var result = DBHelper.getInstance().executeQuery(sql);
+
+        if (result.isEmpty()) return 0;
+
+        return ((Long) result.get(0).get("count")).intValue();
+    }
+
+    public static int getActiveRentalCount() {
+        String sql = "SELECT COUNT(*) AS count FROM rental WHERE status = 'ACTIVE'";
+        var result = DBHelper.getInstance().executeQuery(sql);
+
+        if (result.isEmpty()) return 0;
+
+        return ((Long) result.get(0).get("count")).intValue();
+    }
+
+    public static int getCompletedRentalCount() {
+        String sql = "SELECT COUNT(*) AS count FROM rental WHERE status = 'COMPLETED'";
+        var result = DBHelper.getInstance().executeQuery(sql);
+
+        if (result.isEmpty()) return 0;
+
+        return ((Long) result.get(0).get("count")).intValue();
+    }
+
+    public static int getOverdueRentalCount() {
+        String sql = "SELECT COUNT(*) AS count FROM rental WHERE status = 'ACTIVE' AND expectedReturnTime < ?";
+        var result = DBHelper.getInstance().executeQuery(sql, LocalDateTime.now());
+
+        if (result.isEmpty()) return 0;
+
+        return ((Long) result.get(0).get("count")).intValue();
     }
 }

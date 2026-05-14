@@ -4,28 +4,39 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;  
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.util.List;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import com.htt.vehiclerental.bll.RentalBLL;
 import com.htt.vehiclerental.dto.RentalView;
-import java.util.List;
 
 public class ManageRentalsPanel extends JPanel {
     private JTextField searchField;
     private JComboBox<String> sortComboBox;
     private JTable table;
     private DefaultTableModel tableModel;
-    JButton searchButton;
+    private JButton searchButton;
     private JButton detailButton;
     private JButton completedButton;
     private JButton giaoxeButton;
     private JButton huyButton;
 
+    private JLabel totalRentalsLabel;
+    private JLabel activeRentalsLabel;
+    private JLabel completedRentalsLabel;
+    private JLabel overdueRentalsLabel;
+
     public ManageRentalsPanel() {
         initComponents();
-        loadRentals();
+        updateTable();
     }
 
     private void initComponents() {
@@ -44,10 +55,15 @@ public class ManageRentalsPanel extends JPanel {
         JPanel info = new JPanel(new GridLayout(1, 4, 16, 0));
         info.setOpaque(false);
 
-        JPanel card1 = UiKit.createMetricCard("Tổng số đơn thuê", "120", "", UiKit.PRIMARY);
-        JPanel card2 = UiKit.createMetricCard("Số đơn đang cho thuê", "5", "", UiKit.INFO);
-        JPanel card4 = UiKit.createMetricCard("Số đơn quá hạn", "10", "", UiKit.WARNING);
-        JPanel card3 = UiKit.createMetricCard("Số đơn đã hoàn thành", "105", "", UiKit.SUCCESS);
+        totalRentalsLabel = UiKit.createMetricValueLabel("Đang tải...");
+        activeRentalsLabel = UiKit.createMetricValueLabel("Đang tải...");
+        completedRentalsLabel = UiKit.createMetricValueLabel("Đang tải...");
+        overdueRentalsLabel = UiKit.createMetricValueLabel("Đang tải...");
+
+        JPanel card1 = UiKit.createMetricCard("Tổng số đơn thuê", totalRentalsLabel, "", UiKit.PRIMARY);
+        JPanel card2 = UiKit.createMetricCard("Số đơn đang cho thuê", activeRentalsLabel, "", UiKit.INFO);
+        JPanel card3 = UiKit.createMetricCard("Số đơn đã hoàn thành", completedRentalsLabel, "", UiKit.SUCCESS);
+        JPanel card4 = UiKit.createMetricCard("Số đơn quá hạn", overdueRentalsLabel, "", UiKit.WARNING);
 
         info.add(card1);
         info.add(card2);
@@ -100,7 +116,7 @@ public class ManageRentalsPanel extends JPanel {
             new RentalDetailDialog(table.getValueAt(table.getSelectedRow(), 0)).setVisible(true);
         });
         completedButton.addActionListener(e -> {new RentalCompletionDialog(table.getValueAt(table.getSelectedRow(), 0)).setVisible(true);
-                                                    loadRentals();
+                                                    updateTable();
                                                 });
 
         giaoxeButton.addActionListener(e -> {
@@ -114,7 +130,7 @@ public class ManageRentalsPanel extends JPanel {
             } else {
                 JOptionPane.showMessageDialog(this, "Giao xe thất bại. Vui lòng thử lại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
-            loadRentals();
+            updateTable();
         });
 
         huyButton.addActionListener(e -> {
@@ -126,7 +142,7 @@ public class ManageRentalsPanel extends JPanel {
                 } else {
                     JOptionPane.showMessageDialog(this, "Hủy đơn thuê thất bại. Vui lòng thử lại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 }
-                loadRentals();
+                updateTable();
             }
         });
 
@@ -196,7 +212,15 @@ public class ManageRentalsPanel extends JPanel {
             });
         }
 
-        
+        totalRentalsLabel.setText(String.format("%,d", RentalBLL.getTotalRentals()));
+        activeRentalsLabel.setText(String.format("%,d", RentalBLL.getActiveRentals()));
+        completedRentalsLabel.setText(String.format("%,d", RentalBLL.getCompletedRentals()));
+        overdueRentalsLabel.setText(String.format("%,d", RentalBLL.getOverdueRentals()));
+ 
+    }
 
+    public void setSearchField(String keyword) {
+        searchField.setText(keyword);
+        updateTable();
     }
 }

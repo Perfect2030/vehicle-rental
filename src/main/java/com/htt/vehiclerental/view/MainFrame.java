@@ -122,10 +122,9 @@ public class MainFrame extends JFrame {
             // case "ManageCustomers":
             //     ((ManageCustomersPanel) manageCustomersPanel).searchAndHighlight(keyword);
             //     break;
-            // case "ManageRentals":
-            //     // ((ManageRentalsPanel) manageRentalsPanel).searchBar.setText(keyword);
-            //     ((ManageRentalsPanel) manageRentalsPanel).loadRentals();
-            //     break;
+            case "ManageRentals":
+                ((ManageRentalsPanel) manageRentalsPanel).setSearchField(keyword);
+                break;
             // case "ManageFees":
             //     ((ManageFeesPanel) manageFeesPanel).searchAndHighlight(keyword);
             //     break;

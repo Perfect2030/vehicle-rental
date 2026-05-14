@@ -1,12 +1,13 @@
 package com.htt.vehiclerental.bll;
 
 import java.util.List;
-import com.htt.vehiclerental.dto.Vehicle;
-import com.htt.vehiclerental.enums.VehicleStatus;
-import com.htt.vehiclerental.enums.VehicleType;
-import com.htt.vehiclerental.dto.VehicleDetail;
+
 import com.htt.vehiclerental.dal.RentalDAL;
 import com.htt.vehiclerental.dal.VehicleDAL;
+import com.htt.vehiclerental.dto.Vehicle;
+import com.htt.vehiclerental.dto.VehicleDetail;
+import com.htt.vehiclerental.enums.VehicleStatus;
+import com.htt.vehiclerental.enums.VehicleType;
 
 public class VehicleBLL {
 
@@ -85,5 +86,21 @@ public class VehicleBLL {
 
     public static VehicleDetail getVehicleDetail(int id) {
         return VehicleDAL.getVehicleDetail(id);        
+    }
+
+    public static int getTotalVehicles() {
+        return VehicleDAL.getVehicleCount(null);
+    }
+
+    public static int getRentedVehicles() {
+        return VehicleDAL.getVehicleCount(VehicleStatus.RENTED);
+    }
+
+    public static int getAvailableVehicles() {
+        return VehicleDAL.getVehicleCount(VehicleStatus.AVAILABLE);
+    }
+
+    public static int getMaintenanceVehicles() {
+        return VehicleDAL.getVehicleCount(VehicleStatus.MAINTENANCE);
     }
 }

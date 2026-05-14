@@ -54,8 +54,8 @@ public class ManageCustomersPanel extends JPanel {
             totalCustomersLabel = UiKit.createMetricValueLabel("0"); 
             totalRentingLabel = UiKit.createMetricValueLabel("0");
 
-            JPanel card1 = UiKit.createMetricCard("Tổng số khách hàng", totalCustomersLabel.getText(), "", UiKit.PRIMARY);
-            JPanel card2 = UiKit.createMetricCard("Số khách hàng đang thuê", totalRentingLabel.getText(), "", UiKit.WARNING);
+            JPanel card1 = UiKit.createMetricCard("Tổng số khách hàng", totalCustomersLabel, "", UiKit.PRIMARY);
+            JPanel card2 = UiKit.createMetricCard("Số khách hàng đang thuê", totalRentingLabel, "", UiKit.WARNING);
 
             info.add(card1);
             info.add(card2);
@@ -135,8 +135,8 @@ public class ManageCustomersPanel extends JPanel {
         }
 
         //update metrics
-        totalCustomersLabel.setText(String.valueOf(CustomerBLL.getCustomerCount()));
-        // totalRentingLabel.setText(String.valueOf(CustomerBLL.()));
+        totalCustomersLabel.setText(String.format("%,d", CustomerBLL.getCustomerCount()));
+        totalRentingLabel.setText(String.format("%,d", CustomerBLL.getRentingCustomerCount()));
 
         table.revalidate();
         table.repaint();

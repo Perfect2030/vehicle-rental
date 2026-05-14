@@ -1,15 +1,24 @@
 package com.htt.vehiclerental.view;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.util.List;
-import javax.swing.*;
+
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import com.htt.vehiclerental.bll.VehicleBLL;
 import com.htt.vehiclerental.dto.Vehicle;
 import com.htt.vehiclerental.enums.VehicleStatus;
 import com.htt.vehiclerental.enums.VehicleType;
-
-import java.awt.*;
 
 public class ManageVehiclesPanel extends JPanel {
         private static final String[] VEHICLE_COLUMNS = {
@@ -23,6 +32,8 @@ public class ManageVehiclesPanel extends JPanel {
         JComboBox<String> sortComboBox = UiKit.createComboBox(new String[] { "Mặc định", "Giá thuê tăng dần", "Giá thuê giảm dần", 
                                                                                 "Phân khối tăng dần", "Phân khối giảm dần"
         });
+
+        private JLabel totalVehicles, rentedVehicles, availableVehicles, maintenanceVehicles;
 
         private JTable vehicleTable;
 
@@ -46,10 +57,11 @@ public class ManageVehiclesPanel extends JPanel {
                 JPanel info = new JPanel(new GridLayout(1, 4, 16, 0));
                 info.setOpaque(false);
 
-                String totalVehicles = "120";
-                String rentedVehicles = "5";
-                String availableVehicles = "105";
-                String maintenanceVehicles = "10";
+                totalVehicles = UiKit.createMetricValueLabel("Đang tải...");
+                rentedVehicles = UiKit.createMetricValueLabel("Đang tải...");
+                availableVehicles = UiKit.createMetricValueLabel("Đang tải...");
+                maintenanceVehicles = UiKit.createMetricValueLabel("Đang tải...");
+
                 JPanel card1 = UiKit.createMetricCard("Tổng số xe", totalVehicles, "", UiKit.PRIMARY);
                 JPanel card2 = UiKit.createMetricCard("Số xe đang cho thuê", rentedVehicles, "", UiKit.WARNING);
                 JPanel card4 = UiKit.createMetricCard("Số xe đang bảo trì", maintenanceVehicles, "", UiKit.INFO);
@@ -149,6 +161,11 @@ public class ManageVehiclesPanel extends JPanel {
                                         vehicle.getStatusEnum().getDisplayName()
                         });
                 }
+
+                totalVehicles.setText(String.format("%,d", VehicleBLL.getTotalVehicles()));
+                rentedVehicles.setText(String.format("%,d", VehicleBLL.getRentedVehicles()));
+                availableVehicles.setText(String.format("%,d", VehicleBLL.getAvailableVehicles()));
+                maintenanceVehicles.setText(String.format("%,d", VehicleBLL.getMaintenanceVehicles()));
 
                 model.fireTableDataChanged();
         }
