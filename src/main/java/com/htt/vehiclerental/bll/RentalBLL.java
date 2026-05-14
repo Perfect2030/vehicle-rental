@@ -255,4 +255,12 @@ public class RentalBLL {
     public static int getOverdueRentals() {
         return RentalDAL.getOverdueRentalCount();
     }
+
+    public static int getCancelledRentals() {
+        return RentalDAL.getCancelledRentalCount();
+    }
+
+    public static int getWaitingForPickupRentals() {
+        return RentalDAL.getCreatedRentalCount();
+    }
 }

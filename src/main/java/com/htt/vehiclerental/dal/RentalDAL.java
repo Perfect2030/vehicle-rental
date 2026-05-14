@@ -167,4 +167,22 @@ public class RentalDAL {
 
         return ((Long) result.get(0).get("count")).intValue();
     }
+
+    public static int getCreatedRentalCount() {
+        String sql = "SELECT COUNT(*) AS count FROM rental WHERE status = 'CREATED'";
+        var result = DBHelper.getInstance().executeQuery(sql);
+
+        if (result.isEmpty()) return 0;
+        
+        return ((Long) result.get(0).get("count")).intValue();
+    }
+
+    public static int getCancelledRentalCount() {
+        String sql = "SELECT COUNT(*) AS count FROM rental WHERE status = 'CANCELLED'";
+        var result = DBHelper.getInstance().executeQuery(sql);
+
+        if (result.isEmpty()) return 0;
+        
+        return ((Long) result.get(0).get("count")).intValue();
+    }
 }

@@ -28,11 +28,9 @@ public class ManageRentalsPanel extends JPanel {
     private JButton completedButton;
     private JButton giaoxeButton;
     private JButton huyButton;
+    private JPanel info;
 
-    private JLabel totalRentalsLabel;
-    private JLabel activeRentalsLabel;
-    private JLabel completedRentalsLabel;
-    private JLabel overdueRentalsLabel;
+    private JLabel totalRentalsLabel, activeRentalsLabel, completedRentalsLabel, overdueRentalsLabel, waitingForPickupLabel, cancelledLabel;
 
     public ManageRentalsPanel() {
         initComponents();
@@ -52,23 +50,30 @@ public class ManageRentalsPanel extends JPanel {
                 "Thiết lập và quản lý thông tin thuê xe.", UiKit.INFO);
         banner.setPreferredSize(new Dimension(0, 100));
 
-        JPanel info = new JPanel(new GridLayout(1, 4, 16, 0));
+        info = new JPanel(new GridLayout(2, 3, 16, 0));
         info.setOpaque(false);
 
         totalRentalsLabel = UiKit.createMetricValueLabel("Đang tải...");
         activeRentalsLabel = UiKit.createMetricValueLabel("Đang tải...");
         completedRentalsLabel = UiKit.createMetricValueLabel("Đang tải...");
         overdueRentalsLabel = UiKit.createMetricValueLabel("Đang tải...");
+        waitingForPickupLabel = UiKit.createMetricValueLabel("Đang tải...");
+        cancelledLabel = UiKit.createMetricValueLabel("Đang tải...");
 
         JPanel card1 = UiKit.createMetricCard("Tổng số đơn thuê", totalRentalsLabel, "", UiKit.PRIMARY);
         JPanel card2 = UiKit.createMetricCard("Số đơn đang cho thuê", activeRentalsLabel, "", UiKit.INFO);
         JPanel card3 = UiKit.createMetricCard("Số đơn đã hoàn thành", completedRentalsLabel, "", UiKit.SUCCESS);
         JPanel card4 = UiKit.createMetricCard("Số đơn quá hạn", overdueRentalsLabel, "", UiKit.WARNING);
+        JPanel card5 = UiKit.createMetricCard("Số đơn chờ giao xe", waitingForPickupLabel, "", UiKit.WARNING);
+        JPanel card6 = UiKit.createMetricCard("Số đơn đã hủy", cancelledLabel, "", UiKit.DANGER);
+
 
         info.add(card1);
         info.add(card2);
         info.add(card3);
-        info.add(card4);    
+        info.add(card4);
+        info.add(card5);
+        info.add(card6);
 
         northPanel.add(banner, BorderLayout.NORTH);
         northPanel.add(info, BorderLayout.CENTER);
@@ -210,12 +215,14 @@ public class ManageRentalsPanel extends JPanel {
                 row.getExpectedReturnTime(),
                 row.getStatus()
             });
-        }
+        }    
 
         totalRentalsLabel.setText(String.format("%,d", RentalBLL.getTotalRentals()));
         activeRentalsLabel.setText(String.format("%,d", RentalBLL.getActiveRentals()));
         completedRentalsLabel.setText(String.format("%,d", RentalBLL.getCompletedRentals()));
         overdueRentalsLabel.setText(String.format("%,d", RentalBLL.getOverdueRentals()));
+        waitingForPickupLabel.setText(String.format("%,d", RentalBLL.getWaitingForPickupRentals()));
+        cancelledLabel.setText(String.format("%,d", RentalBLL.getCancelledRentals()));
  
     }
 
