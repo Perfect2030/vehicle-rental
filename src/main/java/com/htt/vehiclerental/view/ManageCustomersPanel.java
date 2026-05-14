@@ -196,7 +196,7 @@ public class ManageCustomersPanel extends JPanel {
         int customerId = (int) table.getValueAt(selectedRow, 0);
 
         //confirm delete
-        int confirm = UiKit.showConfirmDialog(this, "Bạn có chắc muốn xóa khách hàng này?");
+        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc muốn xóa khách hàng này?", "Xác nhận", JOptionPane.YES_NO_OPTION);
         if (confirm != JOptionPane.YES_OPTION) {
             return;
         }

@@ -6,6 +6,7 @@ import java.awt.GridLayout;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -93,7 +94,7 @@ public class CustomerInfoDialog extends JDialog {
 
     public void saveInfo() {
         if (identityField.getText().isEmpty() || nameField.getText().isEmpty() || phoneField.getText().isEmpty() || addressField.getText().isEmpty()) {
-            UiKit.showErrorDialog(this, "Vui lòng điền đầy đủ thông tin khách hàng.");
+            JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin khách hàng.", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -110,13 +111,13 @@ public class CustomerInfoDialog extends JDialog {
                 case CustomerBLL.SUCCESS:
                     break;
                 case CustomerBLL.NOT_FOUND:
-                    UiKit.showErrorDialog(this, "Không tìm thấy khách hàng. Vui lòng thử lại.");
+                    JOptionPane.showMessageDialog(this, "Không tìm thấy khách hàng. Vui lòng thử lại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
                     return;
                 case CustomerBLL.INVALID_INPUT:
-                    UiKit.showErrorDialog(this, "Thông tin khách hàng không hợp lệ. Vui lòng kiểm tra lại.");
+                    JOptionPane.showMessageDialog(this, "Thông tin khách hàng không hợp lệ. Vui lòng kiểm tra lại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
                     return;
                 default:
-                    UiKit.showErrorDialog(this, "Không thể cập nhật thông tin khách hàng. Vui lòng thử lại.");
+                    JOptionPane.showMessageDialog(this, "Không thể cập nhật thông tin khách hàng. Vui lòng thử lại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
                     return;
             }
         } else {
@@ -124,13 +125,13 @@ public class CustomerInfoDialog extends JDialog {
                 case CustomerBLL.SUCCESS:
                     break;
                 case CustomerBLL.CUSTOMER_EXISTS:
-                    UiKit.showErrorDialog(this, "Khách hàng với số định danh này đã tồn tại.");
+                    JOptionPane.showMessageDialog(this, "Khách hàng với số định danh này đã tồn tại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
                     return;
                 case CustomerBLL.INVALID_INPUT:
-                    UiKit.showErrorDialog(this, "Thông tin khách hàng không hợp lệ. Vui lòng kiểm tra lại.");
+                    JOptionPane.showMessageDialog(this, "Thông tin khách hàng không hợp lệ. Vui lòng kiểm tra lại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
                     return;
                 default:
-                    UiKit.showErrorDialog(this, "Không thể lưu thông tin khách hàng. Vui lòng thử lại.");
+                    JOptionPane.showMessageDialog(this, "Không thể lưu thông tin khách hàng. Vui lòng thử lại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
                     return;
             }
         }

@@ -138,7 +138,7 @@ public class ManageFeesPanel extends JPanel {
     public void updateFee() {
         int selectedRow = table.getSelectedRow();
         if (selectedRow == -1) {
-            UiKit.showErrorDialog(this, "Vui lòng chọn một phí để cập nhật thông tin.");
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một phí để cập nhật thông tin.", "Lỗi", JOptionPane.ERROR_MESSAGE);
              return;
         }
 
@@ -146,7 +146,7 @@ public class ManageFeesPanel extends JPanel {
         
         ExtraFeeType fee = ExtraFeeTypeBLL.getExtraFeeType(id);
         if (fee == null) {
-            UiKit.showErrorDialog(this, "Không thể lấy thông tin phí.");
+            JOptionPane.showMessageDialog(this, "Không thể lấy thông tin phí.", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -157,13 +157,13 @@ public class ManageFeesPanel extends JPanel {
     public void deleteFee() {
         int selectedRow = table.getSelectedRow();
         if (selectedRow == -1) {
-            UiKit.showErrorDialog(this, "Vui lòng chọn một phí để xóa.");
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một phí để xóa.", "Lỗi", JOptionPane.ERROR_MESSAGE);
              return;
         }
 
         int id = (int) table.getValueAt(selectedRow, 0);
         //confirm delete
-        int confirm = UiKit.showConfirmDialog(this, "Bạn có chắc muốn xóa phí này?");
+        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc muốn xóa phí này?", "Xác nhận", JOptionPane.YES_NO_OPTION);
         if (confirm != JOptionPane.YES_OPTION) {
             return;
         }

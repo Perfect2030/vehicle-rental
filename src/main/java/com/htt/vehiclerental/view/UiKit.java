@@ -1,7 +1,6 @@
 package com.htt.vehiclerental.view;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 
@@ -13,7 +12,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
@@ -94,33 +92,6 @@ public final class UiKit {
         label.setFont(SMALL_FONT);
         label.setForeground(MUTED);
         return label;
-    }
-
-    public static JPanel createMetricCard(String label, String value, String note, Color accent) {
-        JPanel card = new JPanel();
-        card.setLayout(new javax.swing.BoxLayout(card, javax.swing.BoxLayout.Y_AXIS));
-        card.setBackground(SURFACE);
-        card.setBorder(createCardBorder());
-        card.setPreferredSize(new Dimension(0, 100));
-
-        JPanel accentBar = new JPanel();
-        accentBar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 4));
-        accentBar.setPreferredSize(new Dimension(100, 4));
-        accentBar.setBackground(accent);
-        accentBar.setBorder(new EmptyBorder(0, 0, 0, 0));
-
-        JLabel metricLabel = createMetricLabel(label);
-        JLabel metricValue = createMetricValueLabel(value);
-        JLabel metricNote = createSubtitleLabel(note);
-
-        card.add(accentBar);
-        card.add(javax.swing.Box.createVerticalStrut(5));
-        card.add(metricLabel);
-        card.add(javax.swing.Box.createVerticalStrut(0));
-        card.add(metricValue);
-        card.add(javax.swing.Box.createVerticalStrut(6));
-        card.add(metricNote);
-        return card;
     }
 
     public static JPanel createMetricCard(String label, JLabel value, String note, Color accent) {
@@ -208,20 +179,6 @@ public final class UiKit {
         return field;
     }
 
-    public static JTextArea createTextArea(int rows, int columns) {
-        JTextArea area = new JTextArea(rows, columns);
-        area.setFont(BODY_FONT);
-        area.setLineWrap(true);
-        area.setWrapStyleWord(true);
-        area.setBackground(Color.WHITE);
-        area.setForeground(TEXT);
-        area.setCaretColor(TEXT);
-        area.setBorder(BorderFactory.createCompoundBorder(
-                new LineBorder(BORDER, 1, true),
-                new EmptyBorder(10, 12, 10, 12)));
-        return area;
-    }
-
     public static JComboBox<String> createComboBox(String... values) {
         JComboBox<String> comboBox = new JComboBox<>(values);
         comboBox.setFont(BODY_FONT);
@@ -266,15 +223,6 @@ public final class UiKit {
 
     public static void setSidebarButtonState(JButton button, boolean active) {
         button.setBackground(active ? SIDEBAR_HIGHLIGHT : SIDEBAR);
-    }
-
-    public static JPanel createButtonRow(JButton... buttons) {
-        JPanel row = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 12, 0));
-        row.setOpaque(false);
-        for (JButton button : buttons) {
-            row.add(button);
-        }
-        return row;
     }
 
     public static JTable createTable(String[] columns, Object[][] rows) {
@@ -334,21 +282,6 @@ public final class UiKit {
         return banner;
     }
 
-    public static JPanel createStatList(String... items) {
-        JPanel panel = new JPanel();
-        panel.setOpaque(false);
-        panel.setLayout(new javax.swing.BoxLayout(panel, javax.swing.BoxLayout.Y_AXIS));
-        for (String item : items) {
-            JLabel label = new JLabel("• " + item);
-            label.setFont(BODY_FONT);
-            label.setForeground(TEXT);
-            label.setAlignmentX(Component.LEFT_ALIGNMENT);
-            panel.add(label);
-            panel.add(javax.swing.Box.createVerticalStrut(6));
-        }
-        return panel;
-    }
-
     private static JButton createButton(String text, Color background, Color foreground) {
         JButton button = new JButton(text);
         button.setFont(BUTTON_FONT);
@@ -368,14 +301,5 @@ public final class UiKit {
         component.setBorder(BorderFactory.createCompoundBorder(
                 new LineBorder(BORDER, 1, true),
                 new EmptyBorder(8, 12, 8, 12)));
-    }
-
-    public static void showErrorDialog(Component parent, String message) {
-        javax.swing.JOptionPane.showMessageDialog(parent, message, "Lỗi", javax.swing.JOptionPane.ERROR_MESSAGE);
-    } 
-
-    public static int showConfirmDialog(Component parent, String message) {
-        int result = javax.swing.JOptionPane.showConfirmDialog(parent, message, "Xác nhận", javax.swing.JOptionPane.OK_CANCEL_OPTION);
-        return result;  
     }
 }
