@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
@@ -25,7 +26,7 @@ public class GenerateReportsPanel extends JPanel {
 
     public GenerateReportsPanel() {
         initComponents();
-        createTodayReport();
+        createLifetimeReport();
     }
 
     private void initComponents() {
@@ -72,6 +73,9 @@ public class GenerateReportsPanel extends JPanel {
             JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 16, 16));
                 buttonPanel.setOpaque(false);
 
+                JButton allButton = UiKit.createPrimaryButton("Thống kê tất cả");
+                    allButton.addActionListener(e -> createLifetimeReport());
+
                 JButton todayButton = UiKit.createPrimaryButton("Thống kê hôm nay");
                     todayButton.addActionListener(e -> createTodayReport());
 
@@ -85,7 +89,7 @@ public class GenerateReportsPanel extends JPanel {
                     yearlyButton.addActionListener(e -> createYearlyReport());
 
 
-
+            buttonPanel.add(allButton);
             buttonPanel.add(todayButton);
             buttonPanel.add(weeklyButton);
             buttonPanel.add(monthlyButton);
@@ -111,6 +115,14 @@ public class GenerateReportsPanel extends JPanel {
         add(south, BorderLayout.CENTER);
     }
 
+    private void createLifetimeReport() {
+        headerTitle.setText("Thống kê toàn bộ");
+
+        LocalDateTime start = LocalDateTime.MIN;
+        LocalDateTime end = LocalDateTime.MAX;
+        createReport(start, end);
+    }
+
     private void createTodayReport() {
         headerTitle.setText("Thống kê theo ngày");
 
@@ -122,8 +134,8 @@ public class GenerateReportsPanel extends JPanel {
     private void createWeeklyReport() {
         headerTitle.setText("Thống kê theo tuần");
 
-        LocalDateTime start = LocalDateTime.now().minusDays(7).withHour(0).withMinute(0).withSecond(0).withNano(0);
-        LocalDateTime end = LocalDateTime.now().withHour(23).withMinute(59).withSecond(59).withNano(999999999);
+        LocalDateTime start = LocalDateTime.now().with(DayOfWeek.MONDAY).withHour(0).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime end = LocalDateTime.now().with(DayOfWeek.SUNDAY).withHour(23).withMinute(59).withSecond(59).withNano(999999999);
         createReport(start, end);
     }
 
@@ -152,7 +164,7 @@ public class GenerateReportsPanel extends JPanel {
         }
 
         createReport(startDateChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(),
-                     endDateChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+                     endDateChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().withHour(23).withMinute(59).withSecond(59).withNano(999999999));
     }
 
     private void createReport(LocalDateTime start, LocalDateTime end) {
