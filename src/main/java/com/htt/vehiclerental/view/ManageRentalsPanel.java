@@ -210,6 +210,10 @@ public class ManageRentalsPanel extends JPanel {
         waitingForPickupLabel.setText(String.format("%,d", RentalBLL.getWaitingForPickupRentals()));
         cancelledLabel.setText(String.format("%,d", RentalBLL.getCancelledRentals()));
  
+        detailButton.setEnabled(false);
+        completedButton.setEnabled(false);
+        giaoxeButton.setEnabled(false);
+        huyButton.setEnabled(false);
     }
 
     public void setSearchField(String keyword) {

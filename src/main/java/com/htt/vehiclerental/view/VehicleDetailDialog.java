@@ -100,7 +100,7 @@ public class VehicleDetailDialog extends JDialog {
         modelField.setText(vehicleDetail.getModel());
         typeField.setText(vehicleDetail.getVehicleType().getDisplayName());
         displacementField.setText(String.valueOf(vehicleDetail.getDisplacement()));
-        pricePerDayField.setText(String.valueOf(vehicleDetail.getPricePerDay()));
+        pricePerDayField.setText(String.format("%,d VND", vehicleDetail.getPricePerDay()));
         statusField.setText(vehicleDetail.getStatus().getDisplayName());
 
         //load thông tin khách hàng thuê xe sắp tới

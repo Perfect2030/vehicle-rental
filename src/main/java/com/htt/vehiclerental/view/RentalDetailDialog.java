@@ -135,7 +135,7 @@ public class RentalDetailDialog extends JDialog{
         actualReturnTime.setText(data.getActualReturnTime() != null ? data.getActualReturnTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) : "NULL");
         pricePerDay.setText(String.format("%,d VND", data.getPricePerDay()));
         estimatedTotal.setText(String.format("%,d VND", data.getEstimatedTotal()));
-        totalAmount.setText(String.format("%,d VND", data.getTotalAmount() == -1 ? 0 : data.getTotalAmount()));
+        totalAmount.setText(String.format("%,d VND", data.getTotalAmount() < 0 ? 0 : data.getTotalAmount()));
         extraFees.setText(String.format("%,d VND", data.getExtraFees()));
 
         // load extra fee details into table

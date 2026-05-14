@@ -8,6 +8,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -95,18 +96,21 @@ public class GenerateReportsPanel extends JPanel {
             buttonPanel.add(monthlyButton);
             buttonPanel.add(yearlyButton);
 
-            JPanel customReportPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 16, 16));
+            JPanel customReportPanel = new JPanel(new GridLayout(1, 3, 16, 16));
+                customReportPanel.setBorder(BorderFactory.createEmptyBorder(50, 150, 270, 150));
                 customReportPanel.setOpaque(false);
                 
                 startDateChooser = new JDateChooser();
+                startDateChooser.setDateFormatString("dd/MM/yyyy");
                 endDateChooser = new JDateChooser();
+                endDateChooser.setDateFormatString("dd/MM/yyyy");
 
                 JButton customButton = UiKit.createPrimaryButton("Thống kê tùy chỉnh");
                     customButton.addActionListener(e -> createCustomReport());
 
-                customReportPanel.add(startDateChooser);
-                customReportPanel.add(endDateChooser);
-                customReportPanel.add(customButton);
+                customReportPanel.add(UiKit.createFieldBlock("Ngày bắt đầu", startDateChooser));
+                customReportPanel.add(UiKit.createFieldBlock("Ngày kết thúc", endDateChooser));
+                customReportPanel.add(UiKit.createFieldBlock(" ", customButton));
 
         south.add(buttonPanel, BorderLayout.NORTH);
         south.add(customReportPanel, BorderLayout.CENTER);
@@ -119,7 +123,7 @@ public class GenerateReportsPanel extends JPanel {
         headerTitle.setText("Thống kê toàn bộ");
 
         LocalDateTime start = LocalDateTime.MIN;
-        LocalDateTime end = LocalDateTime.MAX;
+        LocalDateTime end = LocalDateTime.now();
         createReport(start, end);
     }
 

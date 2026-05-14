@@ -115,7 +115,7 @@ public class RentalCompletionDialog  extends JDialog{
         rentalDate.setText(data.getRentalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
         actualReturnTime.setText(data.getActualReturnTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
         extraFees.setText(String.format("%,d VND", data.getExtraFees()));
-        totalAmount.setText(String.format("%,d VND", data.getTotalAmount()));
+        totalAmount.setText(String.format("%,d VND", data.getTotalAmount() > 0 ? data.getTotalAmount() : 0));
 
         // load extra fee details into table
         var extraFeeDetails = data.getExtraFeeDetails();

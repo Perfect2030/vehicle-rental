@@ -12,14 +12,13 @@ public class MainFrame extends JFrame {
 
     private JPanel sidebar;
     private JPanel mainContent;
-    private JButton selectedButton = null;
 
     private JPanel manageVehiclesPanel, manageCustomersPanel, manageRentalsPanel, manageFeesPanel, generateReportsPanel;
 
 
     public MainFrame() {
         setTitle("Vehicle Rental System");
-        setSize(1200, 700);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 

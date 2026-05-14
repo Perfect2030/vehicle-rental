@@ -66,7 +66,7 @@ public class RentalDAL {
     }
 
     public static boolean checkRentalConflict(int vehicleId, java.time.LocalDateTime startTime, java.time.LocalDateTime expectedReturnTime) {
-        String sql = "SELECT COUNT(*) AS count FROM rental WHERE vehicleId = ? AND ((startTime < ? AND expectedReturnTime > ?) OR (startTime < ? AND expectedReturnTime > ?) OR (startTime >= ? AND expectedReturnTime <= ?))";
+        String sql = "SELECT COUNT(*) AS count FROM rental WHERE vehicleId = ? AND ((startTime < ? AND expectedReturnTime > ?) OR (startTime < ? AND expectedReturnTime > ?) OR (startTime >= ? AND expectedReturnTime <= ?)) AND status IN ('ACTIVE', 'CREATED')";
         var result = DBHelper.getInstance().executeQuery(sql, vehicleId, expectedReturnTime, expectedReturnTime, startTime, startTime, startTime, expectedReturnTime);
 
         if (result.isEmpty()) return false;
@@ -113,7 +113,7 @@ public class RentalDAL {
     }
   
     public static List<Rental> getRentalsByTime(LocalDateTime start, LocalDateTime end) {
-        String sql = "SELECT * FROM rental WHERE startTime >= ? AND startTime <= ? AND status = 'COMPLETED'";
+        String sql = "SELECT * FROM rental WHERE actualReturnTime >= ? AND actualReturnTime <= ? AND status = 'COMPLETED'";
         var results = DBHelper.getInstance().executeQuery(sql, start, end);
 
         List<Rental> rentals = new java.util.ArrayList<>();
