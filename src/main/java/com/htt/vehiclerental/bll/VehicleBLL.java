@@ -4,6 +4,7 @@ import java.util.List;
 import com.htt.vehiclerental.dto.Vehicle;
 import com.htt.vehiclerental.enums.VehicleStatus;
 import com.htt.vehiclerental.enums.VehicleType;
+import com.htt.vehiclerental.dto.VehicleDetail;
 import com.htt.vehiclerental.dal.RentalDAL;
 import com.htt.vehiclerental.dal.VehicleDAL;
 
@@ -80,5 +81,9 @@ public class VehicleBLL {
 
     public static Vehicle getVehicle(int id) {
         return VehicleDAL.getVehicle(id);
+    }
+
+    public static VehicleDetail getVehicleDetail(int id) {
+        return VehicleDAL.getVehicleDetail(id);        
     }
 }

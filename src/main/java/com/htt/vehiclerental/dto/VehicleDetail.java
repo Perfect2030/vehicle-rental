@@ -2,6 +2,7 @@ package com.htt.vehiclerental.dto;
 
 import com.htt.vehiclerental.enums.VehicleStatus;
 import com.htt.vehiclerental.enums.VehicleType;
+
 import java.util.*;
 
 public class VehicleDetail {
@@ -10,14 +11,14 @@ public class VehicleDetail {
     private String model;
     private VehicleType vehicleType;
     private int displacement;
-    private double pricePerDay;
+    private int pricePerDay;
     private VehicleStatus status;
     private List<UpcomingRentalCustomer> upcomingRentalCustomers;
 
     public VehicleDetail() {
     }
     public VehicleDetail(String licensePlate, String brand, String model, VehicleType vehicleType, int displacement,
-            double pricePerDay, VehicleStatus status, List<UpcomingRentalCustomer> upcomingRentalCustomers) {
+            int pricePerDay, VehicleStatus status, List<UpcomingRentalCustomer> upcomingRentalCustomers) {
         this.licensePlate = licensePlate;
         this.brand = brand;
         this.model = model;
@@ -69,11 +70,11 @@ public class VehicleDetail {
         this.displacement = displacement;
     }
 
-    public double getPricePerDay() {
+    public int getPricePerDay() {
         return pricePerDay;
     }
 
-    public void setPricePerDay(double pricePerDay) {
+    public void setPricePerDay(int pricePerDay) {
         this.pricePerDay = pricePerDay;
     }
 
@@ -91,6 +92,5 @@ public class VehicleDetail {
    
     public void setUpcomingRentalCustomers(List<UpcomingRentalCustomer> upcomingRentalCustomers) {
         this.upcomingRentalCustomers = upcomingRentalCustomers;
-    }
-    
+    }    
 }

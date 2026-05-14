@@ -1,15 +1,15 @@
 package com.htt.vehiclerental.view;
 
 import java.awt.*;
-import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 import com.htt.vehiclerental.bll.VehicleBLL;
 import com.htt.vehiclerental.dto.UpcomingRentalCustomer;
 import com.htt.vehiclerental.dto.VehicleDetail;
-import com.htt.vehiclerental.enums.VehicleStatus;
-import com.htt.vehiclerental.enums.VehicleType;
+
 
 public class VehicleDetailDialog extends JDialog {
     private static final String[] UPCOMING_RENTALS_CUSTOMER_COLUMNS = {
@@ -20,7 +20,7 @@ public class VehicleDetailDialog extends JDialog {
     private JTable upcomingRentalCustomerTable;
 
     public VehicleDetailDialog( int id) {
-        this.setTitle("Thông tin chi tiết xe");
+        this.setTitle("Thông tin chi tiết xe và lịch thuê sắp tới");
         this.setSize(1080,640);
         this.setLocationRelativeTo(null);
         this.setModal(true);
@@ -69,7 +69,7 @@ public class VehicleDetailDialog extends JDialog {
         upcomingRentalCustomerTable = UiKit.createTable(UPCOMING_RENTALS_CUSTOMER_COLUMNS, new Object[][] {});
 
         center.add(centerForm, BorderLayout.NORTH);
-        center.add(new JScrollPane(upcomingRentalCustomerTable), BorderLayout.CENTER);
+        center.add(UiKit.createFieldBlock("Khách hàng thuê xe", new JScrollPane(upcomingRentalCustomerTable)), BorderLayout.CENTER);
 
         // button
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 16, 0));
@@ -87,19 +87,38 @@ public class VehicleDetailDialog extends JDialog {
     }
 
     public void loadData(int id) {
-        // VehicleDetail vehicleDetail = VehicleBLL.getVehicleDetail(id);
-        // if (vehicleDetail != null) {
-        //     licensePlateField.setText(vehicleDetail.getLicensePlate());
-        //     brandField.setText(vehicleDetail.getBrand());
-        //     modelField.setText(vehicleDetail.getModel());
-        //     typeField.setText(vehicleDetail.getVehicleType().toString());
-        //     displacementField.setText(String.valueOf(vehicleDetail.getDisplacement()));
-        //     pricePerDayField.setText(String.valueOf(vehicleDetail.getPricePerDay()));
-        //     statusField.setText(vehicleDetail.getStatus().toString());
+        VehicleDetail vehicleDetail = VehicleBLL.getVehicleDetail(id);
+        if(vehicleDetail == null) {
+            JOptionPane.showMessageDialog(this, "Không tìm thấy thông tin xe", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            this.dispose();
+            return;
+        }
 
-        //     // Load upcoming rental customers
-        //     loadUpcomingRentalCustomers(vehicleDetail.getUpcomingRentalCustomers());
-        // }
+        // thông tin cơ bản của xe
+        licensePlateField.setText(vehicleDetail.getLicensePlate());
+        brandField.setText(vehicleDetail.getBrand());
+        modelField.setText(vehicleDetail.getModel());
+        typeField.setText(vehicleDetail.getVehicleType().getDisplayName());
+        displacementField.setText(String.valueOf(vehicleDetail.getDisplacement()));
+        pricePerDayField.setText(String.valueOf(vehicleDetail.getPricePerDay()));
+        statusField.setText(vehicleDetail.getStatus().getDisplayName());
+
+        //load thông tin khách hàng thuê xe sắp tới
+        DefaultTableModel model = (DefaultTableModel) upcomingRentalCustomerTable.getModel();
+        model.setRowCount(0); // Xóa tất cả dữ liệu hiện tại
+
+        //format datetime
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        for (UpcomingRentalCustomer customer : vehicleDetail.getUpcomingRentalCustomers()) {
+            model.addRow(new Object[] {
+                customer.getIdentityNumber(),
+                customer.getFullName(),
+                customer.getPhoneNumber(),
+                customer.getStartTime().format(formatter).toString(),
+                customer.getExpectedReturnTime().format(formatter).toString()
+            });
+        }
+        model.fireTableDataChanged();
     }
 
     public void cancel() {

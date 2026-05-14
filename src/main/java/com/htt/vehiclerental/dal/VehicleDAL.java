@@ -2,8 +2,11 @@ package com.htt.vehiclerental.dal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.htt.vehiclerental.dto.Vehicle;
+import com.htt.vehiclerental.dto.VehicleDetail;
+import com.htt.vehiclerental.dto.UpcomingRentalCustomer;
 import com.htt.vehiclerental.enums.VehicleStatus;
 import com.htt.vehiclerental.enums.VehicleType;
 
@@ -83,5 +86,43 @@ public class VehicleDAL {
         String sql = "SELECT * FROM vehicle WHERE licensePlate = ? AND isDeleted = 0";
         var result = DBHelper.getInstance().executeQuery(sql, licensePlate);
         return !result.isEmpty();
+    }
+
+    public static VehicleDetail getVehicleDetail(int id) {
+        VehicleDetail vehicleDetail = new VehicleDetail();
+
+        // lấy thông tin xe
+        String sql = "SELECT licensePlate, model, brand, vehicleType, displacement, pricePerDay, status " +
+                        " FROM vehicle WHERE id = ? AND isDeleted = 0";
+        var result = DBHelper.getInstance().executeQuery(sql, id);
+
+        if (result.isEmpty()) return null;
+        
+        Map<String, Object> vehicleData = result.get(0);
+        vehicleDetail.setLicensePlate((String) vehicleData.get("licensePlate"));
+        vehicleDetail.setModel((String) vehicleData.get("model"));
+        vehicleDetail.setBrand((String) vehicleData.get("brand"));
+        vehicleDetail.setVehicleType(VehicleType.fromString((String) vehicleData.get("vehicleType")));
+        vehicleDetail.setDisplacement((int) vehicleData.get("displacement"));
+        vehicleDetail.setPricePerDay((int) vehicleData.get("pricePerDay"));
+        vehicleDetail.setStatus(VehicleStatus.fromString((String) vehicleData.get("status")));
+
+        // lấy thông tin khách hàng thuê xe sắp tới
+        sql = "SELECT c.identityNumber, c.fullName, c.phoneNumber, r.startTime, r.expectedReturnTime " +
+                "FROM rental r " +
+                "JOIN customer c ON r.customerId = c.id " +
+                "WHERE r.vehicleId = ? AND r.startTime > NOW() AND r.status IN ('ACTIVE', 'CREATED') " +
+                "ORDER BY r.startTime ASC";
+        
+        var rentalResults = DBHelper.getInstance().executeQuery(sql, id);
+        
+        List<UpcomingRentalCustomer> upcomingRentalCustomers = new ArrayList<>();
+        for (var r : rentalResults) {
+            UpcomingRentalCustomer customer = UpcomingRentalCustomer.fromMap(r);
+            upcomingRentalCustomers.add(customer);
+        }
+        vehicleDetail.setUpcomingRentalCustomers(upcomingRentalCustomers);
+
+        return vehicleDetail;
     }
 }
