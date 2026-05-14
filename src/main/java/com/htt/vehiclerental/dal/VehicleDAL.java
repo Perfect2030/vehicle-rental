@@ -44,6 +44,16 @@ public class VehicleDAL {
         return Vehicle.fromMap(result.get(0));
     }
 
+    public static Vehicle getVehicleByLicensePlate(String licensePlate) {
+        String sql = "SELECT * FROM vehicle WHERE licensePlate = ? AND isDeleted = 0";
+        var result = DBHelper.getInstance().executeQuery(sql, licensePlate);
+
+        if (result.isEmpty())
+            return null;
+
+        return Vehicle.fromMap(result.get(0));
+    }
+
     public static List<Vehicle> getAllVehicles() {
         String sql = "SELECT * FROM vehicle";
         var results = DBHelper.getInstance().executeQuery(sql);

@@ -121,6 +121,10 @@ public class VehicleInfoDialog extends JDialog {
                     JOptionPane.showMessageDialog(this, "Không thể cập nhật trạng thái. Lý do: xe đang được thuê hoặc đang có đơn thuê trong tương lai. Vui lòng hoàn tất giao dịch thuê trước khi cập nhật.", "Lỗi",
                             JOptionPane.ERROR_MESSAGE);
                     break;
+                case VehicleBLL.VEHICLE_EXISTS:
+                    JOptionPane.showMessageDialog(this, "Xe với biển số này đã tồn tại.", "Lỗi",
+                            JOptionPane.ERROR_MESSAGE);
+                    break;
                 case VehicleBLL.DATABASE_ERROR:
                     JOptionPane.showMessageDialog(this, "Lỗi cơ sở dữ liệu.", "Lỗi",
                             JOptionPane.ERROR_MESSAGE);

@@ -51,6 +51,10 @@ public class VehicleBLL {
                 return RENTAL_EXISTS;
             }
         }
+        
+        if(VehicleDAL.getVehicleByLicensePlate(vehicle.getLicensePlate()) != null) {
+            return VEHICLE_EXISTS;
+        }
 
         if(!VehicleDAL.update(vehicle)) {
             return DATABASE_ERROR;
