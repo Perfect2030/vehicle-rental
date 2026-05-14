@@ -50,7 +50,7 @@ public class ManageRentalsPanel extends JPanel {
                 "Thiết lập và quản lý thông tin thuê xe.", UiKit.INFO);
         banner.setPreferredSize(new Dimension(0, 100));
 
-        info = new JPanel(new GridLayout(2, 3, 16, 0));
+        info = new JPanel(new GridLayout(1, 6, 16, 0));
         info.setOpaque(false);
 
         totalRentalsLabel = UiKit.createMetricValueLabel("Đang tải...");
