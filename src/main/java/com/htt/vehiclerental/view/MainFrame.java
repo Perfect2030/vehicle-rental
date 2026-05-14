@@ -3,7 +3,6 @@ package com.htt.vehiclerental.view;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.GridLayout;
-import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -25,6 +24,7 @@ public class MainFrame extends JFrame {
         setLayout(new BorderLayout());
 
         sidebar = createSidebar();
+        updateSidebar("ManageVehicles");
         add(sidebar, BorderLayout.WEST);
 
         mainContent = createMainContent();
@@ -45,26 +45,11 @@ public class MainFrame extends JFrame {
         JButton btnManageFees = UiKit.createSidebarButton("Quản lý phí phát sinh");
         JButton btnGenerateReports = UiKit.createSidebarButton("Báo cáo doanh thu");
 
-        btnManageVehicles.addActionListener(e -> {
-            showPanel("ManageVehicles");
-            handleClick.actionPerformed(e);
-        });
-        btnManageCustomers.addActionListener(e -> {
-            showPanel("ManageCustomers");
-            handleClick.actionPerformed(e);
-        });
-        btnManageRentals.addActionListener(e -> {
-            showPanel("ManageRentals");
-            handleClick.actionPerformed(e);
-        });
-        btnManageFees.addActionListener(e -> {
-            showPanel("ManageFees");
-            handleClick.actionPerformed(e);
-        });
-        btnGenerateReports.addActionListener(e -> {
-            showPanel("GenerateReports");
-            handleClick.actionPerformed(e);
-        });
+        btnManageVehicles.addActionListener(e -> showPanel("ManageVehicles"));
+        btnManageCustomers.addActionListener(e -> showPanel("ManageCustomers"));
+        btnManageRentals.addActionListener(e -> showPanel("ManageRentals"));
+        btnManageFees.addActionListener(e -> showPanel("ManageFees"));
+        btnGenerateReports.addActionListener(e -> showPanel("GenerateReports"));
 
         sidebar.add(btnManageVehicles);
         sidebar.add(btnManageCustomers);
@@ -74,20 +59,6 @@ public class MainFrame extends JFrame {
 
         return sidebar;
     }
-
-    ActionListener handleClick = e -> {
-        JButton clicked = (JButton) e.getSource();
-
-        // reset button cũ
-        if (selectedButton != null) {
-            UiKit.setSidebarButtonState(selectedButton, false);
-        }
-
-        // set button mới
-        UiKit.setSidebarButtonState(clicked, true);
-
-        selectedButton = clicked;
-    };
 
     public JPanel createMainContent() {
         JPanel mainContent = new JPanel(new CardLayout());
@@ -107,9 +78,32 @@ public class MainFrame extends JFrame {
         return mainContent;
     }
 
+    public void updateSidebar(String activePanel) {
+        int selectedPanelIndex = switch (activePanel) {
+                            case "ManageVehicles" -> 0;
+                            case "ManageCustomers" -> 1;
+                            case "ManageRentals" -> 2;
+                            case "ManageFees" -> 3;
+                            case "GenerateReports" -> 4;
+                            default -> -1;
+        };
+
+        for (int i = 0; i < sidebar.getComponentCount(); i++) {
+            if (sidebar.getComponent(i) instanceof JButton) {
+                JButton button = (JButton) sidebar.getComponent(i);
+                if (i == selectedPanelIndex) {
+                    button.setBackground(UiKit.PRIMARY);
+                } else {
+                    button.setBackground(UiKit.SIDEBAR);
+                }
+            }
+        }
+    }
+
     public void showPanel(String panelName) {
         CardLayout cl = (CardLayout) mainContent.getLayout();
         cl.show(mainContent, panelName);
+        updateSidebar(panelName);
     }
     
     public void showPanel(String panelName, String keyword) {
@@ -134,6 +128,6 @@ public class MainFrame extends JFrame {
         }
 
         cl.show(mainContent, panelName);
-
+        updateSidebar(panelName);
     }
 }
