@@ -93,7 +93,7 @@ public class RentalBLL {
         List<RentalExtraFee>  extraFees = RentalExtraFeeDAL.getRentalExtraFeesByRentalId(rentalId);
 
         int totalAmount = (int)(rental.getPricePerDay() 
-                    * (Duration.between(rental.getStartTime(), LocalDateTime.now()).toMinutes()/1440 ) 
+                    * (Duration.between(rental.getStartTime(), LocalDateTime.now()).toMinutes()/1440.0 ) 
                     + rental.getExtraFee());
         RentalCompletion completion = new RentalCompletion(
                 vehicle != null ? vehicle.getLicensePlate() + " - " + vehicle.getBrand() + " " + vehicle.getModel() : "Unknown",
