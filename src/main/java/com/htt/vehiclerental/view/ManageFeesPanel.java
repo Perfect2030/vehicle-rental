@@ -28,9 +28,12 @@ public class ManageFeesPanel extends JPanel {
     private JTextField searchField;
     private JComboBox<String> sortComboBox;
 
+    private JButton addButton, updateButton, deleteButton;
+
     public ManageFeesPanel() {
         initComponents();
         updateTable();
+        updateButtonStates();
     }
 
     private void initComponents() {
@@ -66,17 +69,18 @@ public class ManageFeesPanel extends JPanel {
             );   
             
             table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            table.getSelectionModel().addListSelectionListener(e -> updateButtonStates());
 
             JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 16, 16));
                 buttonPanel.setOpaque(false);
 
-                JButton addButton = UiKit.createPrimaryButton("Thêm phí mới");
+                addButton = UiKit.createPrimaryButton("Thêm phí mới");
                     addButton.addActionListener(e -> addFee());
 
-                JButton updateButton = UiKit.createPrimaryButton("Cập nhật thông tin phí");
+                updateButton = UiKit.createPrimaryButton("Cập nhật thông tin phí");
                     updateButton.addActionListener(e -> updateFee());
 
-                JButton deleteButton = UiKit.createDangerButton("Xóa phí");
+                deleteButton = UiKit.createDangerButton("Xóa phí");
                     deleteButton.addActionListener(e -> deleteFee());
 
             buttonPanel.add(addButton);
@@ -112,6 +116,18 @@ public class ManageFeesPanel extends JPanel {
 
         table.revalidate();
         table.repaint();
+    }
+
+    public void updateButtonStates() {
+        boolean hasSelection = table.getSelectedRowCount() > 0;
+        
+        if (hasSelection) {
+            updateButton.setEnabled(true);
+            deleteButton.setEnabled(true);
+        } else {
+            updateButton.setEnabled(false);
+            deleteButton.setEnabled(false);
+        }
     }
 
     public void addFee() {

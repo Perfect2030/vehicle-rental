@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
 import com.htt.vehiclerental.bll.VehicleBLL;
@@ -36,6 +37,8 @@ public class ManageVehiclesPanel extends JPanel {
         private JLabel totalVehicles, rentedVehicles, availableVehicles, maintenanceVehicles;
 
         private JTable vehicleTable;
+
+        private JButton viewDetailButton, addButton, updateButton, deleteButton, createRentalButton;
 
         public ManageVehiclesPanel() {
                 initComponents();
@@ -96,18 +99,21 @@ public class ManageVehiclesPanel extends JPanel {
                 vehicleTable = UiKit.createTable(VEHICLE_COLUMNS, new Object[][] {});
                 vehicleTable.removeColumn(vehicleTable.getColumnModel().getColumn(0));
 
+                vehicleTable.getSelectionModel().addListSelectionListener(e -> updateButtonState());
+                vehicleTable.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
                 JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 16, 16));
                 buttonPanel.setOpaque(false);
 
-                JButton viewDetailButton = UiKit.createPrimaryButton("Xem chi tiết");
+                viewDetailButton = UiKit.createPrimaryButton("Xem chi tiết");
                 viewDetailButton.addActionListener(e -> viewDetail());
-                JButton addButton = UiKit.createPrimaryButton("Thêm xe mới");
+                addButton = UiKit.createPrimaryButton("Thêm xe mới");
                 addButton.addActionListener(e -> addVehicle());
-                JButton updateButton = UiKit.createPrimaryButton("Cập nhật thông tin xe");
+                updateButton = UiKit.createPrimaryButton("Cập nhật thông tin xe");
                 updateButton.addActionListener(e -> updateVehicle());
-                JButton deleteButton = UiKit.createDangerButton("Xóa xe");
+                deleteButton = UiKit.createDangerButton("Xóa xe");
                 deleteButton.addActionListener(e -> deleteVehicle());
-                JButton createRentalButton = UiKit.createPrimaryButton("Tạo hợp đồng thuê xe");
+                createRentalButton = UiKit.createPrimaryButton("Tạo hợp đồng thuê xe");
                 createRentalButton.addActionListener(e -> createRental());
 
                 buttonPanel.add(viewDetailButton);
@@ -124,6 +130,7 @@ public class ManageVehiclesPanel extends JPanel {
                 add(northPanel, BorderLayout.NORTH);
                 add(centerPanel, BorderLayout.CENTER);
                 ReloadData();
+                updateButtonState();
         }
 
         private List<Vehicle> getVehiclesAfterFilterAndSort() {
@@ -250,6 +257,24 @@ public class ManageVehiclesPanel extends JPanel {
                 } else {
                         JOptionPane.showMessageDialog(this, "Vui lòng chọn một xe để xem chi tiết.", "Lỗi",
                                         JOptionPane.ERROR_MESSAGE);
+                }
+        }
+
+        private void updateButtonState() {
+                boolean hasSelection = vehicleTable.getSelectedRowCount() > 0;
+
+                if (hasSelection) {
+                        int selectedRow = vehicleTable.getSelectedRows()[0];
+                        String status = (String) vehicleTable.getModel().getValueAt(vehicleTable.convertRowIndexToModel(selectedRow), 7);
+                        viewDetailButton.setEnabled(true);
+                        updateButton.setEnabled(true);
+                        deleteButton.setEnabled(!status.equals("Đang cho thuê"));
+                        createRentalButton.setEnabled(status.equals("Sẵn sàng"));
+                } else {
+                        viewDetailButton.setEnabled(false);
+                        updateButton.setEnabled(false);
+                        deleteButton.setEnabled(false);
+                        createRentalButton.setEnabled(false);
                 }
         }
 }

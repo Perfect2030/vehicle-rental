@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import java.time.format.DateTimeFormatter;
 
@@ -51,7 +52,7 @@ public class ManageRentalsPanel extends JPanel {
                 "Thiết lập và quản lý thông tin thuê xe.", UiKit.INFO);
         banner.setPreferredSize(new Dimension(0, 100));
 
-        info = new JPanel(new GridLayout(1, 6, 16, 0));
+        info = new JPanel(new GridLayout(1, 6, 16, 16));
         info.setOpaque(false);
 
         totalRentalsLabel = UiKit.createMetricValueLabel("Đang tải...");
@@ -170,6 +171,8 @@ public class ManageRentalsPanel extends JPanel {
             giaoxeButton.setEnabled(status.equals("CREATED"));
             huyButton.setEnabled(status.equals("CREATED"));
         });
+
+        table.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         centerSouth.add(detailButton);
         centerSouth.add(completedButton);
